@@ -1,0 +1,26 @@
+﻿  gameScene.cpp
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(13,28): error C2660: 'FMOD_System_Create': 함수는 1개의 인수를 사용하지 않습니다.
+C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc\fmod.h(35,19): message : 'FMOD_System_Create' 선언을 참조하십시오.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(22,40): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(203,43): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(252,17): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(311,15): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(351,25): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(353,17): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(356,23): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(357,27): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(361,15): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(362,19): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  stage2Scene.cpp
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(13,31): error C2660: 'FMOD_System_Create': 함수는 1개의 인수를 사용하지 않습니다.
+C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc\fmod.h(35,19): message : 'FMOD_System_Create' 선언을 참조하십시오.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(22,43): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(212,40): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(261,26): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(351,18): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(373,34): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(375,26): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(378,35): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(379,39): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(383,27): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(384,31): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
