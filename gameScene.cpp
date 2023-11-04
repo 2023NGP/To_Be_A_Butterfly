@@ -10,18 +10,20 @@ gameScene::~gameScene()
 
 void  gameScene::InitSound()
 {
-	FMOD_System_Create(&System);
-	FMOD_System_Init(System, 10, FMOD_INIT_NORMAL, NULL);
-	FMOD_System_CreateSound(System, "sound/mainsound.wav", FMOD_LOOP_NORMAL, 0, &bgSound); //stage1배경음악
-	FMOD_System_CreateSound(System, "effect/Coin01.wav", FMOD_DEFAULT, 0, &effectSound[0]); //코인 획득
-	FMOD_System_CreateSound(System, "effect/Rise02.wav", FMOD_DEFAULT, 0, &effectSound[1]); //하트 획득
-	FMOD_System_CreateSound(System, "effect/Rise05.wav", FMOD_DEFAULT, 0, &effectSound[2]); //충돌
-	FMOD_System_CreateSound(System, "effect/Rise07.wav", FMOD_DEFAULT, 0, &effectSound[3]); //성공
-	FMOD_System_CreateSound(System, "effect/Downer01.wav", FMOD_DEFAULT, 0, &effectSound[3]); //실패
-	FMOD_System_PlaySound(System, bgSound, NULL, 0, &Channel[0]);
-	FMOD_Channel_SetVolume(Channel[0], 0.3);
-	FMOD_Channel_SetVolume(Channel[1], 0.5);
-	FMOD_Channel_SetVolume(Channel[2], 1.0);
+	// 사운드 INIT
+	FMOD::System_Create(&pSystem);
+	pSystem->init(4, FMOD_INIT_NORMAL, NULL);
+	pSystem->createSound("sound/mainsound.wav", FMOD_LOOP_NORMAL, 0, &bgSound);		// 배경음악
+	pSystem->createSound("effect/Coin01.wav", FMOD_DEFAULT, 0, &effectSound[0]);	// 코인 획득
+	pSystem->createSound("effect/Rise02.wav", FMOD_DEFAULT, 0, &effectSound[1]);	// 하트 획득
+	pSystem->createSound("effect/Rise05.wav", FMOD_DEFAULT, 0, &effectSound[2]);	// 충돌
+	pSystem->createSound("effect/Rise07.wav", FMOD_DEFAULT, 0, &effectSound[3]);	// 성공
+	pSystem->createSound("effect/Downer01.wav", FMOD_DEFAULT, 0, &effectSound[3]);	// 실패
+
+	pSystem->playSound(bgSound, NULL, 0, &Channel[0]);
+
+	// 볼륨 설정
+
 }
 
 void gameScene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
@@ -306,20 +308,20 @@ void gameScene::Update(const float frameTime)
 
 	if (!player.status) {           //플레이어가 충돌상태이면 체력 감소
 		bar_w -= 40 * frameTime;
-		FMOD_System_PlaySound(System, effectSound[2], NULL, 0, &Channel[1]); //충돌하면 효과음
+		pSystem->playSound(effectSound[2], NULL, 0, &Channel[1]);	//충돌하면 효과음
 	}
 	bar_w -= 0.5 * frameTime;       //항상 감소
 
 	if (bar_w <= 0) {
 		//FMOD_System_PlaySound(System, effectSound[4], NULL, 0, &Channel);
-		FMOD_Sound_Release(effectSound[0]);
-		FMOD_Sound_Release(effectSound[1]);
-		FMOD_Sound_Release(effectSound[2]);
-		FMOD_Sound_Release(effectSound[3]);
-		FMOD_Sound_Release(effectSound[4]);
-		FMOD_Sound_Release(bgSound);
-		FMOD_System_Close(System);
-		FMOD_System_Release(System);
+		//FMOD_Sound_Release(effectSound[0]);
+		//FMOD_Sound_Release(effectSound[1]);
+		//FMOD_Sound_Release(effectSound[2]);
+		//FMOD_Sound_Release(effectSound[3]);
+		//FMOD_Sound_Release(effectSound[4]);
+		//FMOD_Sound_Release(bgSound);
+		//FMOD_System_Close(System);
+		//FMOD_System_Release(System);
 		scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
 		framework.curScene = new overScene;
 		framework.curScene->init();
@@ -336,10 +338,10 @@ void gameScene::Update(const float frameTime)
 			item[i].get = 1;
 			if (item[i].what == 1) {
 				bar_w = (bar_w + 50 >= 498) ? 498 : bar_w + 30;
-				FMOD_System_PlaySound(System, effectSound[1], NULL, 0, &Channel[2]);
+				pSystem->playSound(effectSound[1], NULL, 0, &Channel[2]);
 			}
 			else
-				FMOD_System_PlaySound(System, effectSound[0], NULL, 0, &Channel[2]);
+				pSystem->playSound(effectSound[0], NULL, 0, &Channel[2]);
 		}
 	}
 
@@ -473,14 +475,14 @@ void gameScene::Update(const float frameTime)
 	}
 	if (player.py <= 0 && getItemCheck()) {
 		//FMOD_System_PlaySound(System, effectSound[3], NULL, 0, &Channel);
-		FMOD_Sound_Release(effectSound[0]);
-		FMOD_Sound_Release(effectSound[1]);
-		FMOD_Sound_Release(effectSound[2]);
-		FMOD_Sound_Release(effectSound[3]);
-		FMOD_Sound_Release(effectSound[4]);
-		FMOD_Sound_Release(bgSound);
-		FMOD_System_Close(System);
-		FMOD_System_Release(System);
+		//FMOD_Sound_Release(effectSound[0]);
+		//FMOD_Sound_Release(effectSound[1]);
+		//FMOD_Sound_Release(effectSound[2]);
+		//FMOD_Sound_Release(effectSound[3]);
+		//FMOD_Sound_Release(effectSound[4]);
+		//FMOD_Sound_Release(bgSound);
+		//FMOD_System_Close(System);
+		//FMOD_System_Release(System);
 		scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
 		framework.curScene = new clearScene;
 		framework.curScene->init();

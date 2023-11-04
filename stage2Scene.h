@@ -30,10 +30,10 @@ public:
 	CImage heart, stone;
 	CImage normalCloud, rainCloud, darkCloud, rain, lightning;
 
-	FMOD_SYSTEM* System;
-	FMOD_SOUND* bgSound; 
-	FMOD_SOUND* effectSound[EFFECT_NUMBER];
-	FMOD_CHANNEL* Channel[3];
+	FMOD::System* pSystem;
+	FMOD::Sound* bgSound;
+	FMOD::Sound* effectSound[EFFECT_NUMBER];
+	FMOD::Channel* Channel[3];
 
 	Player player;
 	Cloud cloud[200];

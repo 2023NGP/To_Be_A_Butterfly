@@ -14,7 +14,6 @@ void overScene::init()
     //메뉴 화면에서 그릴 리소스 위치 초기화
     background1.Load(TEXT("image/오버배경.png"));
     txt.Load(TEXT("image/gameover.png"));
-    PlaySound(TEXT("sound/over.wav"), NULL, SND_ASYNC);
     ren1 = 30;
     y = 0;
 }
@@ -26,7 +25,7 @@ void overScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     {
         switch (wParam) {
         case VK_RETURN:
-            PlaySound(NULL, NULL, NULL);
+            //PlaySound(NULL, NULL, NULL);
             scene* scene = framework.curScene;   //현재 씬을 tmp에 넣고 지워줌
             framework.curScene = new gameScene;
             framework.curScene->init();

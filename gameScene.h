@@ -44,11 +44,10 @@ public:
 	CImage heart, stone;
 	CImage normalCloud, rainCloud, darkCloud, rain;
 
-	FMOD_SYSTEM* System;
-	//FMOD_SOUND* bgmSound[5]; // 0.start 1.stage1 2.stage2 3.over 4.:clear
-	FMOD_SOUND* bgSound;
-	FMOD_SOUND* effectSound[EFFECT_NUMBER]; 
-	FMOD_CHANNEL* Channel[3];
+	FMOD::System* pSystem;
+	FMOD::Sound* bgSound;
+	FMOD::Sound* effectSound[EFFECT_NUMBER];
+	FMOD::Channel* Channel[3];
 
 	Player player;
 	Cloud cloud[200];

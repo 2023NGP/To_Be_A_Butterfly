@@ -1,26 +1,33 @@
-﻿  gameScene.cpp
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(13,28): error C2660: 'FMOD_System_Create': 함수는 1개의 인수를 사용하지 않습니다.
-C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc\fmod.h(35,19): message : 'FMOD_System_Create' 선언을 참조하십시오.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(22,40): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(203,43): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(252,17): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(311,15): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(351,25): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(353,17): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(356,23): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(357,27): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(361,15): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\gameScene.cpp(362,19): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+﻿  GameFramework.cpp
+  clearScene.cpp
+  gameScene.cpp
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(205,43): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(254,17): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(313,15): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(353,25): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(355,17): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(358,23): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(359,27): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(363,15): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(364,19): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  main.cpp
+  menuScene.cpp
+  overScene.cpp
+  scene.cpp
   stage2Scene.cpp
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(13,31): error C2660: 'FMOD_System_Create': 함수는 1개의 인수를 사용하지 않습니다.
-C:\Program Files (x86)\FMOD SoundSystem\FMOD Studio API Windows\api\core\inc\fmod.h(35,19): message : 'FMOD_System_Create' 선언을 참조하십시오.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(22,43): warning C4305: '인수': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(212,40): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(261,26): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(351,18): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(373,34): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(375,26): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(378,35): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(379,39): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(383,27): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\win32_project_01\win32_project_01\stage2Scene.cpp(384,31): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(212,40): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(261,26): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(344,18): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(366,34): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(368,26): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(371,35): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(372,39): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(376,27): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(377,31): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
+  stdafx.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(1371,5): warning MSB8012: TargetPath(C:\Users\82107\Desktop\To_Be_A_Butterfly\x64\Release\.exe)이(가) Linker의 OutputFile 속성 값(C:\Users\82107\Desktop\To_Be_A_Butterfly\x64\Release\Winapi_project.exe)과 일치하지 않습니다. 이로 인해 프로젝트가 잘못 빌드될 수 있습니다. 이를 수정하려면 $(OutDir), $(TargetName) 및 $(TargetExt) 속성 값이 %(Link.OutputFile)에 지정된 값과 일치해야 합니다.
+  코드를 생성하고 있습니다.
+  Previous IPDB not found, fall back to full compilation.
+  All 308 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  코드를 생성했습니다.
+  Winapi_project.vcxproj -> C:\Users\82107\Desktop\To_Be_A_Butterfly\x64\Release\.exe

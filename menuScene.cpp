@@ -16,7 +16,7 @@ void menuScene::init()
 	rainCloud.Load(TEXT("image/비구름1.png"));
 	darkCloud.Load(TEXT("image/먹구름투명.png"));
 	press.Load(TEXT("image/시작하려면누르세요.png"));
-	PlaySound(TEXT("sound/start.wav"), NULL, SND_ASYNC | SND_LOOP);
+	//PlaySound(TEXT("sound/start.wav"), NULL, SND_ASYNC | SND_LOOP);
 	
 	cloudSizeCount = 0;
 	cloudSize = 300;
@@ -34,7 +34,7 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 		switch (wParam) {
 		
 		case VK_RETURN:
-			PlaySound(NULL, NULL, NULL);
+			//PlaySound(NULL, NULL, NULL);
 			scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
 			framework.curScene = new gameScene;
 			framework.curScene->init();
