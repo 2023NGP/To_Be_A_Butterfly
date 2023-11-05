@@ -12,6 +12,8 @@ public:
 	int darkCloudSize;
 	int pressText;
 	int ren; //애니메이션을 위한 변수
+
+
 public:
 	virtual ~menuScene() override;
 

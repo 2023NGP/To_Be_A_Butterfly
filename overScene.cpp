@@ -4,6 +4,10 @@
 
 extern WGameFramework framework;
 
+FMOD::System* pSystem_o;
+FMOD::Sound* bgSound_o;
+FMOD::Channel* Channel_o;
+
 overScene::~overScene()
 {
 
@@ -16,6 +20,11 @@ void overScene::init()
     txt.Load(TEXT("image/gameover.png"));
     ren1 = 30;
     y = 0;
+
+    FMOD::System_Create(&pSystem_o);
+    pSystem_o->init(4, FMOD_INIT_NORMAL, NULL);
+    pSystem_o->createSound("sound/over.wav", FMOD_LOOP_NORMAL, 0, &bgSound_o);		// ¹è°æÀ½¾Ç
+    pSystem_o->playSound(bgSound_o, NULL, 0, &Channel_o);
 }
 void overScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
@@ -25,7 +34,7 @@ void overScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     {
         switch (wParam) {
         case VK_RETURN:
-            //PlaySound(NULL, NULL, NULL);
+            bgSound_o->release();
             scene* scene = framework.curScene;   //ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
             framework.curScene = new gameScene;
             framework.curScene->init();

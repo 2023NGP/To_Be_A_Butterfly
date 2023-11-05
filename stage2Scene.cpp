@@ -324,7 +324,7 @@ void stage2Scene::Update(const float frameTime)
     }
 
     if (bar_w <= 50) {
-       
+        bgSound->release();
         scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
         framework.curScene = new overScene;
         framework.curScene->init();
@@ -487,6 +487,7 @@ void stage2Scene::Update(const float frameTime)
 
     if (player.py <= 0) {
         if (getItemCheck()==TRUE) {
+            bgSound->release();
             scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
             framework.curScene = new clearScene;
             framework.curScene->init();

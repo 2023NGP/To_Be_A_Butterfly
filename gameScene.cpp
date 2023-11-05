@@ -313,15 +313,10 @@ void gameScene::Update(const float frameTime)
 	bar_w -= 0.5 * frameTime;       //항상 감소
 
 	if (bar_w <= 0) {
-		//FMOD_System_PlaySound(System, effectSound[4], NULL, 0, &Channel);
-		//FMOD_Sound_Release(effectSound[0]);
-		//FMOD_Sound_Release(effectSound[1]);
-		//FMOD_Sound_Release(effectSound[2]);
-		//FMOD_Sound_Release(effectSound[3]);
-		//FMOD_Sound_Release(effectSound[4]);
-		//FMOD_Sound_Release(bgSound);
-		//FMOD_System_Close(System);
-		//FMOD_System_Release(System);
+
+		pSystem->playSound(effectSound[4], NULL, 0, &Channel[0]);
+		bgSound->release();
+
 		scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
 		framework.curScene = new overScene;
 		framework.curScene->init();
@@ -474,15 +469,8 @@ void gameScene::Update(const float frameTime)
 			player.px -= 5;
 	}
 	if (player.py <= 0 && getItemCheck()) {
-		//FMOD_System_PlaySound(System, effectSound[3], NULL, 0, &Channel);
-		//FMOD_Sound_Release(effectSound[0]);
-		//FMOD_Sound_Release(effectSound[1]);
-		//FMOD_Sound_Release(effectSound[2]);
-		//FMOD_Sound_Release(effectSound[3]);
-		//FMOD_Sound_Release(effectSound[4]);
-		//FMOD_Sound_Release(bgSound);
-		//FMOD_System_Close(System);
-		//FMOD_System_Release(System);
+		pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
+		bgSound->release();
 		scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
 		framework.curScene = new clearScene;
 		framework.curScene->init();

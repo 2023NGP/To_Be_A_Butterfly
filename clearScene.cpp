@@ -2,9 +2,9 @@
 #include "clearScene.h"
 #include "stdafx.h"
 
-//FMOD::System* pSystem_c;
-//FMOD::Sound* bgSound_c;
-//FMOD::Channel* Channel_c;
+FMOD::System* pSystem_c;
+FMOD::Sound* bgSound_c;
+FMOD::Channel* Channel_c;
 
 extern WGameFramework framework;
 
@@ -17,10 +17,10 @@ void clearScene::init()
 {
 	back.Load(TEXT("image/클리어화면.png"));
 	txtmotion.Load(TEXT("image/stageclear.png"));
-	//FMOD::System_Create(&pSystem_c);
-	//pSystem_c->init(4, FMOD_INIT_NORMAL, NULL);
-	//pSystem_c->createSound("sound/clear.wav", FMOD_LOOP_NORMAL, 0, &bgSound_c);		// 배경음악
-	//pSystem_c->playSound(bgSound_c, NULL, SND_ASYNC, &Channel_c);
+	FMOD::System_Create(&pSystem_c);
+	pSystem_c->init(4, FMOD_INIT_NORMAL, NULL);
+	pSystem_c->createSound("sound/clear.wav", FMOD_LOOP_NORMAL, 0, &bgSound_c);		// 배경음악
+	pSystem_c->playSound(bgSound_c, NULL, 0, &Channel_c);
 	size = 30;
 }
 void clearScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
@@ -31,7 +31,7 @@ void clearScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 		switch (wParam) {
 		case VK_RETURN:
-			//PlaySound(NULL, NULL, NULL);
+			bgSound_c->release();
 			scene* scene = framework.curScene;
 			if (framework.nowscene == STAGE2) {
 				framework.curScene = new menuScene;
