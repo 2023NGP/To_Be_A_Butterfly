@@ -2,7 +2,6 @@
 *.d
 
 # Compiled Object files
-*.vs
 *.slo
 *.lo
 *.o
@@ -30,3 +29,9 @@
 # Executables
 *.out
 *.app
+
+# Debug
+**/Debug/
+**/Release/
+**/x64/
+**/.vs/
