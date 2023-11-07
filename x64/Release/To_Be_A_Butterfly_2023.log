@@ -1,34 +1,8 @@
 ﻿C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppBuild.targets(514,5): warning MSB8028: 중간 디렉터리(x64\Release\)에 다른 프로젝트(Winapi_project.vcxproj)에서 공유하는 파일이 포함되어 있습니다.  이로 인해 잘못된 정리 및 다시 빌드 동작이 수행될 수 있습니다.
-  clearScene.cpp
-  GameFramework.cpp
-  gameScene.cpp
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(205,43): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(254,17): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(313,15): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(353,25): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(355,17): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(358,23): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(359,27): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(363,15): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\gameScene.cpp(364,19): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
   main.cpp
-  menuScene.cpp
-  overScene.cpp
-  scene.cpp
-  stage2Scene.cpp
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(212,40): warning C4244: '인수': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(261,26): warning C4305: '=': 'double'에서 'float'(으)로 잘립니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(344,18): warning C4244: '-=': 'double'에서 'float'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(366,34): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(368,26): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(371,35): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(372,39): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(376,27): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-C:\Users\82107\Desktop\To_Be_A_Butterfly\stage2Scene.cpp(377,31): warning C4244: '-=': 'float'에서 'int'(으)로 변환하면서 데이터가 손실될 수 있습니다.
-  stdafx.cpp
   코드를 생성하고 있습니다.
-  304 of 308 functions (98.7%) were compiled, the rest were copied from previous compilation.
-    33 functions were new in current compilation
+  1 of 310 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   코드를 생성했습니다.
   To_Be_A_Butterfly_2023.vcxproj -> C:\Users\82107\Desktop\To_Be_A_Butterfly\x64\Release\To_Be_A_Butterfly_2023.exe

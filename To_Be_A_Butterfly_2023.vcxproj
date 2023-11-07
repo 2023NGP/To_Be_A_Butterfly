@@ -134,7 +134,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="clearScene.h" />
-    <ClInclude Include="Client.h" />
+    <ClInclude Include="client.h" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="gameScene.h" />
@@ -148,6 +149,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="clearScene.cpp" />
+    <ClCompile Include="client.cpp" />
     <ClCompile Include="GameFramework.cpp" />
     <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="main.cpp" />
