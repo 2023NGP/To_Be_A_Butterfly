@@ -26,12 +26,15 @@
 #include <iostream>
 #include <chrono>
 #include <random>
+#include <cmath>
+#include <windef.h>
+#include <assert.h>
 
 using namespace std;
 using namespace std::chrono;
 
 #include "Define.h"
-
+#include "vector.h"
 #include "scene.h"
 #include "menuScene.h"
 #include "gameScene.h"
@@ -39,6 +42,7 @@ using namespace std::chrono;
 #include "overScene.h"
 #include "clearScene.h"
 #include "resource.h"
+#include "Camera.h"
 
 #include "GameFramework.h"
 // 여기서 프로그램에 필요한 추가 헤더를 참조합니다.

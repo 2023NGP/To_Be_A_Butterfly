@@ -1,7 +1,7 @@
 #pragma once
 #include "scene.h"
 
-class menuScene : public scene {
+class menuScene : public Scene {
 public:
 	CImage background;
 	CImage normalCloud, rainCloud, darkCloud, cloud;

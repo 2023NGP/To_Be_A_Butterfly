@@ -1,14 +1,15 @@
 #pragma once
 
-enum SCENE{MENU, GAME, STAGE2};
+enum SCENELIST{MENU, GAME, STAGE2};
 
 class WGameFramework
 {
 public:
-	scene* curScene;
-	SCENE nowscene;
-	clock_t prevFrameTime;
-	clock_t curFrameTime;
+	Camera*			mainCamera;
+	Scene*			curScene;
+	SCENELIST		nowScene;
+	clock_t			prevFrameTime;
+	clock_t			curFrameTime;
 
 public:
 	WGameFramework();

@@ -1,7 +1,7 @@
 #pragma once
 #include "scene.h"
 
-class clearScene : public scene {
+class clearScene : public Scene {
 public:
 	CImage back, txtmotion;
 

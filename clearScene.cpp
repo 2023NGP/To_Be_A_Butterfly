@@ -32,16 +32,16 @@ void clearScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 		switch (wParam) {
 		case VK_RETURN:
 			bgSound_c->release();
-			scene* scene = framework.curScene;
-			if (framework.nowscene == STAGE2) {
+			Scene* scene = framework.curScene;
+			if (framework.nowScene == STAGE2) {
 				framework.curScene = new menuScene;
 				framework.curScene->init();
-				framework.nowscene = MENU;
+				framework.nowScene = MENU;
 			}
 			else {
 				framework.curScene = new stage2Scene;
 				framework.curScene->init();
-				framework.nowscene = STAGE2;
+				framework.nowScene = STAGE2;
 			}
 			delete scene;
 			break;

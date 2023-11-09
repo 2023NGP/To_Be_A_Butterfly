@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "gameScene.h"
+
 //memdc에 그려주는 역할, frame
 extern WGameFramework framework;
 
@@ -40,7 +41,7 @@ void gameScene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
 	}
 
 	while (!feof(fp)) {
-		fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &cloud[i++].what);
+		fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &cloud[i++].type);
 		cloud[i].index = dis(rd);
 	}
 
@@ -146,7 +147,7 @@ void gameScene::init()
 	InitAnimation();
 	InitCloud();
 	InitHeart();
-	ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
+	anim_index = 0;      //충돌이면 20~27, 평상시면 0~19
 	gravity = 1;
 	bar_w = 498;
 	bar_startY = PLAYER_FIRSTY + 100;
@@ -159,7 +160,7 @@ void gameScene::init()
 
 void gameScene::drawPlayer(HDC hdc) {
 	//플레이어 그리는 함수
-	player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[ani_index].left, animation[ani_index].top,
+	player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[anim_index].left, animation[anim_index].top,
 		PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
 }
 void gameScene::drawBackGround(HDC hdc) {
@@ -169,7 +170,7 @@ void gameScene::drawBackGround(HDC hdc) {
 void gameScene::drawCloud(HDC hdc) {
 	//구름 그리는 함수
 	for (int j = 0; j < cloud_index; ++j) {
-		switch (cloud[j].what) {
+		switch (cloud[j].type) {
 		case 1:
 			darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
 			break;
@@ -274,14 +275,15 @@ bool gameScene::getItemCheck() {
 //애니메이션 있으면 여기서 업데이트
 void gameScene::Update(const float frameTime)
 {
+
 	if (status == PAUSE)
 		return;
 
 	if (player.status) {          //충돌이 아닐 때
-		ani_index++;
+		anim_index++;
 	}
-	if (ani_index >= 39)
-		ani_index = 0;
+	if (anim_index >= 39)
+		anim_index = 0;
 
 	pRECT = { player.px + 18,player.py + 10,player.px + 18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT };
 
@@ -294,14 +296,14 @@ void gameScene::Update(const float frameTime)
 		cRECT = { cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
 		if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {                             //충돌 검사
 			player.status = 0;
-			ani_index = 50;
+			anim_index = 50;
 		}
-		if (cloud[i].what != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //번개나 비 충돌 검사
+		if (cloud[i].type != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //번개나 비 충돌 검사
 			cRECT = { cloud[i].cx + 30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
 				cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
 			if (IntersectRect(&tmp, &cRECT, &pRECT)) {                             //충돌 검사
 				player.status = 0;
-				ani_index = 50;
+				anim_index = 50;
 			}
 		}
 	}
@@ -317,10 +319,10 @@ void gameScene::Update(const float frameTime)
 		pSystem->playSound(effectSound[4], NULL, 0, &Channel[0]);
 		bgSound->release();
 
-		scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+		Scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
 		framework.curScene = new overScene;
 		framework.curScene->init();
-		framework.nowscene = GAME;
+		framework.nowScene = GAME;
 		delete scene;
 		return;
 	}
@@ -471,10 +473,10 @@ void gameScene::Update(const float frameTime)
 	if (player.py <= 0 && getItemCheck()) {
 		pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
 		bgSound->release();
-		scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+		Scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
 		framework.curScene = new clearScene;
 		framework.curScene->init();
-		framework.nowscene = MENU;
+		framework.nowScene = MENU;
 		delete scene;
 	}
 }

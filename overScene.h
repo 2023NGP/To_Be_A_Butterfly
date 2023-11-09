@@ -1,7 +1,7 @@
 #pragma once
 #include "scene.h"
 
-class overScene : public scene {
+class overScene : public Scene {
 public:
 	CImage background1, txt;
 	int ren1, y; //애니메이션을 위한 변수

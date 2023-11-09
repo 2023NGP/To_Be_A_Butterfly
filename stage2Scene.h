@@ -2,7 +2,7 @@
 #include "scene.h"
 
 
-class stage2Scene : public scene {
+class stage2Scene : public Scene {
 public:
 	RECT animation[56];	//평상시 애니메이션(리소스 위치)
 	RECT cloud_ani[75];
