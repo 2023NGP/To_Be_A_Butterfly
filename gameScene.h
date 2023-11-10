@@ -1,12 +1,6 @@
 #pragma once
 #include "scene.h"
 
-typedef struct Player {
-	int px, py;
-	int status = 1;		//상태 0: 충돌 1: 평상시
-	int jump;
-}Player;
-
 typedef struct Cloud {
 	int cx, cy;
 	int what;			//1: 먹구름 2: 비구름 3: 일반구름

@@ -147,7 +147,7 @@ void stage2Scene::init()
     InitHeart();
     ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
     gravity = 1;
-    bar_w = 498;
+
     bar_startY = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)) + 100;
     fall = true;
 
@@ -156,7 +156,10 @@ void stage2Scene::init()
 
     status = RUN;
 
-    player = { MEM_WIDTH / 2, (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)), 1, 0 };      //플레이어 시작위치
+    player.px = MEM_WIDTH / 2;
+    player.py = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50));
+    player.SetStatus(IDLE);
+    player.jumpForce = 0;
 }
 
 void stage2Scene::drawPlayer(HDC hdc) {
@@ -209,7 +212,7 @@ void stage2Scene::drawItems(HDC hdc) {
 void stage2Scene::drawHPBar(HDC hdc) {
     HBRUSH myBrush = (HBRUSH)CreateSolidBrush(RGB(150, 50, 0));
     HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-    Rectangle(hdc, 50, bar_startY + 1, bar_w, bar_startY + 29);
+    Rectangle(hdc, 50, bar_startY + 1, bar_w + 50, bar_startY + 29);
     SelectObject(hdc, oldBrush);
     DeleteObject(myBrush);
 
@@ -217,7 +220,7 @@ void stage2Scene::drawHPBar(HDC hdc) {
     oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
     HPEN hPen = CreatePen(PS_DOT, 2, RGB(0, 0, 0));
     HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
-    Rectangle(hdc, 50, bar_startY, HPBAR_WIDTH, bar_startY + 30);
+    Rectangle(hdc, 50, bar_startY, HPBAR_WIDTH + 50, bar_startY + 30);
     SelectObject(hdc, oldBrush);
     DeleteObject(myBrush);
     SelectObject(hdc, oldPen);
@@ -289,7 +292,7 @@ void stage2Scene::Update(const float frameTime)
     if (status == PAUSE)          //일시정지
         return;
 
-    if (player.status) {          //충돌이 아닐 때
+    if (player.GetStatus() == IDLE) {          //충돌이 아닐 때
         ani_index++;
     }
     if (ani_index >= 39)
@@ -298,7 +301,7 @@ void stage2Scene::Update(const float frameTime)
 
     pRECT = { player.px + 18,player.py + 10,player.px + 18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT };
 
-    player.status = 1;
+    player.SetStatus(IDLE);
 
     for (int i = 0; i < cloud_index; ++i) {
         cloud[i].index++;
@@ -306,14 +309,14 @@ void stage2Scene::Update(const float frameTime)
             cloud[i].index = 0;
         cRECT = { cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
         if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {                             //충돌 검사
-            player.status = 0;
+            player.SetStatus(COLLIDED);
             ani_index = 50;
         }
         if (cloud[i].what != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //번개나 비 충돌 검사
             cRECT = { cloud[i].cx + 30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
                 cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
             if (IntersectRect(&tmp, &cRECT, &pRECT)) {                                  //충돌 검사
-                player.status = 0;
+                player.SetStatus(COLLIDED);
                 ani_index = 50;
                 if (cloud[i].what == 1) {
                     shock = TRUE;
@@ -323,7 +326,7 @@ void stage2Scene::Update(const float frameTime)
         }
     }
 
-    if (bar_w <= 50) {
+    if (player.GetHp() <= 0) {
         bgSound->release();
         scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
         framework.curScene = new overScene;
@@ -333,15 +336,15 @@ void stage2Scene::Update(const float frameTime)
         return;
     }
 
-    if (!player.status) {           //플레이어가 충돌상태이면 체력 감소
-        bar_w -= 40 * frameTime;
+    if (player.GetStatus() == COLLIDED) {           //플레이어가 충돌상태이면 체력 감소
+        bar_w = player.DecreaseHp(40 * frameTime);
         pSystem->playSound(effectSound[2], NULL, 0, &Channel[1]);
     }
 
     if (shock)
         return;
 
-    bar_w -= 0.5 * frameTime;       //항상 감소
+    bar_w = player.DecreaseHp(0.5 * frameTime);       //항상 감소
 
     for (int i = 0; i < item_index; ++i) {                                  //플레이어가 아이템 먹었는지 검사
         cRECT = { item[i].ix, item[i].iy, item[i].ix + ITEM_SIZE, item[i].iy + ITEM_SIZE };
@@ -350,7 +353,7 @@ void stage2Scene::Update(const float frameTime)
             item[i].iy = bar_startY;
             item[i].get = 1;
             if (item[i].what == 1) {
-                bar_w = (bar_w + 50 >= 498) ? 498 : bar_w + 30;
+                bar_w = player.IncreaseHp(30);
                 pSystem->playSound(effectSound[1], NULL, 0, &Channel[2]);	
             }
             else
@@ -362,17 +365,17 @@ void stage2Scene::Update(const float frameTime)
         gravity -= frameTime * 12;
 
     if (fall && player.py <= (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50))) {
-        if (!player.status)
+        if (player.GetStatus() == COLLIDED)
             player.py -= gravity / 3;
-        else
+        else if (player.GetStatus() == IDLE)
             player.py -= gravity;
         if (startY <= STAGE2_HEIGHT - (FRAME_HEIGHT) && player.py >= PLAYERMOVE_START) {
-            if (!player.status) {
+            if (player.GetStatus() == COLLIDED) {
                 startY -= gravity / 3;
                 bar_startY -= gravity / 3;
                 moveItem();
             }
-            else {
+            else if (player.GetStatus() == IDLE) {
                 startY -= gravity;
                 bar_startY -= gravity;
                 moveItem();
@@ -385,24 +388,24 @@ void stage2Scene::Update(const float frameTime)
         if (player.px < 0)
             return;
         if (player.py <= PLAYERMOVE_START || player.py >= (STAGE2_HEIGHT - (FRAME_HEIGHT / 2))) {
-            if (!player.status) {
+            if (player.GetStatus() == COLLIDED) {
                 player.py -= 2;
                 player.px -= 2;
             }
-            else {
+            else if (player.GetStatus() == IDLE) {
                 player.py -= 7;
                 player.px -= 7;
             }
         }
         else {
-            if (!player.status) {
+            if (player.GetStatus() == COLLIDED) {
                 startY -= 2;
                 bar_startY -= 2;
                 moveItem();
                 player.py -= 2;
                 player.px -= 2;
             }
-            else {
+            else if (player.GetStatus() == IDLE) {
                 startY -= 7;
                 bar_startY -= 7;
                 moveItem();
@@ -417,24 +420,24 @@ void stage2Scene::Update(const float frameTime)
         if (player.px + PLAYER_WIDTH > 1190)
             return;
         if (player.py <= PLAYERMOVE_START || player.py >= (STAGE2_HEIGHT - (FRAME_HEIGHT / 2))) {
-            if (!player.status) {
+            if (player.GetStatus() == COLLIDED) {
                 player.py -= 2;
                 player.px += 2;
             }
-            else {
+            else if (player.GetStatus() == IDLE) {
                 player.py -= 7;
                 player.px += 7;
             }
         }
         else {
-            if (!player.status) {
+            if (player.GetStatus() == COLLIDED) {
                 startY -= 2;
                 bar_startY -= 2;
                 moveItem();
                 player.py -= 2;
                 player.px += 2;
             }
-            else {
+            else if (player.GetStatus() == IDLE) {
                 startY -= 7;
                 bar_startY -= 7;
                 moveItem();
@@ -447,19 +450,19 @@ void stage2Scene::Update(const float frameTime)
     if ((GetAsyncKeyState(VK_UP) & 0x8001)) {
         fall = false;
         if (player.py <= PLAYERMOVE_START || player.py >= (STAGE2_HEIGHT - (FRAME_HEIGHT / 2))) {
-            if (!player.status)
+            if (player.GetStatus() == COLLIDED)
                 player.py -= 2;
-            else
+            else if (player.GetStatus() == IDLE)
                 player.py -= 7;
         }
         else {
-            if (!player.status) {
+            if (player.GetStatus() == COLLIDED) {
                 startY -= 2;
                 bar_startY -= 2;
                 moveItem();
                 player.py -= 2;
             }
-            else {
+            else if (player.GetStatus() == IDLE) {
                 startY -= 7;
                 bar_startY -= 7;
                 moveItem();
@@ -470,18 +473,18 @@ void stage2Scene::Update(const float frameTime)
     else if ((GetAsyncKeyState(VK_RIGHT) & 0x8000) || (GetAsyncKeyState(VK_RIGHT) & 0x8001)) {
         if (player.px + PLAYER_WIDTH > 1190)
             return;
-        if (!player.status)
+        if (player.GetStatus() == COLLIDED)
             player.px += 2;
-        else
+        else if (player.GetStatus() == IDLE)
             player.px += 5;
     }
 
     else if ((GetAsyncKeyState(VK_LEFT) & 0x8000) || (GetAsyncKeyState(VK_LEFT) & 0x8001)) {
         if (player.px < 0)
             return;
-        if (!player.status)
+        if (player.GetStatus() == COLLIDED)
             player.px -= 2;
-        else
+        else if (player.GetStatus() == IDLE)
             player.px -= 5;
     }
 

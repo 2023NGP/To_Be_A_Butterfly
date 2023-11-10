@@ -141,6 +141,7 @@
     <ClInclude Include="gameScene.h" />
     <ClInclude Include="menuScene.h" />
     <ClInclude Include="overScene.h" />
+    <ClInclude Include="Player.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="scene.h" />
     <ClInclude Include="stage2Scene.h" />
@@ -155,6 +156,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menuScene.cpp" />
     <ClCompile Include="overScene.cpp" />
+    <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene.cpp" />
     <ClCompile Include="stage2Scene.cpp" />
     <ClCompile Include="stdafx.cpp" />

@@ -1,7 +1,6 @@
 #pragma once
 #include "scene.h"
 
-
 class stage2Scene : public scene {
 public:
 	RECT animation[56];	//평상시 애니메이션(리소스 위치)
