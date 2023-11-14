@@ -236,7 +236,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			gamedc = CreateCompatibleDC(mainHDC);
 			SelectObject(gamedc, hBitmap);
 			framework.OnDraw(gamedc);
-			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, gamedc, framework.CurScene->startX, framework.CurScene->startY, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
+			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, gamedc, framework.mainCamera->m_vLookAt.x, framework.mainCamera->m_vLookAt.y, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
 			DeleteDC(gamedc);
 		}
 		else {
