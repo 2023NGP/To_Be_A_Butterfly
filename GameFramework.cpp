@@ -20,16 +20,19 @@ void WGameFramework::Reset()
 void WGameFramework::Clear()
 {	
 	//프로그램 끝낼 때 현재 씬도 delete 해주기
-
-	scene* scene = curScene;
+	Scene* scene = curScene;
 	delete scene;
 }
 
 void WGameFramework::Create(HWND hWnd)
 {
 	m_hWnd = hWnd;
-	curScene = new menuScene;	//처음에는 게임 시작 화면으로
-	nowscene = MENU;
+
+	// 시작 Scene = menuScene
+	curScene = new menuScene;
+	nowScene = MENU;
+	mainCamera = new Camera;
+
 	curScene->init();
 }
 
@@ -41,7 +44,7 @@ void WGameFramework::OnDraw(HDC hdc)
 void WGameFramework::OnUpdate(const float frameTime)
 {
 	curScene->Update(frameTime);
-	//여기서 현재 씬 업데이트
+	mainCamera->Update(frameTime);
 }
 
 void WGameFramework::KeyBoard(UINT iMessage, WPARAM wParam, LPARAM lParam)

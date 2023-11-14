@@ -1,14 +1,10 @@
 #define _CRT_SECURE_NO_WARNINGS // 구형 C 함수 사용 시 경고 끄기
+
 #include "stdafx.h"
 #include "common.h"
 #include "GameFramework.h"
 
 #define MAX_LOADSTRING 100
-
-char* SERVERIP = (char*)"127.0.0.1";
-//char* SERVERIP;
-#define SERVERPORT 9000
-#define BUFSIZE 1024
 
 // 전역 변수:
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
@@ -58,61 +54,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.prevFrameTime = framework.curFrameTime = clock();
 
-	// 명령행 인수 IP 주소로 사용
-	//if (argc > 1) SERVERIP = (char*)argv[1];
-
-	// return value;
-	int retval;
-
-	// 윈속 초기화
-	WSADATA wsa;
-	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
-		return 1;
-
-	// 소켓 생성
-	SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET) err_quit("socket()");
-
-	// connect() : TCP프로토콜 수준에서 서버와 논리적 연결을 설정 (bind() 역할 수행, 능동적)
-	struct sockaddr_in serveraddr;
-	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
-	serveraddr.sin_port = htons(SERVERPORT);
-	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR) err_quit("connect()");
-
-	//// 파일 이름(임의 지정)
-	//char filename[BUFSIZE];
-	//strncpy(filename, "client1.mp4", BUFSIZE);
-
-	//// 파일 열기
-	//FILE* file = fopen(filename, "rb");
-	//if (!file) { printf("파일을 열 수 없습니다.\n"); return 1; }
-
-
-	//// 파일명 크기 전송
-	//int filenameLen = (int)strlen(filename);
-	//retval = send(sock, (char*)&filenameLen, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//	fclose(file);
-	//	closesocket(sock);
-	//	WSACleanup();
-	//	return 1;
-	//}
-
-	//// 파일명 전송
-	//retval = send(sock, filename, filenameLen, 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//	fclose(file);
-	//	closesocket(sock);
-	//	WSACleanup();
-	//	return 1;
-	//}
-
-
 	while (true)
 	{
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -125,15 +66,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.Clear();
 
-	// 소켓 닫기
-	closesocket(sock);
-
-	// 윈속 종료
-	WSACleanup();
-
 	return (int)msg.wParam;
 }
-
 
 
 //
@@ -223,7 +157,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_PAINT:
 	{
 		mainHDC = BeginPaint(hWnd, &ps);
-		if (framework.nowscene == MENU) {
+		if (framework.nowScene == MENU) {
 			hBitmap = CreateCompatibleBitmap(mainHDC, FRAME_WIDTH, FRAME_HEIGHT);
 			memdc = CreateCompatibleDC(mainHDC);
 			SelectObject(memdc, hBitmap);
@@ -231,12 +165,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
 			DeleteDC(memdc);
 		}
-		else if(framework.nowscene == GAME){
+		else if(framework.nowScene == GAME){
 			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamescene일땐 memdc가 길어야 함
 			gamedc = CreateCompatibleDC(mainHDC);
 			SelectObject(gamedc, hBitmap);
 			framework.OnDraw(gamedc);
-			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, gamedc, framework.curScene->startX, framework.curScene->startY, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
+			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, gamedc, framework.mainCamera->m_vLookAt.x, framework.mainCamera->m_vLookAt.y, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
 			DeleteDC(gamedc);
 		}
 		else {
@@ -257,7 +191,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 		switch (wParam) {
 		case 1:
-			if (framework.nowscene == GAME || framework.nowscene == STAGE2) {
+			if (framework.nowScene == GAME || framework.nowScene == STAGE2) {
 				framework.curFrameTime = clock();
 				framework.OnUpdate(framework.GetTick());
 				framework.prevFrameTime = framework.curFrameTime;
@@ -266,7 +200,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			else
 				break;
 		case 2:
-			if (framework.nowscene == MENU) {
+			if (framework.nowScene == MENU) {
 				framework.curFrameTime = clock();
 				framework.OnUpdate(framework.GetTick());
 				framework.prevFrameTime = framework.curFrameTime;

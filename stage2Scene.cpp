@@ -38,7 +38,7 @@ void stage2Scene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
     }
 
     while (!feof(fp)) {
-        fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &cloud[i++].what);
+        fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &cloud[i++].type);
         cloud[i].index = dis(rd);
     }
 
@@ -174,7 +174,7 @@ void stage2Scene::drawBackGround(HDC hdc) {
 void stage2Scene::drawCloud(HDC hdc) {
     //구름 그리는 함수
     for (int j = 0; j < cloud_index; ++j) {
-        switch (cloud[j].what) {
+        switch (cloud[j].type) {
         case 1:
             if (cloud[j].index >= 25 && cloud[j].index <= 59) {
                 darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE + 45);
@@ -312,13 +312,13 @@ void stage2Scene::Update(const float frameTime)
             player.SetStatus(COLLIDED);
             ani_index = 50;
         }
-        if (cloud[i].what != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //번개나 비 충돌 검사
+        if (cloud[i].type != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //번개나 비 충돌 검사
             cRECT = { cloud[i].cx + 30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
                 cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
             if (IntersectRect(&tmp, &cRECT, &pRECT)) {                                  //충돌 검사
                 player.SetStatus(COLLIDED);
                 ani_index = 50;
-                if (cloud[i].what == 1) {
+                if (cloud[i].type == 1) {
                     shock = TRUE;
                     shocktimer = 0;
                 }
@@ -328,10 +328,10 @@ void stage2Scene::Update(const float frameTime)
 
     if (player.GetHp() <= 0) {
         bgSound->release();
-        scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+        Scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
         framework.curScene = new overScene;
         framework.curScene->init();
-        framework.nowscene = GAME;
+        framework.nowScene = GAME;
         delete scene;
         return;
     }
@@ -491,10 +491,10 @@ void stage2Scene::Update(const float frameTime)
     if (player.py <= 0) {
         if (getItemCheck()==TRUE) {
             bgSound->release();
-            scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
+            Scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
             framework.curScene = new clearScene;
             framework.curScene->init();
-            framework.nowscene = MENU;
+            framework.nowScene = MENU;
             delete scene;
         }
     }

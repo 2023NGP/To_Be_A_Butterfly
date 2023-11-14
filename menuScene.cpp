@@ -44,10 +44,10 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 		
 		case VK_RETURN:
 			bgSound_m->release();
-			scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
+			Scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
 			framework.curScene = new gameScene;
 			framework.curScene->init();
-			framework.nowscene = GAME;
+			framework.nowScene = GAME;
 			delete scene;
 			break;
 
