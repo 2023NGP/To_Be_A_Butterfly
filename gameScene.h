@@ -19,7 +19,7 @@ public:
 	RECT cloud_ani[75];
 	RECT rain_ani[35];
 
-	int anim_index;		//애니메이션 index(플레이어)
+	int ani_index;		//애니메이션 index(플레이어)
 	int cloud_index;	//구름 개수
 	int item_index;		//하트랑 스톤 개수
 	int bar_startY;

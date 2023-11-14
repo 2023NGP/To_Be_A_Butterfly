@@ -328,10 +328,10 @@ void stage2Scene::Update(const float frameTime)
 
     if (player.GetHp() <= 0) {
         bgSound->release();
-        Scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
-        framework.curScene = new overScene;
-        framework.curScene->init();
-        framework.nowScene = GAME;
+        Scene* scene = framework.CurScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
+        framework.CurScene = new overScene;
+        framework.CurScene->init();
+        framework.NowScene = GAME;
         delete scene;
         return;
     }
@@ -491,10 +491,10 @@ void stage2Scene::Update(const float frameTime)
     if (player.py <= 0) {
         if (getItemCheck()==TRUE) {
             bgSound->release();
-            Scene* scene = framework.curScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
-            framework.curScene = new clearScene;
-            framework.curScene->init();
-            framework.nowScene = MENU;
+            Scene* scene = framework.CurScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
+            framework.CurScene = new clearScene;
+            framework.CurScene->init();
+            framework.NowScene = MENU;
             delete scene;
         }
     }

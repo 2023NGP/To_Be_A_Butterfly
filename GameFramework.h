@@ -6,8 +6,8 @@ class WGameFramework
 {
 public:
 	Camera*			mainCamera;
-	Scene*			curScene;
-	SCENELIST		nowScene;
+	Scene*			CurScene;
+	SCENELIST		NowScene;
 	clock_t			prevFrameTime;
 	clock_t			curFrameTime;
 

@@ -35,10 +35,10 @@ void overScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
         switch (wParam) {
         case VK_RETURN:
             bgSound_o->release();
-            Scene* scene = framework.curScene;   //ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
-            framework.curScene = new gameScene;
-            framework.curScene->init();
-            framework.nowScene = GAME;
+            Scene* scene = framework.CurScene;   //ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
+            framework.CurScene = new gameScene;
+            framework.CurScene->init();
+            framework.NowScene = GAME;
             delete scene;
             break;
         }

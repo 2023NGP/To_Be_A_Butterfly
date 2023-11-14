@@ -147,7 +147,7 @@ void gameScene::init()
 	InitAnimation();
 	InitCloud();
 	InitHeart();
-	anim_index = 0;      //충돌이면 20~27, 평상시면 0~19
+	ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
 	gravity = 1;
 	bar_startY = PLAYER_FIRSTY + 100;
 	fall = true;
@@ -162,7 +162,7 @@ void gameScene::init()
 
 void gameScene::drawPlayer(HDC hdc) {
 	//플레이어 그리는 함수
-	player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[anim_index].left, animation[anim_index].top,
+	player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[ani_index].left, animation[ani_index].top,
 		PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
 }
 void gameScene::drawBackGround(HDC hdc) {
@@ -284,8 +284,8 @@ void gameScene::Update(const float frameTime)
 	if (player.GetStatus() == IDLE) {          //충돌이 아닐 때
 		ani_index++;
 	}
-	if (anim_index >= 39)
-		anim_index = 0;
+	if (ani_index >= 39)
+		ani_index = 0;
 
 	pRECT = { player.px + 18,player.py + 10,player.px + 18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT };
 
@@ -322,10 +322,10 @@ void gameScene::Update(const float frameTime)
 		pSystem->playSound(effectSound[4], NULL, 0, &Channel[0]);
 		bgSound->release();
 	
-		scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
-		framework.curScene = new overScene;
-		framework.curScene->init();
-		framework.nowScene = GAME;
+		Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
+		framework.CurScene = new overScene;
+		framework.CurScene->init();
+		framework.NowScene = GAME;
 		delete scene;
 		return;
 	}
@@ -476,10 +476,10 @@ void gameScene::Update(const float frameTime)
 	if (player.py <= 0 && getItemCheck()) {
 		pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
 		bgSound->release();
-		Scene* scene = framework.curScene;   ////현재 씬을 tmp에 넣고 지워줌
-		framework.curScene = new clearScene;
-		framework.curScene->init();
-		framework.nowScene = MENU;
+		Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
+		framework.CurScene = new clearScene;
+		framework.CurScene->init();
+		framework.NowScene = MENU;
 		delete scene;
 	}
 }
