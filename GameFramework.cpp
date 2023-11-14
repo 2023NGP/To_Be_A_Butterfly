@@ -54,8 +54,12 @@ void WGameFramework::KeyBoard(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_KEYDOWN:
 	{
-		if (wParam == VK_Q) {
-			SendMessage(m_hWnd, WM_DESTROY, 0, 0);	//Q 누르면 종료
+		if (wParam == VK_ESCAPE) {
+			SendMessage(m_hWnd, WM_DESTROY, 0, 0);	// 종료
+			return;
+		}
+		else if (wParam == VK_Q) {
+			SendMessage(m_hWnd, WM_DESTROY, 0, 0);	// 종료
 			return;
 		}
 	}

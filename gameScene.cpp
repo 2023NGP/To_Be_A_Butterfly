@@ -241,7 +241,7 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 	case WM_KEYDOWN:
 	{
-		if (wParam == VK_ESCAPE) {
+		if (wParam == VK_P) {
 			if (status == PAUSE)
 				status = RUN;
 			else
