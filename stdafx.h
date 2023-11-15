@@ -5,6 +5,8 @@
 // 포함 파일입니다.
 //
 
+#define _CRT_SECURE_NO_WARNINGS
+
 //#pragma comment (lib, "fmod_vc.lib")
 #include "targetver.h"
 #include"fmod.hpp"
