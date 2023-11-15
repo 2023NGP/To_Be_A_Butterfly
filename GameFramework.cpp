@@ -28,6 +28,11 @@ void WGameFramework::Create(HWND hWnd)
 {
 	m_hWnd = hWnd;
 
+	AllocConsole();	// 콘솔창 띄우기
+	_tfreopen(_T("CONOUT$"), _T("w"), stdout);
+	_tfreopen(_T("CONIN$"), _T("r"), stdin);
+	_tfreopen(_T("CONERR$"), _T("w"), stderr);
+
 	// 시작 Scene = menuScene
 	CurScene = new menuScene;
 	NowScene = MENU;

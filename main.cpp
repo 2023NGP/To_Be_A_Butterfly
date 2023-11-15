@@ -81,6 +81,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	serveraddr.sin_port = htons(SERVERPORT);
 	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
+	printf("connect 성공");
 
 	//// 파일 이름(임의 지정)
 	//char filename[BUFSIZE];
@@ -288,9 +289,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	break;
 
-
 	case WM_DESTROY:
 	{
+		FreeConsole();	// 콘솔창 닫기
 		PostQuitMessage(0);
 	}
 	break;
