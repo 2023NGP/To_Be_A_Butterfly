@@ -58,9 +58,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.prevFrameTime = framework.curFrameTime = clock();
 
-	// 명령행 인수 IP 주소로 사용
-	//if (argc > 1) SERVERIP = (char*)argv[1];
-
 	// return value;
 	int retval;
 
@@ -82,35 +79,38 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 
-	//// 파일 이름(임의 지정)
-	//char filename[BUFSIZE];
-	//strncpy(filename, "client1.mp4", BUFSIZE);
+	// 데이터 통신에 사용할 변수
+	char buf[BUFSIZE];
+	const char* testdata[] = {
+		"안녕하세요",
+		"반가워요",
+		"오늘따라 할 이야기가 많을 것 같네요",
+		"저도 그렇네요",
+	};
+	int len;
 
-	//// 파일 열기
-	//FILE* file = fopen(filename, "rb");
-	//if (!file) { printf("파일을 열 수 없습니다.\n"); return 1; }
+	// 서버와 데이터 통신
+	for (int i = 0; i < 4; i++) {
+		// 데이터 입력(시뮬레이션)
+		len = (int)strlen(testdata[i]);
+		strncpy(buf, testdata[i], len);
 
+		// 데이터 보내기(고정 길이)
+		retval = send(sock, (char *)&len, sizeof(int), 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+			break;
+		}
 
-	//// 파일명 크기 전송
-	//int filenameLen = (int)strlen(filename);
-	//retval = send(sock, (char*)&filenameLen, sizeof(int), 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//	fclose(file);
-	//	closesocket(sock);
-	//	WSACleanup();
-	//	return 1;
-	//}
-
-	//// 파일명 전송
-	//retval = send(sock, filename, filenameLen, 0);
-	//if (retval == SOCKET_ERROR) {
-	//	err_display("send()");
-	//	fclose(file);
-	//	closesocket(sock);
-	//	WSACleanup();
-	//	return 1;
-	//}
+		// 데이터 보내기(가변 길이)
+		retval = send(sock, buf, len, 0);
+		if (retval == SOCKET_ERROR) {
+			err_display("send()");
+			break;
+		}
+		printf("[TCP 클라이언트] %d+%d바이트를 "
+			"보냈습니다.\n", (int)sizeof(int), retval);
+	}
 
 
 	while (true)

@@ -1,10 +1,8 @@
 #include "Common.h"
-
 #define SERVERPORT 9000
-#define BUFSIZE 1024
-int clientCount = 0;
+#define BUFSIZE    512
 
-// 클라이언트와 데이터 통신을 처리하는 함수
+// 클라이언트와 데이터 통신
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
 	int retval;
@@ -12,45 +10,43 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	struct sockaddr_in clientaddr;
 	char addr[INET_ADDRSTRLEN];
 	int addrlen;
-	char buf[BUFSIZE];
-	char filename[256];
-	float transferPercent = 0;
+	char buf[BUFSIZE + 1];
+	int len; // 고정 길이 데이터
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
 	getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
 	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 
-	//while (1) {
-	//	int filenameLen;
-	//	long long totalReceived = 0; // 수신된 데이터 양
+	// 클라이언트와 데이터 통신
+	while (1) {
+		// 데이터 받기(고정 길이)
+		retval = recv(client_sock, (char*)&len, sizeof(int), MSG_WAITALL);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+			break;
+		}
+		else if (retval == 0)
+			break;
 
-	//	// 파일명 크기
-	//	retval = recv(client_sock, (char*)&filenameLen, sizeof(int), MSG_WAITALL);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("recv()");
-	//		break;
-	//	}
-	//	if (retval == 0)
-	//		break;
+		// 데이터 받기(가변 길이)
+		retval = recv(client_sock, buf, len, MSG_WAITALL);
+		if (retval == SOCKET_ERROR) {
+			err_display("recv()");
+			break;
+		}
+		else if (retval == 0)
+			break;
 
-	//	// 파일명 받기
-	//	retval = recv(client_sock, filename, filenameLen, MSG_WAITALL);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("recv()");
-	//		break;
-	//	}
-	//	if (retval == 0)
-	//		break;
-
-	//}
+		// 받은 데이터 출력
+		buf[retval] = '\0';
+		printf("[TCP/%s:%d] %s\n", addr, ntohs(clientaddr.sin_port), buf);
+	}
 
 	// 소켓 닫기
-	clientCount--;
-	//closesocket(client_sock);
-	//printf("------------------------------------------------------------------------\n");
-	//printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n", addr, ntohs(clientaddr.sin_port));
-	//printf("------------------------------------------------------------------------\n");
+	closesocket(client_sock);
+	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
+		addr, ntohs(clientaddr.sin_port));
 	return 0;
 }
 
@@ -85,6 +81,9 @@ int main(int argc, char* argv[])
 	struct sockaddr_in clientaddr;
 	int addrlen;
 	HANDLE hThread;
+	int len; // 고정 길이 데이터
+	char buf[BUFSIZE + 1]; // 가변 길이 데이터
+
 
 	while (1) {
 		// accept()
@@ -96,25 +95,21 @@ int main(int argc, char* argv[])
 		}
 
 		// 접속한 클라이언트 정보 출력
-		clientCount++;
 		char addr[INET_ADDRSTRLEN];
 		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
-		printf("------------------------------------------------------------------------\n");
-		printf("[TCP 서버] #%d번 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
-			clientCount, addr, ntohs(clientaddr.sin_port));
-		printf("------------------------------------------------------------------------\n");
+		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
+			addr, ntohs(clientaddr.sin_port));
 
 		// 스레드 생성
-		hThread = CreateThread(NULL, 0, ProcessClient, (LPVOID)client_sock, 0, NULL);
+		hThread = CreateThread(NULL, 0, ProcessClient,
+			(LPVOID)client_sock, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
 
 	// 소켓 닫기
 	closesocket(listen_sock);
-	printf("------------------------------------------------------------------------\n");
-	printf("[TCP 서버] 클라이언트 종료");
-	printf("------------------------------------------------------------------------\n");
+
 	// 윈속 종료
 	WSACleanup();
 	return 0;
