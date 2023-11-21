@@ -47,6 +47,7 @@ public:
 	Player player;
 	Cloud cloud[200];
 	Item item[15];
+
 public:
 	virtual ~gameScene() override;
 

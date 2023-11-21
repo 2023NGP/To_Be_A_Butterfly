@@ -158,6 +158,7 @@ void gameScene::init()
 	player.py = PLAYER_FIRSTY;
 	player.SetStatus(IDLE);
 	player.jumpForce = 0;
+	cout << "stage 1" << endl;
 }
 
 void gameScene::drawPlayer(HDC hdc) {
@@ -473,11 +474,21 @@ void gameScene::Update(const float frameTime)
 		else if(player.GetStatus() == IDLE)
 			player.px -= 5;
 	}
-	if (player.py <= 0 && getItemCheck()) {
+	if (player.py <= 0 /* && getItemCheck()*/) {
 		pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
 		bgSound->release();
 		Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
 		framework.CurScene = new clearScene;
+		framework.CurScene->init();
+		framework.NowScene = MENU;
+		delete scene;
+	}
+	// mainCamera보다 player의 위치가 낮으면 클리어 씬 출력
+	if (framework.mainCamera->m_vLookAt.y < player.py - FRAME_HEIGHT) {
+		pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
+		bgSound->release();
+		Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
+		framework.CurScene = new overScene;
 		framework.CurScene->init();
 		framework.NowScene = MENU;
 		delete scene;
