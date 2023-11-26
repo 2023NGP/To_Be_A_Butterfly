@@ -327,11 +327,13 @@ void stage2Scene::Update(const float frameTime)
     }
 
     if (player.GetHp() <= 0) {
+        pSystem->playSound(effectSound[4], NULL, 0, &Channel[0]);
         bgSound->release();
+
         Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
         framework.CurScene = new overScene;
         framework.CurScene->init();
-        framework.NowScene = GAME;
+        framework.NowScene = MENU;
         delete scene;
         return;
     }
@@ -489,15 +491,28 @@ void stage2Scene::Update(const float frameTime)
     }
 
     if (player.py <= 0) {
-        if (getItemCheck()==TRUE) {
+        //if (getItemCheck()==TRUE) {       // 디버깅용으로 클리어조건 삭제해둠
+            pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
             bgSound->release();
+
             Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
             framework.CurScene = new clearScene;
             framework.CurScene->init();
             framework.NowScene = MENU;
             delete scene;
-        }
+        //}
     }
+    // mainCamera보다 player의 위치가 낮으면 클리어 씬 출력
+    //if (framework.mainCamera->m_vLookAt.y < player.py - FRAME_HEIGHT) {
+    //    pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
+    //    bgSound->release();
+    //
+    //    Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
+    //    framework.CurScene = new overScene;
+    //    framework.CurScene->init();
+    //    framework.NowScene = MENU;
+    //    delete scene;
+    //}
 }
 void stage2Scene::Render(HDC hdc)
 {

@@ -33,16 +33,9 @@ void clearScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case VK_RETURN:
 			bgSound_c->release();
 			Scene* scene = framework.CurScene;
-			if (framework.NowScene == STAGE2) {
-				framework.CurScene = new menuScene;
-				framework.CurScene->init();
-				framework.NowScene = MENU;
-			}
-			else {
-				framework.CurScene = new stage2Scene;
-				framework.CurScene->init();
-				framework.NowScene = STAGE2;
-			}
+			framework.CurScene = new menuScene;
+			framework.CurScene->init();
+			framework.NowScene = MENU;
 			delete scene;
 			break;
 		}
