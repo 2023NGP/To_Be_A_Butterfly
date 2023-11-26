@@ -502,17 +502,17 @@ void stage2Scene::Update(const float frameTime)
             delete scene;
         //}
     }
-    // mainCamera보다 player의 위치가 낮으면 클리어 씬 출력
-    //if (framework.mainCamera->m_vLookAt.y < player.py - FRAME_HEIGHT) {
-    //    pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
-    //    bgSound->release();
-    //
-    //    Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
-    //    framework.CurScene = new overScene;
-    //    framework.CurScene->init();
-    //    framework.NowScene = MENU;
-    //    delete scene;
-    //}
+    if (framework.mainCamera->m_vLookAt.y < player.py - FRAME_HEIGHT) {
+        //// mainCamera보다 player의 위치가 낮으면 게임오버 씬 출력
+        pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
+        bgSound->release();
+    
+        Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
+        framework.CurScene = new overScene;
+        framework.CurScene->init();
+        framework.NowScene = MENU;
+        delete scene;
+    }
 }
 void stage2Scene::Render(HDC hdc)
 {

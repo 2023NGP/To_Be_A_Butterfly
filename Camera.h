@@ -2,7 +2,7 @@
 class Camera
 {
 public:
-	VECTOR2			m_vLookAt = POINT{ 0, MEM_HEIGHT - (FRAME_HEIGHT) };		// 카메라가 보는 위치
+	VECTOR2			m_vLookAt = POINT{ 0, STAGE2_HEIGHT - (FRAME_HEIGHT) };		// 카메라가 보는 위치
 	VECTOR2			m_vCurLookAt;		// 이전 위치와 현재 위치 사이의 보정된 위치
 	VECTOR2			m_vPrevLookAt;		// 카메라가 보는 이전프레임 위치
 
