@@ -212,7 +212,7 @@ void stage2Scene::drawItems(HDC hdc) {
 void stage2Scene::drawHPBar(HDC hdc) {
     HBRUSH myBrush = (HBRUSH)CreateSolidBrush(RGB(150, 50, 0));
     HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-    Rectangle(hdc, 50, bar_startY + 1, bar_w + 50, bar_startY + 29);
+    Rectangle(hdc, 50, bar_startY + 1, (int)bar_w + 50, bar_startY + 29);
     SelectObject(hdc, oldBrush);
     DeleteObject(myBrush);
 
@@ -261,7 +261,7 @@ void stage2Scene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     {
         if (wParam == VK_UP) {
             fall = true;
-            gravity = 1.8;
+            gravity = 1.8f;
         }
         else if (wParam == VK_RIGHT || wParam == VK_LEFT) {
             fall = true;
@@ -344,7 +344,7 @@ void stage2Scene::Update(const float frameTime)
     if (shock)
         return;
 
-    bar_w = player.DecreaseHp(0.5 * frameTime);       //항상 감소
+    bar_w = player.DecreaseHp(0.5f * frameTime);       //항상 감소
 
     for (int i = 0; i < item_index; ++i) {                                  //플레이어가 아이템 먹었는지 검사
         cRECT = { item[i].ix, item[i].iy, item[i].ix + ITEM_SIZE, item[i].iy + ITEM_SIZE };
@@ -366,18 +366,18 @@ void stage2Scene::Update(const float frameTime)
 
     if (fall && player.py <= (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50))) {
         if (player.GetStatus() == COLLIDED)
-            player.py -= gravity / 3;
+            player.py -= (int)gravity / 3;
         else if (player.GetStatus() == IDLE)
-            player.py -= gravity;
+            player.py -= (int)gravity;
         if (startY <= STAGE2_HEIGHT - (FRAME_HEIGHT) && player.py >= PLAYERMOVE_START) {
             if (player.GetStatus() == COLLIDED) {
-                startY -= gravity / 3;
-                bar_startY -= gravity / 3;
+                startY -= (int)gravity / 3;
+                bar_startY -= (int)gravity / 3;
                 moveItem();
             }
             else if (player.GetStatus() == IDLE) {
-                startY -= gravity;
-                bar_startY -= gravity;
+                startY -= (int)gravity;
+                bar_startY -= (int)gravity;
                 moveItem();
             }
         }

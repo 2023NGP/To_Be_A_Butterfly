@@ -206,7 +206,7 @@ void gameScene::drawItems(HDC hdc) {
 void gameScene::drawHPBar(HDC hdc) {
 	HBRUSH myBrush = (HBRUSH)CreateSolidBrush(RGB(150, 50, 0));
 	HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-	Rectangle(hdc, 50, bar_startY + 1, bar_w + 50, bar_startY + 29);
+	Rectangle(hdc, 50, bar_startY + 1, (int)bar_w + 50, bar_startY + 29);
 	SelectObject(hdc, oldBrush);
 	DeleteObject(myBrush);
 
@@ -255,7 +255,7 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 	{
 		if (wParam == VK_UP) {
 			fall = true;
-			gravity = 1.8;
+			gravity = 1.8f;
 		}
 		else if (wParam == VK_RIGHT || wParam == VK_LEFT) {
 			fall = true;
@@ -316,7 +316,7 @@ void gameScene::Update(const float frameTime)
 		pSystem->playSound(effectSound[2], NULL, 0, &Channel[1]);	//충돌하면 효과음
 	}
 
-	bar_w = player.DecreaseHp(0.5 * frameTime);       //항상 감소
+	bar_w = player.DecreaseHp(0.5f * frameTime);       //항상 감소
 
 	if (player.GetHp() <= 0) {
 	
@@ -351,18 +351,18 @@ void gameScene::Update(const float frameTime)
 
 	if (fall && player.py <= PLAYER_FIRSTY) {
 		if (player.GetStatus() == COLLIDED)
-			player.py -= gravity / 3;
+			player.py -= (int)gravity / 3;
 		else if (player.GetStatus() == IDLE)
-			player.py -= gravity;
+			player.py -= (int)gravity;
 		if (startY <= MEM_HEIGHT - (FRAME_HEIGHT) && player.py >= PLAYERMOVE_START) {
 			if (player.GetStatus() == COLLIDED) {
-				startY -= gravity / 3;
-				bar_startY -= gravity / 3;
+				startY -= (int)gravity / 3;
+				bar_startY -= (int)gravity / 3;
 				moveItem();
 			}
 			else if (player.GetStatus() == IDLE) {
-				startY -= gravity;
-				bar_startY -= gravity;
+				startY -= (int)gravity;
+				bar_startY -= (int)gravity;
 				moveItem();
 			}
 		}
@@ -493,6 +493,11 @@ void gameScene::Update(const float frameTime)
 		framework.NowScene = MENU;
 		delete scene;
 	}
+	// 위치 값 보내기
+	framework.net->SendClientPos();
+
+	// 위치 값 받기
+
 }
 void gameScene::Render(HDC hdc)
 {

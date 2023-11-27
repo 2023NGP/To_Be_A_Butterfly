@@ -9,7 +9,6 @@ WGameFramework::WGameFramework()
 
 WGameFramework::~WGameFramework()
 {
-
 }
 
 void WGameFramework::Reset()
@@ -22,6 +21,10 @@ void WGameFramework::Clear()
 	//프로그램 끝낼 때 현재 씬도 delete 해주기
 	Scene* scene = CurScene;
 	delete scene;
+
+	delete mainCamera;
+	delete net;
+
 }
 
 void WGameFramework::Create(HWND hWnd)
@@ -37,6 +40,8 @@ void WGameFramework::Create(HWND hWnd)
 	CurScene = new menuScene;
 	NowScene = MENU;
 	mainCamera = new Camera;
+	net = new NetWork;
+
 
 	CurScene->init();
 }

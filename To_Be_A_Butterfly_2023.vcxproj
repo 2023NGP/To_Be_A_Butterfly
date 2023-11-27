@@ -143,6 +143,7 @@
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="gameScene.h" />
     <ClInclude Include="menuScene.h" />
+    <ClInclude Include="NetWork.h" />
     <ClInclude Include="overScene.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="resource.h" />
@@ -162,6 +163,7 @@
     <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menuScene.cpp" />
+    <ClCompile Include="NetWork.cpp" />
     <ClCompile Include="overScene.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="scene.cpp" />
