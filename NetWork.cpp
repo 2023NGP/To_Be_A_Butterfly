@@ -65,7 +65,6 @@ NetWork::~NetWork()
 
 void NetWork::SendClientPos(int px, int py)
 {
-	
 	// 데이터 보내기(고정 길이)
 	retval = send(sock, (char*)&px, sizeof(int), 0);
 	if (retval == SOCKET_ERROR) {

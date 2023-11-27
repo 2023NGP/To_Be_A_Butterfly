@@ -159,12 +159,16 @@ void gameScene::init()
 	player.SetStatus(IDLE);
 	player.jumpForce = 0;
 	cout << "stage 1" << endl;
+
+	framework.mainCamera->setLookAt(POINT{ 0, MEM_HEIGHT - (FRAME_HEIGHT) });
 }
 
 void gameScene::drawPlayer(HDC hdc) {
 	//플레이어 그리는 함수
 	player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[ani_index].left, animation[ani_index].top,
 		PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
+
+
 }
 void gameScene::drawBackGround(HDC hdc) {
 	//배경 그리는 함수
@@ -494,7 +498,7 @@ void gameScene::Update(const float frameTime)
 		delete scene;
 	}
 	// 위치 값 보내기
-	framework.net->SendClientPos();
+	framework.net->SendClientPos(player.px, player.py);
 
 	// 위치 값 받기
 

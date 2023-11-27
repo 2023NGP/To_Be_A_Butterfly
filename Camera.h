@@ -26,6 +26,7 @@ public:
 	}
 
 	VECTOR2 getLookAt() { return m_vCurLookAt; }
+	void setLookAt(POINT p);
 	VECTOR2 getRenderPos(VECTOR2 _vObjPos) { return _vObjPos - m_vDiff; }
 	VECTOR2 getRealPos(VECTOR2 _vRenderPos) { return _vRenderPos + m_vDiff; }
 

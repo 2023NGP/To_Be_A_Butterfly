@@ -32,6 +32,12 @@ void Camera::calDiff(const float frameTime)
 	m_vPrevLookAt = m_vCurLookAt;
 }
 
+void Camera::setLookAt(POINT p)
+{
+	m_vLookAt.x = (float)p.x;
+	m_vLookAt.y = (float)p.y;
+}
+
 void Camera::Update(const float frameTime)
 {	
 	if (m_vLookAt.y <= 0) {
