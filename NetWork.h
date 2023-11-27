@@ -12,7 +12,7 @@ public:
 	NetWork();
 	~NetWork();
 
-	void SendClientPos();
+	void SendClientPos(int px, int py);
 	void RecvOtherClientPos();
 
 };

@@ -63,9 +63,15 @@ NetWork::~NetWork()
 	WSACleanup();
 }
 
-void NetWork::SendClientPos()
+void NetWork::SendClientPos(int px, int py)
 {
-	cout << "position 보냄" << endl;
+	
+	// 데이터 보내기(고정 길이)
+	retval = send(sock, (char*)&px, sizeof(int), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+	cout << px << endl;
 }
 void NetWork::RecvOtherClientPos()
 {
