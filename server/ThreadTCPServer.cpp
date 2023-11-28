@@ -2,6 +2,8 @@
 #define SERVERPORT 9000
 #define BUFSIZE    512
 
+void RecvClientPos(SOCKET client_sock);
+
 // 클라이언트와 데이터 통신
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -41,6 +43,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		// 받은 데이터 출력
 		buf[retval] = '\0';
 		printf("[TCP/%s:%d] %s\n", addr, ntohs(clientaddr.sin_port), buf);
+		RecvClientPos(client_sock);
 	}
 
 	// 소켓 닫기
@@ -113,4 +116,13 @@ int main(int argc, char* argv[])
 	// 윈속 종료
 	WSACleanup();
 	return 0;
+}
+
+void RecvClientPos(SOCKET client_sock) {
+	int px = 0;
+	int retval = recv(client_sock, (char*)&px, sizeof(int), MSG_WAITALL);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+	printf("%d\n", px);
 }

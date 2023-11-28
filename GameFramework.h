@@ -10,6 +10,7 @@ public:
 	SCENELIST		NowScene;
 	clock_t			prevFrameTime;
 	clock_t			curFrameTime;
+	NetWork* net;
 
 public:
 	WGameFramework();
