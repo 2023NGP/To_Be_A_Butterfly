@@ -160,6 +160,9 @@ void stage2Scene::init()
     player.py = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50));
     player.SetStatus(IDLE);
     player.jumpForce = 0;
+
+    framework.mainCamera->setLookAt(POINT{ 0, STAGE2_HEIGHT - (FRAME_HEIGHT) });
+
 }
 
 void stage2Scene::drawPlayer(HDC hdc) {
@@ -503,6 +506,7 @@ void stage2Scene::Update(const float frameTime)
         //}
     }
     if (framework.mainCamera->m_vLookAt.y < player.py - FRAME_HEIGHT) {
+        cout << framework.mainCamera->m_vLookAt.y << ", " << player.py << endl;
         //// mainCamera보다 player의 위치가 낮으면 게임오버 씬 출력
         pSystem->playSound(effectSound[3], NULL, 0, &Channel[0]);
         bgSound->release();
