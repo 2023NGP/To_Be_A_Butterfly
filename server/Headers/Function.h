@@ -18,4 +18,5 @@ bool CompareY(T& _Dst, T& _Src)
 {
 	return _Dst->Get_Info().fY < _Src->Get_Info().fY;
 }
+
 #endif // !__FUNCTION_H__

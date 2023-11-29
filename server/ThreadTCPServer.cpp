@@ -1,19 +1,45 @@
 #include "Common.h"
-#define SERVERPORT 9000
-#define BUFSIZE    512
+#include "pch.h"
+
+// 스레드
+struct MyThread 
+{
+	int iIndex = 0;
+	SOCKET sock = 0;
+};
 
 DWORD WINAPI ProcessClient(LPVOID arg);
-//DWORD WINAPI ServerMain(LPVOID arg);
+DWORD WINAPI ServerMain(LPVOID arg);
 
-HANDLE clientEvent[3]{};
-int waitClientIndex[3];
-int clientCount = 0; //접속한 클라 갯수
-
-bool isGameStart = false;
 void err_display(char* msg);
 int recvn(SOCKET s, char* buf, int len, int flags);
+void CountStart();
+bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex);
+void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend);
+bool SendPlayerInit(SOCKET sock, int PlayerIndex);
+void CheckEnding(int iCurIndex);
+bool Check_Sphere(INFO& tMePos, INFO& tYouPos);
+bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
+bool Check_Collision();
 
-// 오류가 발생했을 때 오류 메시지를 생성하고 해당 메시지를 콘솔에 출력하는 함수
+
+HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
+int waitClientIndex[3];			// 대기 클라이언트 관련
+int clientCount = 0;			// 접속한 클라이언트 개수
+
+CGameTimer Timer;				// 서버 타이머
+float fStartTime = 0.f;			// 시작 시간
+
+STORE_DATA storeData; // 클라이언트 통합 정보
+
+// 게임 시작 관련
+PLAYER_INIT playerInit;
+bool isGameStart = false;
+
+// 게임 종료판정 관련
+bool ending = false;
+
+// 오류 메시지를 생성하고 콘솔에 출력하는 함수
 void err_display(char* msg)
 {
 	LPVOID lpMsgBuf;
@@ -28,7 +54,6 @@ void err_display(char* msg)
 	// 동적으로 할당된 메모리를 해제
 	LocalFree(lpMsgBuf);
 }
-
 // 지정된 소켓에서 지정된 길이만큼 데이터를 받아오는 함수
 int recvn(SOCKET s, char* buf, int len, int flags)
 {
@@ -50,56 +75,116 @@ int recvn(SOCKET s, char* buf, int len, int flags)
 
 	return (len - left);  // 받아온 데이터의 총 길이 반환
 }
+
+// 게임 시작 카운트 다운
+void CountStart()
+{
+	fStartTime += Timer.GetTimeElapsed();  // 이전 프레임에서 현재 프레임까지 시간 
+	if (fStartTime >= START_TIME)
+	{
+		playerInit.start = true;
+	}
+}
+
+// 서버 프로세스 구현
+DWORD WINAPI ServerMain(LPVOID arg)
+{
+	Timer.Reset();
+	while (true)
+	{
+		if (clientCount == 3)   // 클라 3명이면 스타트
+		{
+			Timer.Tick(60.0f);		
+			// 매순간 해줘야하는 거 여기 둔다
+			if (!playerInit.start)
+				CountStart();
+		}
+
+	}
+}
+
 // 클라이언트와 데이터 통신
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
-	int retval;
+	MyThread* pThread = (MyThread*)arg;
 	SOCKET client_sock = (SOCKET)arg;
+	int curIndex = pThread->iIndex - 1; // 현재 스레드 인덱스, 배열 인덱스로 사용해서 -1
+
+	int retval;
 	struct sockaddr_in clientaddr;
 	char addr[INET_ADDRSTRLEN];
 	int addrlen;
 	char buf[BUFSIZE + 1];
-	int len; // 고정 길이 데이터
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
-	getpeername(client_sock, (struct sockaddr*)&clientaddr, &addrlen);
-	inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
+	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
-	// 클라이언트와 데이터 통신
-	while (1) {
-		// 데이터 받기(고정 길이)
-		retval = recv(client_sock, (char*)&len, sizeof(int), MSG_WAITALL);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
+	while (1)
+	{
+		// 3명이 시작하면 게임 시작
+		if (!isGameStart)
+		{
+			if (clientCount < 3)
+				continue;
+			else
+				isGameStart = true;
+		}
+
+		if (clientCount >= 2)
+			WaitForSingleObject(clientEvent[waitClientIndex[curIndex]], INFINITE);
+
+		// 타이머, 플레이어 배치
+		if (!SendPlayerInit(client_sock, curIndex))
+		{
+			SetEvent(clientEvent[curIndex]);
 			break;
 		}
-		else if (retval == 0)
-			break;
 
-		// 데이터 받기(가변 길이)
-		retval = recv(client_sock, buf, len, MSG_WAITALL);
-		if (retval == SOCKET_ERROR) {
-			err_display("recv()");
+		//플레이어 데이터 받기
+		//////////////////////////////////////////////////////
+		if (!SendRecv_PlayerInfo(client_sock, curIndex))
+		{
+			SetEvent(clientEvent[curIndex]);
 			break;
 		}
-		else if (retval == 0)
-			break;
+		//////////////////////////////////////////////////////
 
-		// 받은 데이터 출력
-		buf[retval] = '\0';
-		printf("[TCP/%s:%d] %s\n", addr, ntohs(clientaddr.sin_port), buf);
+		SetEvent(clientEvent[curIndex]);
 	}
 
-	// 소켓 닫기
+
+	if (--clientCount >= 2)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			// 자신을 참조하던 클라이언트를 찾음
+			if (waitClientIndex[i] == curIndex)
+			{
+				waitClientIndex[i] = waitClientIndex[curIndex]; // 자신이 참조하고있던 인덱스로 바꿔줌
+				waitClientIndex[curIndex] = -1;
+				break;
+			}
+		}
+	}
+
+	// 이벤트 제거
+	CloseHandle(clientEvent[curIndex]);
+
+	// closesocket()
 	closesocket(client_sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
-		addr, ntohs(clientaddr.sin_port));
+		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
+
 	return 0;
 }
 
+// main
 int main(int argc, char* argv[])
 {
+	// ServerMain 스레드
+	CreateThread(NULL, 0, ServerMain, 0, 0, NULL);
+	
 	int retval;
 
 	// 윈속 초기화
@@ -134,13 +219,16 @@ int main(int argc, char* argv[])
 
 	//이벤트 생성
 	//클라이언트 3개 접속중일 때 0이 2번, 1이 0번, 2가 1번, 이벤트 기다림
-	//for (int i = 0; i < 3; ++i)
-	//{
-	//	clientEvent[i] = CreateEvent(NULL, FALSE, (i < 2 ? FALSE : TRUE), NULL);
-	//	waitClientIndex[i] = (i == 0) ? 2 : i - 1; // 2 0 1
-	//}
+	for (int i = 0; i < 3; ++i)
+	{
+		clientEvent[i] = CreateEvent(NULL, FALSE, (i < 2 ? FALSE : TRUE), NULL);
+		waitClientIndex[i] = (i == 0) ? 2 : i - 1; // 2 0 1
+	}
 
-	while (1) {
+	MyThread tThread;
+	tThread.iIndex = 0;
+	while (1) 
+	{
 		// accept()
 		addrlen = sizeof(clientaddr);
 		client_sock = accept(listen_sock, (struct sockaddr*)&clientaddr, &addrlen);
@@ -148,6 +236,10 @@ int main(int argc, char* argv[])
 			err_display("accept()");
 			break;
 		}
+
+		tThread.sock = client_sock;
+		++clientCount;
+		++tThread.iIndex;
 
 		// 접속한 클라이언트 정보 출력
 		char addr[INET_ADDRSTRLEN];
@@ -168,4 +260,172 @@ int main(int argc, char* argv[])
 	// 윈속 종료
 	WSACleanup();
 	return 0;
+}
+
+// 플레이어 정보 보내고 받는 함수
+bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex)
+{
+	int retval, curIndex = iIndex;
+
+	PLAYER_INFO tPlayerInfo;
+	retval = recvn(client_sock, (char*)&tPlayerInfo, sizeof(PLAYER_INFO), 0);
+	if (retval == SOCKET_ERROR)
+	{
+		err_display("recv()");
+		return FALSE;
+	}
+	else if (retval == 0)
+		return FALSE;
+
+
+	// 받은 데이터 출력 확인
+	//printf("[%d] (%f, %f)\n", curIndex, tPlayerInfo.tPos.fX, tPlayerInfo.pos.fY);
+
+	if (clientCount == 3)    // 클라이언트 3명이면 스타트
+	{
+		tPlayerInfo.start = true;
+	}
+
+	// 엔딩 변수 저장
+	ENDING::END_TYPE eEnding = ENDING::ING;
+
+	if (ending)
+	{
+		eEnding = storeData.playersInfo[curIndex].eEnding;
+	}
+
+	storeData.playersInfo[curIndex] = tPlayerInfo;
+	storeData.id = curIndex;
+
+	// 엔딩 변수 설정
+	storeData.playersInfo[curIndex].eEnding = eEnding;
+
+	storeData.hp[curIndex] = tPlayerInfo.hp;
+	storeData.start = tPlayerInfo.start;
+
+	// 엔딩 판정
+	CheckEnding(curIndex);
+
+	// 데이터 보내기
+	retval = send(client_sock, (char*)&storeData, sizeof(STORE_DATA), 0);
+	if (retval == SOCKET_ERROR)
+	{
+		err_display("send()");
+		return FALSE;
+	}
+
+	return TRUE;
+}
+
+// 플레이어 인덱스별 위치 설정함수
+void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend)
+{
+	switch (idx)
+	{
+	case 0:			// 1번 플레이어 위치
+		tPlayerInitSend.pos = { 100.f, 600.f };
+		break;
+	case 1:			// 2번 플레이어 위치
+		tPlayerInitSend.pos = { 400.f, 600.f };
+		break;
+	case 2:			// 3번 플레이어 위치
+		tPlayerInitSend.pos = { 700.f, 600.f };
+		break;
+	default:
+		break;
+	}
+}
+
+// 플레이어 초기 전송하는 함수
+bool SendPlayerInit(SOCKET sock, int PlayerIndex)
+{
+	int retval;
+
+	playerInit.iCount = (int)fStartTime;
+	PLAYER_INIT_SEND tPlayerInitSend;
+	tPlayerInitSend.start = playerInit.start;
+	tPlayerInitSend.idx = PlayerIndex;
+	tPlayerInitSend.iCount = playerInit.iCount;
+
+	if (playerInit.start)
+	{
+		Get_InitPos(PlayerIndex, tPlayerInitSend);
+	}
+	retval = send(sock, (char*)&tPlayerInitSend, sizeof(PLAYER_INIT_SEND), 0);
+	if (retval == SOCKET_ERROR)
+	{
+		err_display("send()");
+		return FALSE;
+	}
+	return TRUE;
+}
+
+
+// 엔딩 판정
+void CheckEnding(int iCurIndex)
+{
+	if (ending)
+		return;
+
+	if (storeData.playersInfo[iCurIndex].isDead)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			if (i == iCurIndex)
+				continue;
+
+			if (storeData.playersInfo[i].isDead)
+			{
+				ending = true;
+				storeData.playersInfo[iCurIndex].eEnding = ENDING::LOSE;
+				storeData.playersInfo[i].eEnding = ENDING::LOSE;
+				for (int j = 0; j < 3; j++)
+				{
+					if (j == i || j == iCurIndex)
+						continue;
+					storeData.playersInfo[j].eEnding = ENDING::WIN;
+
+				}
+				break;
+			}
+		}
+
+	}
+}
+
+///////////////////////충돌 체크 (-ing)/////////////////////////////
+bool Check_Sphere(INFO& tMePos, INFO& tYouPos)
+{
+	float fRadius = (float)((tMePos.iCX + tYouPos.iCY) >> 1);
+	//float fRadius = 30;
+
+	float fX = tMePos.fX - tYouPos.fX;
+	float fY = tMePos.fY - tYouPos.fY;
+	float fDis = sqrtf(fX * fX + fY * fY);
+
+	return fRadius > fDis;
+}
+
+bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y)
+{
+	float fX = abs(tMePos.fX - tYouPos.fX);
+	float fY = abs(tMePos.fY - tYouPos.fY);
+
+	//플레이어 너비, 높이
+	float fCX = 30.f;
+	float fCY = 80.f;
+
+	if (fCX > fX && fCY > fY)
+	{
+		*_x = fCX - fX;
+		*_y = fCY - fY;
+		return true;
+	}
+
+	return false;
+}
+
+// 여기서 충돌 체크
+bool Check_Collision() {
+	return false;
 }

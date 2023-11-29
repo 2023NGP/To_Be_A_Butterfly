@@ -1,5 +1,7 @@
 #pragma once
 
+//여러 종류의 객체에 대한 팩토리를 제공, 추상화 제공
+
 #ifndef __ABSTRACTFACTORY_H__
 #define __ABSTRACTFACTORY_H__
 
