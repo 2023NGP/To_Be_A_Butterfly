@@ -133,16 +133,16 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="gameScene.h" />
+    <ClInclude Include="HPBar.h" />
     <ClInclude Include="Camera.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="clearScene.h" />
     <ClInclude Include="client.h" />
-    <ClInclude Include="Cloud.h" />
     <ClInclude Include="common.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="Item.h" />
     <ClInclude Include="menuScene.h" />
     <ClInclude Include="NetWork.h" />
     <ClInclude Include="overScene.h" />
@@ -155,14 +155,14 @@
     <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="gameScene.cpp" />
+    <ClCompile Include="HPBar.cpp" />
     <ClCompile Include="Camera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="clearScene.cpp" />
     <ClCompile Include="client.cpp" />
-    <ClCompile Include="Cloud.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menuScene.cpp" />
     <ClCompile Include="NetWork.cpp" />
