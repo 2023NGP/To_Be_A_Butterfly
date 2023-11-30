@@ -1,17 +1,5 @@
 ﻿#pragma once
 
-typedef struct Cloud {
-	int cx, cy;
-	int type;			//1: �Ա��� 2: �񱸸� 3: �Ϲݱ���
-	int index;
-}Cloud;
-
-typedef struct Item {
-	int ix, iy;
-	int what;			//1: ��Ʈ 2: ��
-	int get = 0;			//0: ���� �� ���� 1: ����
-}Item;
-
 class gameScene : public Scene
 {
 public:

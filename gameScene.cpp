@@ -41,8 +41,11 @@ void gameScene::InitCloud() {       //txt���Ͽ��� ���� ��
 	}
 
 	while (!feof(fp)) {
-		fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &cloud[i++].type);
-		cloud[i].index = dis(rd);
+		int t;
+		fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &t);
+		cloud[i].SetType(t);
+		cloud[i].animIndex = dis(rd);
+		++i;
 	}
 
 	cloud_index = i;
@@ -60,7 +63,9 @@ void gameScene::InitHeart() {
 	}
 
 	while (!feof(fp)) {
-		fscanf_s(fp, "%d %d %d", &item[i].ix, &item[i].iy, &item[i].what);
+		int t;
+		fscanf_s(fp, "%d %d %d", &item[i].ix, &item[i].iy, &t);
+		item[i].SetType(t);
 		++i;
 	}
 
@@ -177,27 +182,27 @@ void gameScene::drawBackGround(HDC hdc) {
 void gameScene::drawCloud(HDC hdc) {
 	//���� �׸��� �Լ�
 	for (int j = 0; j < cloud_index; ++j) {
-		switch (cloud[j].type) {
+		switch (cloud[j].GetType()) {
 		case 1:
-			darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
+			darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
 			break;
 		case 2:
-			if (cloud[j].index >= 25 && cloud[j].index <= 59) {
-				rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
-				rain.Draw(hdc, cloud[j].cx, cloud[j].cy + (CLOUD_HEIGHT - 30), CLOUD_WIDTH, CLOUD_HEIGHT, rain_ani[cloud[j].index - 25].left, rain_ani[cloud[j].index - 25].top, CLOUD_IMAGE_SIZE, RAIN_IMAGE);
+			if (cloud[j].animIndex >= 25 && cloud[j].animIndex <= 59) {
+				rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
+				rain.Draw(hdc, cloud[j].cx, cloud[j].cy + (CLOUD_HEIGHT - 30), CLOUD_WIDTH, CLOUD_HEIGHT, rain_ani[cloud[j].animIndex - 25].left, rain_ani[cloud[j].animIndex - 25].top, CLOUD_IMAGE_SIZE, RAIN_IMAGE);
 			}
 			else
-				rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
+				rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
 			break;
 		case 3:
-			normalCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].index].left, cloud_ani[cloud[j].index].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
+			normalCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
 			break;
 		}
 	}
 }
 void gameScene::drawItems(HDC hdc) {
 	for (int j = 0; j < item_index; ++j) {
-		switch (item[j].what) {
+		switch (item[j].GetType()) {
 		case 1:
 			heart.Draw(hdc, item[j].ix, item[j].iy, ITEM_SIZE, ITEM_SIZE, 0, 0, heart.GetWidth(), heart.GetHeight());
 			break;
@@ -234,7 +239,7 @@ void gameScene::drawBox(HDC hdc) {
 
 void gameScene::moveItem() {
 	for (int i = 0; i < item_index; ++i) {
-		if (item[i].get == 1) {
+		if (item[i].GetIsGot()) {
 			item[i].iy = bar_startY;
 		}
 	}
@@ -273,7 +278,7 @@ void gameScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 bool gameScene::getItemCheck() {
 	for (int i = 0; i < item_index; ++i) {
-		if (item[i].get == 0)
+		if (item[i].GetIsGot() == false)
 			return false;
 	}
 	return true;
@@ -297,15 +302,15 @@ void gameScene::Update(const float frameTime)
 	player.SetStatus(IDLE);
 
 	for (int i = 0; i < cloud_index; ++i) {
-		cloud[i].index++;
-		if (cloud[i].index == 74)
-			cloud[i].index = 0;
+		cloud[i].animIndex++;
+		if (cloud[i].animIndex == 74)
+			cloud[i].animIndex = 0;
 		cRECT = { cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
 		if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {                             //�浹 �˻�
 			player.SetStatus(COLLIDED);
 			ani_index = 50;
 		}
-		if (cloud[i].type != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //������ �� �浹 �˻�
+		if (cloud[i].GetType() != 3 && cloud[i].animIndex >= 35 && cloud[i].animIndex <= 59) {       //������ �� �浹 �˻�
 			cRECT = { cloud[i].cx + 30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //�� ����
 				cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
 			if (IntersectRect(&tmp, &cRECT, &pRECT)) {                             //�浹 �˻�
@@ -340,8 +345,8 @@ void gameScene::Update(const float frameTime)
 		if (IntersectRect(&tmp, &cRECT, &pRECT)) {
 			item[i].ix = ITEM_START + i * 40;
 			item[i].iy = bar_startY;
-			item[i].get = 1;
-			if (item[i].what == 1) {
+			item[i].SetIsGot(true);
+			if (item[i].GetType() == 1) {
 				bar_w = player.IncreaseHp(30);
 				pSystem->playSound(effectSound[1], NULL, 0, &Channel[2]);
 			}
