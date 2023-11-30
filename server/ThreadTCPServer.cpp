@@ -21,6 +21,7 @@ void CheckEnding(int iCurIndex);
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos);
 bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
 bool Check_Collision();
+void RecvClientPos(SOCKET client_sock);
 
 
 HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
@@ -103,7 +104,6 @@ DWORD WINAPI ServerMain(LPVOID arg)
 	}
 }
 
-void RecvClientPos(SOCKET client_sock);
 
 // 클라이언트와 데이터 통신
 DWORD WINAPI ProcessClient(LPVOID arg)
@@ -128,13 +128,13 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		if (!isGameStart)
 		{
 			if (clientCount < 3)
-				continue;
+				WaitForSingleObject(clientEvent[curIndex], INFINITE);
 			else
+			{
+				SetEvent(clientEvent[curIndex]);
 				isGameStart = true;
+			}
 		}
-
-		if (clientCount <= 2)
-			WaitForSingleObject(clientEvent[waitClientIndex[curIndex]], INFINITE);
 
 		// 타이머, 플레이어 배치
 		if (!SendPlayerInit(pThread->sock, curIndex))
