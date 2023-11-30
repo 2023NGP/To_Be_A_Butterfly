@@ -142,7 +142,6 @@
     <ClInclude Include="common.h" />
     <ClInclude Include="Define.h" />
     <ClInclude Include="GameFramework.h" />
-    <ClInclude Include="gameScene.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="menuScene.h" />
     <ClInclude Include="NetWork.h" />
@@ -163,7 +162,6 @@
     <ClCompile Include="client.cpp" />
     <ClCompile Include="Cloud.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="Item.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menuScene.cpp" />

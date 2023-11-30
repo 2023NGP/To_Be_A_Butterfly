@@ -42,6 +42,7 @@ void stage2Scene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
         fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &t);
         cloud[i].SetType(t);
         cloud[i].animIndex = dis(rd);
+        ++i;
     }
 
     cloud_index = i;

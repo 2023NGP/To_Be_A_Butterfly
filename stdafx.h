@@ -39,7 +39,6 @@ using namespace std::chrono;
 #include "vector.h"
 #include "scene.h"
 #include "menuScene.h"
-#include "gameScene.h"
 #include "stage2Scene.h"
 #include "overScene.h"
 #include "clearScene.h"
