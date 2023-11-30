@@ -1,17 +1,5 @@
 #pragma once
 
-typedef struct Cloud {
-	int cx, cy;
-	int type;			//1: 먹구름 2: 비구름 3: 일반구름
-	int index;
-}Cloud;
-
-typedef struct Item {
-	int ix, iy;
-	int what;			//1: 하트 2: 돌
-	int get = 0;			//0: 아직 안 먹음 1: 먹음
-}Item;
-
 class gameScene : public Scene 
 {
 public:
