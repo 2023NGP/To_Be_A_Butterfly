@@ -1,14 +1,13 @@
 #pragma once
+#include "HPBar.h"
 #include "scene.h"
 
 class stage2Scene : public Scene {
 
 public:
-	RECT animation[56];	//평상시 애니메이션(리소스 위치)
 	RECT cloud_ani[75];
 	RECT rain_ani[35];
 
-	int ani_index;		//애니메이션 index(플레이어)
 	int cloud_index;	//구름 개수
 	int item_index;		//하트랑 스톤 개수
 	int bar_startY;
@@ -19,14 +18,12 @@ public:
 
 	float gravity;
 	bool fall;			//떨어지는 상태
-	bool shock;
-	int shocktimer;
 
 	RECT cRECT;			//구름 사각형
 	RECT pRECT;			//플레이어 사각형
 	RECT tmp;			//충돌 검사할 사각형
 
-	CImage player_image, background;
+	CImage background;
 	CImage heart, stone;
 	CImage normalCloud, rainCloud, darkCloud, rain, lightning;
 
@@ -38,6 +35,7 @@ public:
 	Player player;
 	Cloud cloud[200];
 	Item item[15];
+	HPBar bar;
 
 public:
 	virtual ~stage2Scene() override;
@@ -50,7 +48,6 @@ public:
 
 	virtual void Render(HDC hdc) override;
 
-	void drawPlayer(HDC hdc);
 	void drawBackGround(HDC hdc);
 	void drawCloud(HDC hdc);
 	void drawBox(HDC hdc);

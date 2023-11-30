@@ -9,11 +9,15 @@ class Player {
 	int status = IDLE;
 	float hp = MAX_HP;
 	int coinCount;
+	RECT animation[56];				// 평상시 애니메이션 (리소스 위치)
 
 public:
+	CImage image;
 	int px, py;
 	int jumpForce;
-	int animIndex;
+	int animIndex;				//충돌이면 20~27, 평상시면 0~19
+	bool isShocked;
+	float shockTime;
 
 public:
 	void SetID(int value);
@@ -28,5 +32,10 @@ public:
 	
 	void IncreaseCoinCount();
 	int GetCoinCount() const;
+
+	void Draw(HDC hdc);
+	void Update(const float frameTime);
+
+	void InitAnimation();
 };
 
