@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "HPBar.h"
 #include "stage2Scene.h"
 //memdc에 그려주는 역할, frame
 extern WGameFramework framework;
@@ -66,21 +67,8 @@ void stage2Scene::InitHeart() {
 }
 void stage2Scene::InitAnimation() {
     int j = 0;
-    //14개
-    //1애니메이션 4개
-    //0 ~ 3, ... ~39
-    for (int i = 0; i < 14; i++) {
-        animation[j] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
-        animation[j + 1] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
-        animation[j + 2] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
-        animation[j + 3] = { i * PLAYER_IMAGE_SIZE, 0, (i + 1) * PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE };
-        j += 4;
-    }
 
-    j = 0;
 
-    //0~4, 5~9, 10~14, 15~19, 20~24, |25~29, 30~34, 35~39, 40~44, 45~49,| 50 ~54, 55~59 까지 같은 이미지라 보면 됨
-    //업데이트 속도가 너무 빨라서 느리게 움직이게 하기 위함
 
     for (int i = 0; i < 15; i++) {
         if (i == 10 || i == 11) {
@@ -128,8 +116,19 @@ void stage2Scene::InitAnimation() {
 void stage2Scene::init()
 {
     startX = 0, startY = STAGE2_HEIGHT - (FRAME_HEIGHT);
+    
+    // 플레이어 초기화
+    player.image.Load(TEXT("image/꼬물이.png"));
+    player.InitAnimation();
 
-    player_image.Load(TEXT("image/꼬물이.png"));
+    player.px = MEM_WIDTH / 2;
+    player.py = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50));
+    player.SetStatus(IDLE);
+    player.jumpForce = 0;
+    player.animIndex = 0;
+    player.shockTime = 0.0f;
+    player.isShocked = false;
+
     background.Load(TEXT("image/배경화면1.png"));
 
     normalCloud.Load(TEXT("image/일반구름.png"));
@@ -145,28 +144,25 @@ void stage2Scene::init()
     InitAnimation();
     InitCloud();
     InitHeart();
-    ani_index = 0;      //충돌이면 20~27, 평상시면 0~19
     gravity = 1;
 
     bar_startY = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50)) + 100;
     fall = true;
 
-    shock = false;
-    shocktimer = 0;
-
     status = RUN;
 
+<<<<<<< Updated upstream
     player.px = MEM_WIDTH / 2;
     player.py = (STAGE2_HEIGHT - (CLOUD_HEIGHT + 50));
     player.SetStatus(IDLE);
     player.jumpForce = 0;
+=======
+    framework.mainCamera->setLookAt(POINT{ 0, STAGE2_HEIGHT - (FRAME_HEIGHT)});
+
+
+>>>>>>> Stashed changes
 }
 
-void stage2Scene::drawPlayer(HDC hdc) {
-    //플레이어 그리는 함수
-    player_image.Draw(hdc, player.px, player.py, PLAYER_WIDTH, PLAYER_HEIGHT, animation[ani_index].left, animation[ani_index].top,
-        PLAYER_IMAGE_SIZE, PLAYER_IMAGE_SIZE);
-}
 void stage2Scene::drawBackGround(HDC hdc) {
     //배경 그리는 함수
     background.BitBlt(hdc, 0, 0, SRCCOPY);
@@ -209,35 +205,17 @@ void stage2Scene::drawItems(HDC hdc) {
         }
     }
 }
-void stage2Scene::drawHPBar(HDC hdc) {
-    HBRUSH myBrush = (HBRUSH)CreateSolidBrush(RGB(150, 50, 0));
-    HBRUSH oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-    Rectangle(hdc, 50, bar_startY + 1, (int)bar_w + 50, bar_startY + 29);
-    SelectObject(hdc, oldBrush);
-    DeleteObject(myBrush);
-
-    myBrush = (HBRUSH)GetStockObject(NULL_BRUSH);
-    oldBrush = (HBRUSH)SelectObject(hdc, myBrush);
-    HPEN hPen = CreatePen(PS_DOT, 2, RGB(0, 0, 0));
-    HPEN oldPen = (HPEN)SelectObject(hdc, hPen);
-    Rectangle(hdc, 50, bar_startY, HPBAR_WIDTH + 50, bar_startY + 30);
-    SelectObject(hdc, oldBrush);
-    DeleteObject(myBrush);
-    SelectObject(hdc, oldPen);
-    DeleteObject(hPen);
-}
 void stage2Scene::drawBox(HDC hdc) {
     Rectangle(hdc, pRECT.left, pRECT.top, pRECT.right, pRECT.bottom);
     for (int i = 0; i < cloud_index; ++i) {
         Rectangle(hdc, cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT);
     }
-
 }
 
 void stage2Scene::moveItem() {
     for (int i = 0; i < item_index; ++i) {
         if (item[i].get == 1) {
-            item[i].iy = bar_startY;
+            item[i].iy = bar.y;
         }
     }
 }
@@ -283,23 +261,27 @@ bool stage2Scene::getItemCheck() {
 //애니메이션 있으면 여기서 업데이트
 void stage2Scene::Update(const float frameTime)
 {
-    if (shock)
-        shocktimer++;
-    if (shocktimer >= 20) {
-        shocktimer = 0;
-        shock = FALSE;
+    bar.y = framework.mainCamera->getLookAt().y + FRAME_HEIGHT - 100;
+    if (player.isShocked)
+        player.shockTime += frameTime;
+
+    if (player.shockTime >= 20) {
+        player.shockTime = 0;
+        player.isShocked = FALSE;
     }
+
     if (status == PAUSE)          //일시정지
         return;
 
     if (player.GetStatus() == IDLE) {          //충돌이 아닐 때
-        ani_index++;
+        player.animIndex++;
     }
-    if (ani_index >= 39)
-        ani_index = 0;
+
+    if (player.animIndex >= 39)
+        player.animIndex = 0;
 
 
-    pRECT = { player.px + 18,player.py + 10,player.px + 18 + PLAYER_COLLIDE_WIDTH ,player.py + PLAYER_HEIGHT };
+    pRECT = { player.px + 18, player.py + 10, player.px + 18 + PLAYER_COLLIDE_WIDTH , player.py + PLAYER_HEIGHT };
 
     player.SetStatus(IDLE);
 
@@ -310,17 +292,17 @@ void stage2Scene::Update(const float frameTime)
         cRECT = { cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
         if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {                             //충돌 검사
             player.SetStatus(COLLIDED);
-            ani_index = 50;
+            player.animIndex = 50;
         }
         if (cloud[i].type != 3 && cloud[i].index >= 35 && cloud[i].index <= 59) {       //번개나 비 충돌 검사
             cRECT = { cloud[i].cx + 30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
                 cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
             if (IntersectRect(&tmp, &cRECT, &pRECT)) {                                  //충돌 검사
                 player.SetStatus(COLLIDED);
-                ani_index = 50;
+                player.animIndex = 50;
                 if (cloud[i].type == 1) {
-                    shock = TRUE;
-                    shocktimer = 0;
+                    player.isShocked = TRUE;
+                    player.shockTime = 0.0f;
                 }
             }
         }
@@ -337,23 +319,23 @@ void stage2Scene::Update(const float frameTime)
     }
 
     if (player.GetStatus() == COLLIDED) {           //플레이어가 충돌상태이면 체력 감소
-        bar_w = player.DecreaseHp(40 * frameTime);
+        bar.barGauge = player.DecreaseHp(40 * frameTime);
         pSystem->playSound(effectSound[2], NULL, 0, &Channel[1]);
     }
 
-    if (shock)
+    if (player.isShocked)
         return;
 
-    bar_w = player.DecreaseHp(0.5f * frameTime);       //항상 감소
+    bar.barGauge = player.DecreaseHp(0.5f * frameTime);       //항상 감소
 
     for (int i = 0; i < item_index; ++i) {                                  //플레이어가 아이템 먹었는지 검사
         cRECT = { item[i].ix, item[i].iy, item[i].ix + ITEM_SIZE, item[i].iy + ITEM_SIZE };
         if (IntersectRect(&tmp, &cRECT, &pRECT)) {
             item[i].ix = ITEM_START + i * 40;
-            item[i].iy = bar_startY;
+            item[i].iy = bar.y;
             item[i].get = 1;
             if (item[i].what == 1) {
-                bar_w = player.IncreaseHp(30);
+                bar.barGauge = player.IncreaseHp(30);
                 pSystem->playSound(effectSound[1], NULL, 0, &Channel[2]);	
             }
             else
@@ -372,12 +354,10 @@ void stage2Scene::Update(const float frameTime)
         if (startY <= STAGE2_HEIGHT - (FRAME_HEIGHT) && player.py >= PLAYERMOVE_START) {
             if (player.GetStatus() == COLLIDED) {
                 startY -= (int)gravity / 3;
-                bar_startY -= (int)gravity / 3;
                 moveItem();
             }
             else if (player.GetStatus() == IDLE) {
                 startY -= (int)gravity;
-                bar_startY -= (int)gravity;
                 moveItem();
             }
         }
@@ -400,14 +380,12 @@ void stage2Scene::Update(const float frameTime)
         else {
             if (player.GetStatus() == COLLIDED) {
                 startY -= 2;
-                bar_startY -= 2;
                 moveItem();
                 player.py -= 2;
                 player.px -= 2;
             }
             else if (player.GetStatus() == IDLE) {
                 startY -= 7;
-                bar_startY -= 7;
                 moveItem();
                 player.py -= 7;
                 player.px -= 7;
@@ -432,14 +410,12 @@ void stage2Scene::Update(const float frameTime)
         else {
             if (player.GetStatus() == COLLIDED) {
                 startY -= 2;
-                bar_startY -= 2;
                 moveItem();
                 player.py -= 2;
                 player.px += 2;
             }
             else if (player.GetStatus() == IDLE) {
                 startY -= 7;
-                bar_startY -= 7;
                 moveItem();
                 player.py -= 7;
                 player.px += 7;
@@ -458,13 +434,11 @@ void stage2Scene::Update(const float frameTime)
         else {
             if (player.GetStatus() == COLLIDED) {
                 startY -= 2;
-                bar_startY -= 2;
                 moveItem();
                 player.py -= 2;
             }
             else if (player.GetStatus() == IDLE) {
                 startY -= 7;
-                bar_startY -= 7;
                 moveItem();
                 player.py -= 7;
             }
@@ -498,15 +472,18 @@ void stage2Scene::Update(const float frameTime)
             delete scene;
         }
     }
+    bar.y = framework.mainCamera->getLookAt().y + FRAME_HEIGHT - 100;
 }
 void stage2Scene::Render(HDC hdc)
 {
     drawBackGround(hdc);
-    //drawBox(hdc);
-    drawPlayer(hdc);
+    // 충돌 박스
+    // drawBox(hdc); 
+    player.Draw(hdc);
+    //drawPlayer(hdc);
     drawCloud(hdc);
     drawItems(hdc);
-    drawHPBar(hdc);
+    bar.Draw(hdc);
 }
 
 
