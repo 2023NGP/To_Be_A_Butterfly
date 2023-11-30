@@ -66,6 +66,9 @@
     <ClInclude Include="HPBar.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="gameScene.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="clearScene.cpp">
@@ -105,6 +108,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="HPBar.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="gameScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
