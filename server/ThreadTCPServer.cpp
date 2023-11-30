@@ -109,8 +109,8 @@ void RecvClientPos(SOCKET client_sock);
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
 	MyThread* pThread = (MyThread*)arg;
-	SOCKET client_sock = (SOCKET)arg;
-	int curIndex = pThread->iIndex - 1; // 현재 스레드 인덱스, 배열 인덱스로 사용해서 -1
+
+	int curIndex = pThread->iIndex; // 현재 스레드 인덱스,	[ 0 ~ 2 ]
 
 	int retval;
 	struct sockaddr_in clientaddr;
@@ -120,7 +120,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	// 클라이언트 정보 얻기
 	addrlen = sizeof(clientaddr);
-	getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
+	getpeername(pThread->sock, (SOCKADDR*)&clientaddr, &addrlen);
 
 	while (1)
 	{
@@ -133,11 +133,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 				isGameStart = true;
 		}
 
-		if (clientCount >= 2)
+		if (clientCount <= 2)
 			WaitForSingleObject(clientEvent[waitClientIndex[curIndex]], INFINITE);
 
 		// 타이머, 플레이어 배치
-		if (!SendPlayerInit(client_sock, curIndex))
+		if (!SendPlayerInit(pThread->sock, curIndex))
 		{
 			SetEvent(clientEvent[curIndex]);
 			break;
@@ -145,17 +145,14 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 		//플레이어 데이터 받기
 		//////////////////////////////////////////////////////
-		if (!SendRecv_PlayerInfo(client_sock, curIndex))
+		if (!SendRecv_PlayerInfo(pThread->sock, curIndex))
 		{
 			SetEvent(clientEvent[curIndex]);
 			break;
 		}
 		//////////////////////////////////////////////////////
 
-		//SetEvent(clientEvent[curIndex]);
-
 	}
-
 
 	if (--clientCount >= 2)
 	{
@@ -175,7 +172,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 	CloseHandle(clientEvent[curIndex]);
 
 	// closesocket()
-	closesocket(client_sock);
+	closesocket(pThread->sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",
 		inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 
@@ -241,8 +238,8 @@ int main(int argc, char* argv[])
 		}
 
 		tThread.sock = client_sock;
-		++clientCount;
-		++tThread.iIndex;
+		++clientCount;						// 접속한 클라이언트 수, [ 1 ~ 3 ]
+		tThread.iIndex = clientCount - 1;	// 스레드 아이디,		 [ 0 ~ 2 ]
 
 		// 접속한 클라이언트 정보 출력
 		char addr[INET_ADDRSTRLEN];
@@ -251,13 +248,13 @@ int main(int argc, char* argv[])
 			addr, ntohs(clientaddr.sin_port));
 
 		// 스레드 생성
-		hThread = CreateThread(NULL, 0, ProcessClient,
-			(LPVOID)client_sock, 0, NULL);
+		hThread = CreateThread(NULL, 0, ProcessClient, &tThread, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
 
 	// 소켓 닫기
+	
 	closesocket(listen_sock);
 
 	// 윈속 종료

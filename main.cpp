@@ -92,9 +92,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//		"보냈습니다.\n", (int)sizeof(int), retval);
 	//}
 
-
-	printf("[TCP 클라이언트] %d+%d바이트를 " "보냈습니다.\n", (int)sizeof(int), retval);
-
 	while (true)
 	{
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
