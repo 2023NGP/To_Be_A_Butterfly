@@ -1,4 +1,4 @@
-#define _CRT_SECURE_NO_WARNINGS // ±¸Çü C ÇÔ¼ö »ç¿ë ½Ã °æ°í ²ô±â
+ï»¿#define _CRT_SECURE_NO_WARNINGS // êµ¬í˜• C í•¨ìˆ˜ ì‚¬ìš© ì‹œ ê²½ê³  ë„ê¸°
 #include "stdafx.h"
 // #include "common.h"
 #include "GameFramework.h"
@@ -10,13 +10,13 @@ char* SERVERIP = (char*)"127.0.0.1";
 #define SERVERPORT 9000
 #define BUFSIZE 1024
 
-// Àü¿ª º¯¼ö:
-HINSTANCE hInst;                                // ÇöÀç ÀÎ½ºÅÏ½ºÀÔ´Ï´Ù.
-WCHAR szTitle[MAX_LOADSTRING];                  // Á¦¸ñ Ç¥½ÃÁÙ ÅØ½ºÆ®ÀÔ´Ï´Ù.
-WCHAR szWindowClass[MAX_LOADSTRING];            // ±âº» Ã¢ Å¬·¡½º ÀÌ¸§ÀÔ´Ï´Ù.
+// ì „ì—­ ë³€ìˆ˜:
+HINSTANCE hInst;                                // í˜„ì¬ ì¸ìŠ¤í„´ìŠ¤ì…ë‹ˆë‹¤.
+WCHAR szTitle[MAX_LOADSTRING];                  // ì œëª© í‘œì‹œì¤„ í…ìŠ¤íŠ¸ì…ë‹ˆë‹¤.
+WCHAR szWindowClass[MAX_LOADSTRING];            // ê¸°ë³¸ ì°½ í´ë˜ìŠ¤ ì´ë¦„ì…ë‹ˆë‹¤.
 //static WGameFramework gGameFramework;
 WGameFramework framework;
-// ÀÌ ÄÚµå ¸ğµâ¿¡ Æ÷ÇÔµÈ ÇÔ¼öÀÇ ¼±¾ğÀ» Àü´ŞÇÕ´Ï´Ù:
+// ì´ ì½”ë“œ ëª¨ë“ˆì— í¬í•¨ëœ í•¨ìˆ˜ì˜ ì„ ì–¸ì„ ì „ë‹¬í•©ë‹ˆë‹¤:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
 LRESULT CALLBACK    WndProc(HWND, UINT, WPARAM, LPARAM);
@@ -27,12 +27,12 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
-	// Àü¿ª ¹®ÀÚ¿­À» ÃÊ±âÈ­ÇÕ´Ï´Ù.
+	// ì „ì—­ ë¬¸ìì—´ì„ ì´ˆê¸°í™”í•©ë‹ˆë‹¤.
 	LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
 	LoadStringW(hInstance, IDS_APP_TITLE, szWindowClass, MAX_LOADSTRING);
 	MyRegisterClass(hInstance);
 
-	// ÀÀ¿ë ÇÁ·Î±×·¥ ÃÊ±âÈ­¸¦ ¼öÇàÇÕ´Ï´Ù:
+	// ì‘ìš© í”„ë¡œê·¸ë¨ ì´ˆê¸°í™”ë¥¼ ìˆ˜í–‰í•©ë‹ˆë‹¤:
 	if (!InitInstance(hInstance, nCmdShow))
 	{
 		return FALSE;
@@ -46,14 +46,14 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	//// return value;
 	//int retval;
-	//// À©¼Ó ÃÊ±âÈ­
+	//// ìœˆì† ì´ˆê¸°í™”
 	//WSADATA wsa;
 	//if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	//	return 1;
-	//// ¼ÒÄÏ »ı¼º
+	//// ì†Œì¼“ ìƒì„±
 	//SOCKET sock = socket(AF_INET, SOCK_STREAM, 0);
 	//if (sock == INVALID_SOCKET) err_quit("socket()");
-	//// connect() : TCPÇÁ·ÎÅäÄİ ¼öÁØ¿¡¼­ ¼­¹ö¿Í ³í¸®Àû ¿¬°áÀ» ¼³Á¤ (bind() ¿ªÇÒ ¼öÇà, ´Éµ¿Àû)
+	//// connect() : TCPí”„ë¡œí† ì½œ ìˆ˜ì¤€ì—ì„œ ì„œë²„ì™€ ë…¼ë¦¬ì  ì—°ê²°ì„ ì„¤ì • (bind() ì—­í•  ìˆ˜í–‰, ëŠ¥ë™ì )
 	//struct sockaddr_in serveraddr;
 	//memset(&serveraddr, 0, sizeof(serveraddr));
 	//serveraddr.sin_family = AF_INET;
@@ -61,35 +61,35 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	//serveraddr.sin_port = htons(SERVERPORT);
 	//retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
 	//if (retval == SOCKET_ERROR) err_quit("connect()");
-	//printf("connect ¼º°ø");
-	//// µ¥ÀÌÅÍ Åë½Å¿¡ »ç¿ëÇÒ º¯¼ö
+	//printf("connect ì„±ê³µ");
+	//// ë°ì´í„° í†µì‹ ì— ì‚¬ìš©í•  ë³€ìˆ˜
 	//char buf[BUFSIZE];
 	//const char* testdata[] = {
-	//	"¾È³çÇÏ¼¼¿ä",
-	//	"¹İ°¡¿ö¿ä",
-	//	"¿À´Ãµû¶ó ÇÒ ÀÌ¾ß±â°¡ ¸¹À» °Í °°³×¿ä",
-	//	"Àúµµ ±×·¸³×¿ä",
+	//	"ì•ˆë…•í•˜ì„¸ìš”",
+	//	"ë°˜ê°€ì›Œìš”",
+	//	"ì˜¤ëŠ˜ë”°ë¼ í•  ì´ì•¼ê¸°ê°€ ë§ì„ ê²ƒ ê°™ë„¤ìš”",
+	//	"ì €ë„ ê·¸ë ‡ë„¤ìš”",
 	//};
 	//int len;
-	//// ¼­¹ö¿Í µ¥ÀÌÅÍ Åë½Å
+	//// ì„œë²„ì™€ ë°ì´í„° í†µì‹ 
 	//for (int i = 0; i < 4; i++) {
-	//	// µ¥ÀÌÅÍ ÀÔ·Â(½Ã¹Ä·¹ÀÌ¼Ç)
+	//	// ë°ì´í„° ì…ë ¥(ì‹œë®¬ë ˆì´ì…˜)
 	//	len = (int)strlen(testdata[i]);
 	//	strncpy(buf, testdata[i], len);
-	//	// µ¥ÀÌÅÍ º¸³»±â(°íÁ¤ ±æÀÌ)
+	//	// ë°ì´í„° ë³´ë‚´ê¸°(ê³ ì • ê¸¸ì´)
 	//	retval = send(sock, (char *)&len, sizeof(int), 0);
 	//	if (retval == SOCKET_ERROR) {
 	//		err_display("send()");
 	//		break;
 	//	}
-	//	// µ¥ÀÌÅÍ º¸³»±â(°¡º¯ ±æÀÌ)
+	//	// ë°ì´í„° ë³´ë‚´ê¸°(ê°€ë³€ ê¸¸ì´)
 	//	retval = send(sock, buf, len, 0);
 	//	if (retval == SOCKET_ERROR) {
 	//		err_display("send()");
 	//		break;
 	//	}
-	//	printf("[TCP Å¬¶óÀÌ¾ğÆ®] %d+%d¹ÙÀÌÆ®¸¦ "
-	//		"º¸³Â½À´Ï´Ù.\n", (int)sizeof(int), retval);
+	//	printf("[TCP í´ë¼ì´ì–¸íŠ¸] %d+%dë°”ì´íŠ¸ë¥¼ "
+	//		"ë³´ëƒˆìŠµë‹ˆë‹¤.\n", (int)sizeof(int), retval);
 	//}
 
 	while (true)
@@ -104,10 +104,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.Clear();
 
-	// ¼ÒÄÏ ´İ±â
+	// ì†Œì¼“ ë‹«ê¸°
 	// closesocket(sock);
 
-	// À©¼Ó Á¾·á
+	// ìœˆì† ì¢…ë£Œ
 	WSACleanup();
 
 	return (int)msg.wParam;
@@ -116,9 +116,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 
 //
-//  ÇÔ¼ö: MyRegisterClass()
+//  í•¨ìˆ˜: MyRegisterClass()
 //
-//  ¿ëµµ: Ã¢ Å¬·¡½º¸¦ µî·ÏÇÕ´Ï´Ù.
+//  ìš©ë„: ì°½ í´ë˜ìŠ¤ë¥¼ ë“±ë¡í•©ë‹ˆë‹¤.
 //
 ATOM MyRegisterClass(HINSTANCE hInstance)
 {
@@ -142,18 +142,18 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 }
 
 //
-//   ÇÔ¼ö: InitInstance(HINSTANCE, int)
+//   í•¨ìˆ˜: InitInstance(HINSTANCE, int)
 //
-//   ¿ëµµ: ÀÎ½ºÅÏ½º ÇÚµéÀ» ÀúÀåÇÏ°í ÁÖ Ã¢À» ¸¸µì´Ï´Ù.
+//   ìš©ë„: ì¸ìŠ¤í„´ìŠ¤ í•¸ë“¤ì„ ì €ì¥í•˜ê³  ì£¼ ì°½ì„ ë§Œë“­ë‹ˆë‹¤.
 //
-//   ÁÖ¼®:
+//   ì£¼ì„:
 //
-//        ÀÌ ÇÔ¼ö¸¦ ÅëÇØ ÀÎ½ºÅÏ½º ÇÚµéÀ» Àü¿ª º¯¼ö¿¡ ÀúÀåÇÏ°í
-//        ÁÖ ÇÁ·Î±×·¥ Ã¢À» ¸¸µç ´ÙÀ½ Ç¥½ÃÇÕ´Ï´Ù.
+//        ì´ í•¨ìˆ˜ë¥¼ í†µí•´ ì¸ìŠ¤í„´ìŠ¤ í•¸ë“¤ì„ ì „ì—­ ë³€ìˆ˜ì— ì €ì¥í•˜ê³ 
+//        ì£¼ í”„ë¡œê·¸ë¨ ì°½ì„ ë§Œë“  ë‹¤ìŒ í‘œì‹œí•©ë‹ˆë‹¤.
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-	hInst = hInstance; // ÀÎ½ºÅÏ½º ÇÚµéÀ» Àü¿ª º¯¼ö¿¡ ÀúÀåÇÕ´Ï´Ù.
+	hInst = hInstance; // ì¸ìŠ¤í„´ìŠ¤ í•¸ë“¤ì„ ì „ì—­ ë³€ìˆ˜ì— ì €ì¥í•©ë‹ˆë‹¤.
 
 	HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT, 0, FRAME_WIDTH, FRAME_HEIGHT, nullptr, nullptr, hInstance, nullptr);
@@ -170,13 +170,13 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 }
 
 //
-//  ÇÔ¼ö: WndProc(HWND, UINT, WPARAM, LPARAM)
+//  í•¨ìˆ˜: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
-//  ¿ëµµ: ÁÖ Ã¢ÀÇ ¸Ş½ÃÁö¸¦ Ã³¸®ÇÕ´Ï´Ù.
+//  ìš©ë„: ì£¼ ì°½ì˜ ë©”ì‹œì§€ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤.
 //
-//  WM_COMMAND  - ÀÀ¿ë ÇÁ·Î±×·¥ ¸Ş´º¸¦ Ã³¸®ÇÕ´Ï´Ù.
-//  WM_PAINT    - ÁÖ Ã¢À» ±×¸³´Ï´Ù.
-//  WM_DESTROY  - Á¾·á ¸Ş½ÃÁö¸¦ °Ô½ÃÇÏ°í ¹İÈ¯ÇÕ´Ï´Ù.
+//  WM_COMMAND  - ì‘ìš© í”„ë¡œê·¸ë¨ ë©”ë‰´ë¥¼ ì²˜ë¦¬í•©ë‹ˆë‹¤.
+//  WM_PAINT    - ì£¼ ì°½ì„ ê·¸ë¦½ë‹ˆë‹¤.
+//  WM_DESTROY  - ì¢…ë£Œ ë©”ì‹œì§€ë¥¼ ê²Œì‹œí•˜ê³  ë°˜í™˜í•©ë‹ˆë‹¤.
 //
 //
 
@@ -186,6 +186,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	HBITMAP hBitmap;
 	HDC mainHDC;
 	HDC memdc;		//menuDC
+	HDC lobbydc;
 	HDC gamedc;
 	HDC game2dc;
 
@@ -210,17 +211,26 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
 			DeleteDC(memdc);
 		}
+
+		else if (framework.NowScene == LOBBY) {
+			hBitmap = CreateCompatibleBitmap(mainHDC, FRAME_WIDTH, FRAME_HEIGHT);
+			lobbydc = CreateCompatibleDC(mainHDC);
+			SelectObject(lobbydc, hBitmap);
+			framework.OnDraw(lobbydc);
+			BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, lobbydc, 0, 0, SRCCOPY);
+			DeleteDC(lobbydc);
+		}
 		
-		else if (framework.NowScene == GAME) {
-			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamesceneÀÏ¶© memdc°¡ ±æ¾î¾ß ÇÔ
-			gamedc = CreateCompatibleDC(mainHDC);
-			SelectObject(gamedc, hBitmap);
-			framework.OnDraw(gamedc);
-			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, gamedc, framework.mainCamera->m_vLookAt.x, framework.mainCamera->m_vLookAt.y, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
-			DeleteDC(gamedc);
+		else if (framework.NowScene == STAGE2) {
+			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, STAGE2_HEIGHT);		//gamesceneï¿½Ï¶ï¿½ memdcï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½
+			game2dc = CreateCompatibleDC(mainHDC);
+			SelectObject(game2dc, hBitmap);
+			framework.OnDraw(game2dc);
+			StretchBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, game2dc, framework.mainCamera->m_vLookAt.x, framework.mainCamera->m_vLookAt.y, FRAME_WIDTH, FRAME_HEIGHT, SRCCOPY);
+			DeleteDC(game2dc);
 		}
 		else {		// framework.NowScene == GAME
-			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamesceneÀÏ¶© memdc°¡ ±æ¾î¾ß ÇÔ
+			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamesceneì¼ë• memdcê°€ ê¸¸ì–´ì•¼ í•¨
 			gamedc = CreateCompatibleDC(mainHDC);
 			SelectObject(gamedc, hBitmap);
 			framework.OnDraw(gamedc);
@@ -270,7 +280,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_DESTROY:
 	{
-		FreeConsole();	// ÄÜ¼ÖÃ¢ ´İ±â
+		FreeConsole();	// ì½˜ì†”ì°½ ë‹«ê¸°
 		PostQuitMessage(0);
 	}
 	break;

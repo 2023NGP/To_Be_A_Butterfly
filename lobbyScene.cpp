@@ -26,9 +26,9 @@ void lobbyScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 		case VK_RETURN:
 			Scene* scene = framework.CurScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
-			framework.CurScene = new gameScene;
+			framework.CurScene = new stage2Scene;
 			framework.CurScene->init();
-			framework.NowScene = GAME;
+			framework.NowScene = STAGE2;
 			delete scene;
 			break;
 		}
