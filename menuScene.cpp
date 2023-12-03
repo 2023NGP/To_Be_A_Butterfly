@@ -45,9 +45,9 @@ void menuScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 		case VK_RETURN:
 			bgSound_m->release();
 			Scene* scene = framework.CurScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
-			framework.CurScene = new stage2Scene;
+			framework.CurScene = new lobbyScene;
 			framework.CurScene->init();
-			framework.NowScene = STAGE2;
+			framework.NowScene = LOBBY;
 			delete scene;
 			break;
 

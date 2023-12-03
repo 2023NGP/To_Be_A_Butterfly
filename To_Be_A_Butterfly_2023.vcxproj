@@ -146,6 +146,7 @@
     <ClInclude Include="GameFramework.h" />
     <ClInclude Include="Item.h" />
     <ClInclude Include="menuScene.h" />
+    <ClInclude Include="lobbyScene.h">
     <ClInclude Include="NetWork.h" />
     <ClInclude Include="overScene.h" />
     <ClInclude Include="Player.h" />
@@ -166,7 +167,8 @@
     <ClCompile Include="clearScene.cpp" />
     <ClCompile Include="client.cpp" />
     <ClCompile Include="GameFramework.cpp" />
-    <ClCompile Include="Item.cpp" />
+   
+    <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="menuScene.cpp" />
     <ClCompile Include="NetWork.cpp" />
