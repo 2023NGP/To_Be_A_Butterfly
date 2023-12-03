@@ -85,21 +85,29 @@ typedef struct tagStoreData
 	bool start;
 }STORE_DATA;
 
-
 //////////////////////////////////// 
 
 // 체력 Up 아이템 (Heart)
-struct Heart
+typedef struct Heart
 {
 	int	index;
 	POS	pos;
-};
+}HEART;
 
 // Coin 아이템;
-struct Coin
+typedef struct Coin
 {
 	int	index;
 	POS	pos;
+}COIN;
+
+//Heart + Coin Struct
+struct Iteminfo
+{
+	int iSize = 0;
+	HEART* heart;
+	COIN* coin;
 };
+
 
 #endif // !__STRUCT_H__

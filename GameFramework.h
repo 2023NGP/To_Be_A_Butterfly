@@ -1,6 +1,7 @@
 #pragma once
 
-enum SCENELIST{MENU ,GAME, STAGE2, LOBBY};
+// 타이틀, 스테이지, 로비, 점수, 클리어, 오버
+enum SCENELIST{MENU ,GAME, STAGE2, LOBBY, SCORE, GAME_CLEAR, GAME_OVER};
 
 class WGameFramework
 {

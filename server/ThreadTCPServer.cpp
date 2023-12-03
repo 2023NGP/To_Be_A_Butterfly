@@ -2,7 +2,7 @@
 #include "pch.h"
 
 // 스레드
-struct MyThread 
+struct MyThread
 {
 	int iIndex = 0;
 	SOCKET sock = 0;
@@ -18,9 +18,10 @@ bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex);
 void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend);
 bool SendPlayerInit(SOCKET sock, int PlayerIndex);
 void CheckEnding(int iCurIndex);
+
+void CheckCollision(int index);
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos);
 bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
-bool Check_Collision();
 
 
 HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
@@ -38,6 +39,9 @@ bool isGameStart = false;
 
 // 게임 종료판정 관련
 bool ending = false;
+
+// 아이템 관련 (일단 10개)
+Iteminfo itemInfo[10];
 
 // 오류 메시지를 생성하고 콘솔에 출력하는 함수
 void err_display(char* msg)
@@ -94,7 +98,7 @@ DWORD WINAPI ServerMain(LPVOID arg)
 	{
 		if (clientCount == 3)   // 클라 3명이면 스타트
 		{
-			Timer.Tick(60.0f);		
+			Timer.Tick(60.0f);
 			// 매순간 해줘야하는 거 여기 둔다
 			if (!playerInit.start)
 				CountStart();
@@ -107,7 +111,7 @@ DWORD WINAPI ServerMain(LPVOID arg)
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
 	MyThread* pThread = (MyThread*)arg;
-	SOCKET client_sock = (SOCKET)arg;
+	SOCKET client_sock = (SOCKET)pThread->sock;
 	int curIndex = pThread->iIndex - 1; // 현재 스레드 인덱스, 배열 인덱스로 사용해서 -1
 
 	int retval;
@@ -153,7 +157,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		SetEvent(clientEvent[curIndex]);
 	}
 
-
 	if (--clientCount >= 2)
 	{
 		for (int i = 0; i < 3; ++i)
@@ -161,12 +164,16 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			// 자신을 참조하던 클라이언트를 찾음
 			if (waitClientIndex[i] == curIndex)
 			{
-				waitClientIndex[i] = waitClientIndex[curIndex]; // 자신이 참조하고있던 인덱스로 바꿔줌
+				// 자신이 참조하고 있던 인덱스로 바꿔줌
+				waitClientIndex[i] = waitClientIndex[curIndex];
+				// 자신이 참조하고 있던 인덱스를 초기화
 				waitClientIndex[curIndex] = -1;
+				// 더 이상 검색할 필요가 없으므로 반복문을 종료
 				break;
 			}
 		}
 	}
+
 
 	// 이벤트 제거
 	CloseHandle(clientEvent[curIndex]);
@@ -184,7 +191,7 @@ int main(int argc, char* argv[])
 {
 	// ServerMain 스레드
 	CreateThread(NULL, 0, ServerMain, 0, 0, NULL);
-	
+
 	int retval;
 
 	// 윈속 초기화
@@ -227,7 +234,7 @@ int main(int argc, char* argv[])
 
 	MyThread tThread;
 	tThread.iIndex = 0;
-	while (1) 
+	while (1)
 	{
 		// accept()
 		addrlen = sizeof(clientaddr);
@@ -237,19 +244,22 @@ int main(int argc, char* argv[])
 			break;
 		}
 
+		// 메모리 대역폭을 빠르게 사용하도록 함(작은 데이터 보낼 떄 유리)
+		int nagleopt = TRUE;
+		setsockopt(client_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&nagleopt, sizeof(nagleopt));
+
+
 		tThread.sock = client_sock;
 		++clientCount;
 		++tThread.iIndex;
 
 		// 접속한 클라이언트 정보 출력
-		char addr[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
-			addr, ntohs(clientaddr.sin_port));
+			inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 
 		// 스레드 생성
-		hThread = CreateThread(NULL, 0, ProcessClient,
-			(LPVOID)client_sock, 0, NULL);
+		hThread = CreateThread(NULL, 0, ProcessClient, &tThread, 0, NULL);
+
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}
@@ -360,6 +370,95 @@ bool SendPlayerInit(SOCKET sock, int PlayerIndex)
 	return TRUE;
 }
 
+bool SendRecv_AttackInfo(SOCKET sock, int clientIndex)
+{
+	int retval;
+
+	// 공격 정보 받기 - 1. 벡터의 크기
+	int iSize = 0;
+	retval = recvn(sock, (char*)&iSize, sizeof(int), 0);
+	if (retval == SOCKET_ERROR)
+	{
+		err_display("recv()");
+		return FALSE;
+	}
+	else if (retval == 0)
+		return FALSE;
+
+	itemInfo[clientIndex].iSize = iSize;
+
+	if (iSize != 0)
+	{
+		// 동적배열 초기화
+		delete[] itemInfo[clientIndex].coin;
+		itemInfo[clientIndex].coin = new COIN[iSize];
+		delete[] itemInfo[clientIndex].heart;
+		itemInfo[clientIndex].heart = new HEART[iSize];
+
+		// 코인 정보 받기 - 2. 벡터
+		retval = recvn(sock, (char*)itemInfo[clientIndex].coin, iSize * sizeof(COIN), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("recv()");
+			return FALSE;
+		}
+		else if (retval == 0)
+			return FALSE;
+
+		// 하트 정보 받기 - 2. 벡터
+		retval = recvn(sock, (char*)itemInfo[clientIndex].heart, iSize * sizeof(HEART), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("recv()");
+			return FALSE;
+		}
+		else if (retval == 0)
+			return FALSE;
+
+	}
+
+	////////////////////////////////////////////////////////////////////
+	//충돌체크
+	CheckCollision(clientIndex);
+	////////////////////////////////////////////////////////////////////
+
+
+	for (int i = 0; i < 3; i++)
+	{
+		//if (i == clientIndex)
+		//    continue;
+
+		// 공격 정보 보내기 - 1. 배열의 크기
+		retval = send(sock, (char*)&itemInfo[i].iSize, sizeof(int), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("recv()");
+			return FALSE;
+		}
+		iSize = itemInfo[i].iSize;
+
+		if (iSize == 0)
+			continue;
+
+		// coin 정보 보내기 - 2. 배열
+		retval = send(sock, (char*)itemInfo[i].coin, iSize * sizeof(Iteminfo), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("recv()");
+			return FALSE;
+		}
+		// heart 정보 보내기 - 2. 배열
+		retval = send(sock, (char*)itemInfo[i].heart, iSize * sizeof(Iteminfo), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("recv()");
+			return FALSE;
+		}
+	}
+
+	return TRUE;
+
+}
 
 // 엔딩 판정
 void CheckEnding(int iCurIndex)
@@ -392,6 +491,7 @@ void CheckEnding(int iCurIndex)
 
 	}
 }
+
 
 ///////////////////////충돌 체크 (-ing)/////////////////////////////
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos)
@@ -426,6 +526,17 @@ bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y)
 }
 
 // 여기서 충돌 체크
-bool Check_Collision() {
-	return false;
+void CheckCollision(int index)
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		// 자기 자신 충돌x
+		if (index == i)
+			continue;
+
+		// 플레이어 죽은 상태면 충돌x
+		if (storeData.playersInfo[i].isDead)
+			continue;
+
+	}
 }

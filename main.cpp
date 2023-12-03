@@ -203,6 +203,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
 			DeleteDC(memdc);
 		}
+		else if (framework.NowScene == LOBBY) {
+			hBitmap = CreateCompatibleBitmap(mainHDC, FRAME_WIDTH, FRAME_HEIGHT);
+			memdc = CreateCompatibleDC(mainHDC);
+			SelectObject(memdc, hBitmap);
+			framework.OnDraw(memdc);
+			BitBlt(mainHDC, 0, 0, FRAME_WIDTH, FRAME_HEIGHT, memdc, 0, 0, SRCCOPY);
+			DeleteDC(memdc);
+		}
 		else if (framework.NowScene == GAME) {
 			hBitmap = CreateCompatibleBitmap(mainHDC, MEM_WIDTH, MEM_HEIGHT);		//gamescene일땐 memdc가 길어야 함
 			gamedc = CreateCompatibleDC(mainHDC);
@@ -238,7 +246,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			else
 				break;
 		case 2:
-			if (framework.NowScene == MENU) {
+			if (framework.NowScene == MENU || framework.NowScene == LOBBY) {
 				framework.curFrameTime = clock();
 				framework.OnUpdate(framework.GetTick());
 				framework.prevFrameTime = framework.curFrameTime;

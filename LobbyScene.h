@@ -1,17 +1,9 @@
 #pragma once
-#include "lobbyScene.h"
+#include "scene.h"
 
 class lobbyScene : public Scene {
 public:
 	CImage background;
-	CImage normalCloud, rainCloud, darkCloud, cloud;
-	CImage press;
-	int cloudSizeCount;
-	int cloudSize;
-	int rainCloudSize;
-	int darkCloudSize;
-	int pressText;
-	int ren; //애니메이션을 위한 변수
 
 
 public:
