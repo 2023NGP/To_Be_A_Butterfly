@@ -60,6 +60,8 @@ int recvn(SOCKET s, char* buf, int len, int flags)
 
 NetWork::NetWork()
 {
+	hServerProcess = CreateEvent(NULL, FALSE, FALSE, NULL);
+
 	// 윈속 초기화
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 2), &wsa);
@@ -78,57 +80,15 @@ NetWork::NetWork()
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 	printf("connect 성공");
 
-	// 데이터 통신에 사용할 변수
-	//char buf[1024];
-	//const char* testdata[] = {
-	//	"안녕하세요",
-	//	"반가워요",
-	//	"오늘따라 할 이야기가 많을 것 같네요",
-	//	"저도 그렇네요",
-	//};
-	//int len;
-	//// 서버와 데이터 통신
-	//for (int i = 0; i < 4; i++) {
-	//	// 데이터 입력(시뮬레이션)
-	//	len = (int)strlen(testdata[i]);
-	//	strncpy(buf, testdata[i], len);
-	//	// 데이터 보내기(고정 길이)
-	//	retval = send(sock, (char*)&len, sizeof(int), 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("send()");
-	//		break;
-	//	}
-	//	// 데이터 보내기(가변 길이)
-	//	retval = send(sock, buf, len, 0);
-	//	if (retval == SOCKET_ERROR) {
-	//		err_display("send()");
-	//		break;
-	//	}
-	//	printf("[TCP 클라이언트] %d+%d바이트를 "
-	//		"보냈습니다.\n", (int)sizeof(int), retval);
-	//}
-
-	while (1)
+	char buf[BUFSIZE + 1];
+	while(1)
 	{
-		WaitForSingleObject(hSocketEvent, INFINITE);
-
-		// 이곳에 각각의 송수신 함수 추가
-		//////////////////////////////////////////////////////////
-
-		retval = RecvPlayerInit(sock);
-		if (retval == FALSE)
+		int retval = recv(sock, buf, BUFSIZE, MSG_WAITALL);
+		cout << retval << endl;
+		if (retval != -1) {
 			break;
-
-		retval = SendRecvPlayerInfo(sock);
-		if (retval == FALSE)
-			break;
-
-
-		SetEvent(hGameEvent);
+		}
 	}
-
-	SetEvent(hGameEvent);
-
 }
 
 NetWork::~NetWork()
