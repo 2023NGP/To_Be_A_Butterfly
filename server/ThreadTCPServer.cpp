@@ -2,7 +2,7 @@
 #include "pch.h"
 
 // 스레드
-struct MyThread 
+struct MyThread
 {
 	int iIndex = 0;
 	SOCKET sock = 0;
@@ -20,8 +20,6 @@ bool SendPlayerInit(SOCKET sock, int PlayerIndex);
 void CheckEnding(int iCurIndex);
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos);
 bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
-bool Check_Collision();
-void RecvClientPos(SOCKET client_sock);
 
 
 HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
@@ -95,7 +93,7 @@ DWORD WINAPI ServerMain(LPVOID arg)
 	{
 		if (clientCount == 3)   // 클라 3명이면 스타트
 		{
-			Timer.Tick(60.0f);		
+			Timer.Tick(60.0f);
 			// 매순간 해줘야하는 거 여기 둔다
 			if (!playerInit.start)
 				CountStart();
@@ -104,6 +102,7 @@ DWORD WINAPI ServerMain(LPVOID arg)
 	}
 }
 
+void RecvClientPos(SOCKET client_sock);
 
 // 클라이언트와 데이터 통신
 DWORD WINAPI ProcessClient(LPVOID arg)
@@ -128,13 +127,13 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		if (!isGameStart)
 		{
 			if (clientCount < 3)
-				WaitForSingleObject(clientEvent[curIndex], INFINITE);
+				continue;
 			else
-			{
-				SetEvent(clientEvent[curIndex]);
 				isGameStart = true;
-			}
 		}
+
+		if (clientCount <= 2)
+			WaitForSingleObject(clientEvent[waitClientIndex[curIndex]], INFINITE);
 
 		// 타이머, 플레이어 배치
 		if (!SendPlayerInit(pThread->sock, curIndex))
@@ -152,6 +151,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 		}
 		//////////////////////////////////////////////////////
 
+		SetEvent(clientEvent[curIndex]);
 	}
 
 	if (--clientCount >= 2)
@@ -161,12 +161,16 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			// 자신을 참조하던 클라이언트를 찾음
 			if (waitClientIndex[i] == curIndex)
 			{
-				waitClientIndex[i] = waitClientIndex[curIndex]; // 자신이 참조하고있던 인덱스로 바꿔줌
+				// 자신이 참조하고 있던 인덱스로 바꿔줌
+				waitClientIndex[i] = waitClientIndex[curIndex];
+				// 자신이 참조하고 있던 인덱스를 초기화
 				waitClientIndex[curIndex] = -1;
+				// 더 이상 검색할 필요가 없으므로 반복문을 종료
 				break;
 			}
 		}
 	}
+
 
 	// 이벤트 제거
 	CloseHandle(clientEvent[curIndex]);
@@ -184,7 +188,7 @@ int main(int argc, char* argv[])
 {
 	// ServerMain 스레드
 	CreateThread(NULL, 0, ServerMain, 0, 0, NULL);
-	
+
 	int retval;
 
 	// 윈속 초기화
@@ -227,7 +231,7 @@ int main(int argc, char* argv[])
 
 	MyThread tThread;
 	tThread.iIndex = 0;
-	while (1) 
+	while (1)
 	{
 		// accept()
 		addrlen = sizeof(clientaddr);
@@ -242,10 +246,8 @@ int main(int argc, char* argv[])
 		tThread.iIndex = clientCount - 1;	// 스레드 아이디,		 [ 0 ~ 2 ]
 
 		// 접속한 클라이언트 정보 출력
-		char addr[INET_ADDRSTRLEN];
-		inet_ntop(AF_INET, &clientaddr.sin_addr, addr, sizeof(addr));
 		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
-			addr, ntohs(clientaddr.sin_port));
+			inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 
 		// 스레드 생성
 		hThread = CreateThread(NULL, 0, ProcessClient, &tThread, 0, NULL);
@@ -402,6 +404,7 @@ void CheckEnding(int iCurIndex)
 	}
 }
 
+
 ///////////////////////충돌 체크 (-ing)/////////////////////////////
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos)
 {
@@ -435,6 +438,17 @@ bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y)
 }
 
 // 여기서 충돌 체크
-bool Check_Collision() {
-	return false;
+void CheckCollision(int index)
+{
+	for (int i = 0; i < 3; ++i)
+	{
+		// 자기 자신 충돌x
+		if (index == i)
+			continue;
+
+		// 플레이어 죽은 상태면 충돌x
+		if (storeData.playersInfo[i].isDead)
+			continue;
+
+	}
 }

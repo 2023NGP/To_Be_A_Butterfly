@@ -1,15 +1,14 @@
 #include "stdafx.h"
 #include "HPBar.h"
 #include "stage2Scene.h"
+
 //memdc에 그려주는 역할, frame
 extern WGameFramework framework;
-
 
 stage2Scene::~stage2Scene()
 {
 
 }
-
 void  stage2Scene::InitSound()
 {
     // 사운드 INIT
@@ -24,7 +23,6 @@ void  stage2Scene::InitSound()
 
     pSystem->playSound(bgSound, NULL, 0, &Channel[0]);
 }
-
 void stage2Scene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
     FILE* fp;
     fopen_s(&fp, "image/map2.txt", "r");
@@ -213,7 +211,6 @@ void stage2Scene::drawBox(HDC hdc) {
         Rectangle(hdc, cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT);
     }
 }
-
 void stage2Scene::moveItem() {
     for (int i = 0; i < item_index; ++i) {
         if (item[i].GetIsGot()) {
@@ -221,7 +218,6 @@ void stage2Scene::moveItem() {
         }
     }
 }
-
 void stage2Scene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 {
     switch (iMessage)
@@ -251,7 +247,6 @@ void stage2Scene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
     break;
     }
 }
-
 bool stage2Scene::getItemCheck() {
     for (int i = 0; i < item_index; ++i) {
         if (item[i].GetIsGot() == false)
@@ -259,7 +254,6 @@ bool stage2Scene::getItemCheck() {
     }
     return true;
 }
-
 //애니메이션 있으면 여기서 업데이트
 void stage2Scene::Update(const float frameTime)
 {
@@ -267,7 +261,7 @@ void stage2Scene::Update(const float frameTime)
     if (player.isShocked)
         player.shockTime += frameTime;
 
-    if (player.shockTime >= 20) {
+    if (player.shockTime >= 0.5) {
         player.shockTime = 0;
         player.isShocked = FALSE;
     }
@@ -503,8 +497,6 @@ void stage2Scene::Render(HDC hdc)
     drawItems(hdc);
     bar.Draw(hdc);
 }
-
-
 
 //void gameScene::Release() {
 //
