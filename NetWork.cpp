@@ -81,11 +81,13 @@ NetWork::NetWork()
 	printf("connect 성공");
 
 	char buf[BUFSIZE + 1];
+	cout << retval << endl;
 	while(1)
 	{
-		int retval = recv(sock, buf, BUFSIZE, MSG_WAITALL);
+		int retval = recv(sock, buf, BUFSIZE, 0);
 		cout << retval << endl;
 		if (retval != -1) {
+			cout << "그만두기" << endl;
 			break;
 		}
 	}

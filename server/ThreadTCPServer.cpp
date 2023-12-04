@@ -21,7 +21,7 @@ void CheckEnding(int iCurIndex);
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos);
 bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
 
-
+MyThread mThread[3]{};			// 스레드 배열로 관리
 HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
 HANDLE hGameStartEvent;
 int waitClientIndex[3];			// 대기 클라이언트 관련
@@ -135,14 +135,16 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			else
 			{
 				SetEvent(hGameStartEvent);
-				printf("%d 클라이언트 시작~~", pThread->iIndex);
 				const char* str = "보내요";
-				retval = send(pThread->sock, str, sizeof(str), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("send()");
+				for (int i = 0; i < 3; ++i) {
+					printf("%d 클라이언트 시작~~\n", mThread[i].iIndex);
+					retval = send(mThread[i].sock, str, strlen(str), 0);
+					printf("%d", retval);
+					if (retval == SOCKET_ERROR)
+					{
+						err_display("send()");
+					}
 				}
-				// SendRecv_PlayerInfo(pThread->sock, pThread->iIndex);
 				isGameStart = true;
 			}
 		}
@@ -252,16 +254,18 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		tThread.sock = client_sock;
-		++clientCount;						// 접속한 클라이언트 수, [ 1 ~ 3 ]
-		tThread.iIndex = clientCount - 1;	// 스레드 아이디,		 [ 0 ~ 2 ]
+		mThread[clientCount].sock = client_sock;
+		mThread[clientCount].iIndex = clientCount;
+		// tThread.sock = client_sock;
+		++clientCount;						// 접속한 클라이언트 수, [ 0 ~ 2 ]
+		// tThread.iIndex = clientCount - 1;	// 스레드 아이디,		 [ 0 ~ 2 ]
 
 		// 접속한 클라이언트 정보 출력
 		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 			inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 
 		// 스레드 생성
-		hThread = CreateThread(NULL, 0, ProcessClient, &tThread, 0, NULL);
+		hThread = CreateThread(NULL, 0, ProcessClient, &mThread[clientCount], 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
 	}

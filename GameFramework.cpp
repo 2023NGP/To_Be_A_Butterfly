@@ -42,8 +42,6 @@ void WGameFramework::Create(HWND hWnd)
 	mainCamera = new Camera;
 	net = new NetWork;
 
-	printf("안 기다리고 있지롱");
-
 	CurScene->init();
 }
 
