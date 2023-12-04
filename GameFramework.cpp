@@ -42,7 +42,6 @@ void WGameFramework::Create(HWND hWnd)
 	mainCamera = new Camera;
 	net = new NetWork;
 
-
 	CurScene->init();
 }
 

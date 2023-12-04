@@ -12,6 +12,7 @@ public:
 	NetWork();
 	~NetWork();
 
+	bool RecvInitData();
 	void SendClientPos(int px, int py);
 	void RecvOtherClientPos();
 

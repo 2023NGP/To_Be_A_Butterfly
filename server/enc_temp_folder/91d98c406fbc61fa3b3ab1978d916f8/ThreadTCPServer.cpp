@@ -21,9 +21,8 @@ void CheckEnding(int iCurIndex);
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos);
 bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
 
-MyThread mThread[3]{};			// 스레드 배열로 관리
+
 HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
-HANDLE hGameStartEvent;
 int waitClientIndex[3];			// 대기 클라이언트 관련
 int clientCount = 0;			// 접속한 클라이언트 개수
 
@@ -125,69 +124,66 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 	while (1)
 	{
+		// 3명이 시작하면 게임 시작
 		if (!isGameStart)
 		{
-			if (clientCount <= 2)
-			{
-				printf("%d 클라이언트 기다리는 중", pThread->iIndex);
-				WaitForSingleObject(hGameStartEvent, INFINITE);
-			}
+			if (clientCount < 3)
+				continue;
 			else
-			{
-				SetEvent(hGameStartEvent);
-				const char* str = "보내요";
-				printf("%d 클라이언트 시작~~\n", pThread->iIndex);
-				retval = send(pThread->sock, str, strlen(str), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("send()");
-				}
 				isGameStart = true;
-			}
 		}
-		//printf("위치 정보 수신");
 
-		//// 타이머, 플레이어 배치 (수신 실패 시 루프 종료)
-		//if (!SendPlayerInit(pThread->sock, pThread->iIndex))
-		//{
-		//	SetEvent(clientEvent[pThread->iIndex]);
-		//	break;
-		//}
+		// 좀 그렇긴해 ----------------------
+		if (pThread->iIndex >= 4) {
+			break;
+		}
 
-		////플레이어 데이터 받기 (송신 실패 시 루프 종료)
-		//if (!SendRecv_PlayerInfo(pThread->sock, pThread->iIndex))
-		//{
-		//	SetEvent(clientEvent[pThread->iIndex]);
-		//	break;
-		//}
+		if (clientCount <= 2)
+			WaitForSingleObject(clientEvent[waitClientIndex[curIndex]], INFINITE);
+
+		// 타이머, 플레이어 배치 (수신 실패 시 루프 종료)
+		if (!SendPlayerInit(pThread->sock, curIndex))
+		{
+			SetEvent(clientEvent[curIndex]);
+			break;
+		}
+
+		//플레이어 데이터 받기 (송신 실패 시 루프 종료)
+		if (!SendRecv_PlayerInfo(pThread->sock, curIndex))
+		{
+			SetEvent(clientEvent[curIndex]);
+			break;
+		}
+
+
+
+		SetEvent(clientEvent[curIndex]);
 	}
 
-	//if (--clientCount >= 2)
-	//{
-	//	for (int i = 0; i < 3; ++i)
-	//	{
-	//		// 자신을 참조하던 클라이언트를 찾음
-	//		if (waitClientIndex[i] == curIndex)
-	//		{
-	//			// 자신이 참조하고 있던 인덱스로 바꿔줌
-	//			waitClientIndex[i] = waitClientIndex[curIndex];
-	//			// 자신이 참조하고 있던 인덱스를 초기화
-	//			waitClientIndex[curIndex] = -1;
-	//			// 더 이상 검색할 필요가 없으므로 반복문을 종료
-	//			break;
-	//		}
-	//	}
-	//}
+	if (--clientCount >= 2)
+	{
+		for (int i = 0; i < 3; ++i)
+		{
+			// 자신을 참조하던 클라이언트를 찾음
+			if (waitClientIndex[i] == curIndex)
+			{
+				// 자신이 참조하고 있던 인덱스로 바꿔줌
+				waitClientIndex[i] = waitClientIndex[curIndex];
+				// 자신이 참조하고 있던 인덱스를 초기화
+				waitClientIndex[curIndex] = -1;
+				// 더 이상 검색할 필요가 없으므로 반복문을 종료
+				break;
+			}
+		}
+	}
 
 
 	// 이벤트 제거
-	CloseHandle(clientEvent[pThread->iIndex]);
-	CloseHandle(hGameStartEvent);
+	CloseHandle(clientEvent[curIndex]);
 
 	// closesocket()
 	closesocket(pThread->sock);
 	printf("[TCP 서버] 클라이언트 종료: IP 주소=%s, 포트 번호=%d\n",	inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
-	clientCount--;
 
 	return 0;
 }
@@ -237,7 +233,6 @@ int main(int argc, char* argv[])
 		clientEvent[i] = CreateEvent(NULL, FALSE, (i < 2 ? FALSE : TRUE), NULL);
 		waitClientIndex[i] = (i == 0) ? 2 : i - 1; // 2 0 1
 	}
-	hGameStartEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 	MyThread tThread;
 	tThread.iIndex = 0;
@@ -251,20 +246,18 @@ int main(int argc, char* argv[])
 			break;
 		}
 
-		mThread[clientCount].sock = client_sock;
-		mThread[clientCount].iIndex = clientCount;
-		// tThread.sock = client_sock;
-		// tThread.iIndex = clientCount - 1;	// 스레드 아이디,		 [ 0 ~ 2 ]
+		tThread.sock = client_sock;
+		++clientCount;						// 접속한 클라이언트 수, [ 1 ~ 3 ]
+		tThread.iIndex = clientCount - 1;	// 스레드 아이디,		 [ 0 ~ 2 ]
 
 		// 접속한 클라이언트 정보 출력
 		printf("\n[TCP 서버] 클라이언트 접속: IP 주소=%s, 포트 번호=%d\n",
 			inet_ntoa(clientaddr.sin_addr), ntohs(clientaddr.sin_port));
 
 		// 스레드 생성
-		hThread = CreateThread(NULL, 0, ProcessClient, &mThread[clientCount], 0, NULL);
+		hThread = CreateThread(NULL, 0, ProcessClient, &tThread, 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
-		++clientCount;						// 접속한 클라이언트 수, [ 0 ~ 2 ]
 	}
 
 	// 소켓 닫기
@@ -363,19 +356,18 @@ void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend)
 bool SendPlayerInit(SOCKET sock, int PlayerIndex)
 {
 	int retval;
-	const char* str = "보내요";
-	//playerInit.iCount = (int)fStartTime;
-	//PLAYER_INIT_SEND tPlayerInitSend;
-	//tPlayerInitSend.start = playerInit.start;
-	//tPlayerInitSend.idx = PlayerIndex;
-	//tPlayerInitSend.iCount = playerInit.iCount;
 
-	//if (playerInit.start)
-	//{
-	//	Get_InitPos(PlayerIndex, tPlayerInitSend);
-	//}
-	//retval = send(sock, (char*)&tPlayerInitSend, sizeof(PLAYER_INIT_SEND), 0);
-	retval = send(sock, str, sizeof(str), 0);
+	playerInit.iCount = (int)fStartTime;
+	PLAYER_INIT_SEND tPlayerInitSend;
+	tPlayerInitSend.start = playerInit.start;
+	tPlayerInitSend.idx = PlayerIndex;
+	tPlayerInitSend.iCount = playerInit.iCount;
+
+	if (playerInit.start)
+	{
+		Get_InitPos(PlayerIndex, tPlayerInitSend);
+	}
+	retval = send(sock, (char*)&tPlayerInitSend, sizeof(PLAYER_INIT_SEND), 0);
 	if (retval == SOCKET_ERROR)
 	{
 		err_display("send()");

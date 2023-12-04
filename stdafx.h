@@ -48,4 +48,8 @@ using namespace std::chrono;
 #include "NetWork.h"
 #include "GameFramework.h"
 
+// server 관련 include
+#include "server/Headers/Define.h"
+#include "server/Headers/Struct.h"
+
 // 여기서 프로그램에 필요한 추가 헤더를 참조합니다.
