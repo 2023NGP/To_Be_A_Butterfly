@@ -136,14 +136,11 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			{
 				SetEvent(hGameStartEvent);
 				const char* str = "보내요";
-				for (int i = 0; i < 3; ++i) {
-					printf("%d 클라이언트 시작~~\n", mThread[i].iIndex);
-					retval = send(mThread[i].sock, str, strlen(str), 0);
-					printf("%d", retval);
-					if (retval == SOCKET_ERROR)
-					{
-						err_display("send()");
-					}
+				printf("%d 클라이언트 시작~~\n", pThread->iIndex);
+				retval = send(pThread->sock, str, strlen(str), 0);
+				if (retval == SOCKET_ERROR)
+				{
+					err_display("send()");
 				}
 				isGameStart = true;
 			}
@@ -257,7 +254,6 @@ int main(int argc, char* argv[])
 		mThread[clientCount].sock = client_sock;
 		mThread[clientCount].iIndex = clientCount;
 		// tThread.sock = client_sock;
-		++clientCount;						// 접속한 클라이언트 수, [ 0 ~ 2 ]
 		// tThread.iIndex = clientCount - 1;	// 스레드 아이디,		 [ 0 ~ 2 ]
 
 		// 접속한 클라이언트 정보 출력
@@ -268,6 +264,7 @@ int main(int argc, char* argv[])
 		hThread = CreateThread(NULL, 0, ProcessClient, &mThread[clientCount], 0, NULL);
 		if (hThread == NULL) { closesocket(client_sock); }
 		else { CloseHandle(hThread); }
+		++clientCount;						// 접속한 클라이언트 수, [ 0 ~ 2 ]
 	}
 
 	// 소켓 닫기

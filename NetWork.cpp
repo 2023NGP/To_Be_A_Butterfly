@@ -80,17 +80,7 @@ NetWork::NetWork()
 	if (retval == SOCKET_ERROR) err_quit("connect()");
 	printf("connect 성공");
 
-	char buf[BUFSIZE + 1];
-	cout << retval << endl;
-	while(1)
-	{
-		int retval = recv(sock, buf, BUFSIZE, 0);
-		cout << retval << endl;
-		if (retval != -1) {
-			cout << "그만두기" << endl;
-			break;
-		}
-	}
+
 }
 
 NetWork::~NetWork()
@@ -98,6 +88,23 @@ NetWork::~NetWork()
 	closesocket(sock);
 	// 윈속 종료
 	WSACleanup();
+}
+
+bool NetWork::RecvInitData()
+{
+	char buf[BUFSIZE + 1];
+	int retval = recv(sock, buf, BUFSIZE, 0);
+	if (retval != -1) {
+		return true;
+	}
+	return false;
+	//while (1)
+	//{
+	//	int retval = recv(sock, buf, BUFSIZE, 0);
+	//	if (retval != -1) {
+	//		return true;
+	//	}
+	//}
 }
 
 void NetWork::SendClientPos(int px, int py)
