@@ -1,12 +1,12 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS // 구형 C 함수 사용 시 경고 끄기
 #include "stdafx.h"
-// #include "common.h"
+#include "common.h"
+#include "server.h"
 #include "GameFramework.h"
 
 #define MAX_LOADSTRING 100
 
 char* SERVERIP = (char*)"127.0.0.1";
-//char* SERVERIP;
 #define SERVERPORT 9000
 #define BUFSIZE 1024
 
@@ -14,8 +14,10 @@ char* SERVERIP = (char*)"127.0.0.1";
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+
 //static WGameFramework gGameFramework;
 WGameFramework framework;
+
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -44,6 +46,27 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.prevFrameTime = framework.curFrameTime = clock();
 
+	int retval;
+	// 윈속 초기화
+	WSADATA wsa;
+	WSAStartup(MAKEWORD(2, 2), &wsa);
+
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET) err_quit("socket()");
+
+	// 소켓 생성
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+	if (sock == INVALID_SOCKET) err_quit("socket()");
+
+	// connect() : TCP프로토콜 수준에서 서버와 논리적 연결을 설정 (bind() 역할 수행, 능동적)
+	struct sockaddr_in serveraddr;
+	memset(&serveraddr, 0, sizeof(serveraddr));
+	serveraddr.sin_family = AF_INET;
+	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
+	serveraddr.sin_port = htons(SERVERPORT);
+	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
+	if (retval == SOCKET_ERROR) err_quit("connect()");
+	printf("connect 성공");
 
 	while (true)
 	{
@@ -57,10 +80,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.Clear();
 
-	// 소켓 닫기
-	// closesocket(sock);
-
-	// 윈속 종료
+	closesocket(sock);
 	WSACleanup();
 
 	return (int)msg.wParam;
@@ -233,6 +253,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_DESTROY:
 	{
+		framework.Clear();
 		FreeConsole();	// 콘솔창 닫기
 		PostQuitMessage(0);
 	}

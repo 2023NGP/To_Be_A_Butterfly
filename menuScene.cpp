@@ -1,5 +1,6 @@
 #include "menuScene.h"
 #include "stdafx.h"
+#include "server.h"
 
 extern WGameFramework framework;
 
@@ -84,7 +85,7 @@ void menuScene::Update(const float frameTime)
 		pressText = 1;
 	pressText++;
 
-	if (framework.net->RecvInitData()) {
+	if (RecvInitData()) {
 		Scene* scene = framework.CurScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
 		framework.CurScene = new stage2Scene;
 		framework.CurScene->init();

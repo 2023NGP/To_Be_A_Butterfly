@@ -62,6 +62,7 @@ NetWork::NetWork()
 {
 	hServerProcess = CreateEvent(NULL, FALSE, FALSE, NULL);
 
+
 	// 윈속 초기화
 	WSADATA wsa;
 	WSAStartup(MAKEWORD(2, 2), &wsa);
@@ -86,9 +87,11 @@ NetWork::NetWork()
 NetWork::~NetWork()
 {
 	closesocket(sock);
+
 	// 윈속 종료
 	WSACleanup();
 }
+
 
 bool NetWork::RecvInitData()
 {
@@ -111,6 +114,11 @@ void NetWork::SendClientPos(int px, int py)
 }
 void NetWork::RecvOtherClientPos()
 {
+}
+
+void NetWork::CloseNet()
+{
+	closesocket(sock);
 }
 
 bool SendRecvPlayerInfo(SOCKET sock)
