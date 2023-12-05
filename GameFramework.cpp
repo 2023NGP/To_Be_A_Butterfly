@@ -23,6 +23,7 @@ void WGameFramework::Clear()
 	delete scene;
 
 	delete mainCamera;
+	delete net;
 
 }
 
@@ -39,6 +40,7 @@ void WGameFramework::Create(HWND hWnd)
 	CurScene = new menuScene;
 	NowScene = MENU;
 	mainCamera = new Camera;
+	net = new NetWork;
 
 	CurScene->init();
 }

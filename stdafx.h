@@ -45,6 +45,7 @@ using namespace std::chrono;
 #include "clearScene.h"
 #include "resource.h"
 #include "Camera.h"
+#include "NetWork.h"
 #include "GameFramework.h"
 
 // server ฐüทร include

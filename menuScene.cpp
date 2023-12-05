@@ -85,7 +85,7 @@ void menuScene::Update(const float frameTime)
 		pressText = 1;
 	pressText++;
 
-	if (RecvInitData()) {
+	if (framework.net->RecvInitData()) {
 		Scene* scene = framework.CurScene;   ////ÇöÀç ¾ÀÀ» tmp¿¡ ³Ö°í Áö¿öÁÜ
 		framework.CurScene = new stage2Scene;
 		framework.CurScene->init();

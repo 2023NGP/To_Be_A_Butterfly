@@ -1,7 +1,6 @@
 ﻿#define _CRT_SECURE_NO_WARNINGS // 구형 C 함수 사용 시 경고 끄기
 #include "stdafx.h"
-#include "common.h"
-#include "server.h"
+// #include "common.h"
 #include "GameFramework.h"
 
 #define MAX_LOADSTRING 100
@@ -46,28 +45,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.prevFrameTime = framework.curFrameTime = clock();
 
-	int retval;
-	// 윈속 초기화
-	WSADATA wsa;
-	WSAStartup(MAKEWORD(2, 2), &wsa);
-
-	sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET) err_quit("socket()");
-
-	// 소켓 생성
-	sock = socket(AF_INET, SOCK_STREAM, 0);
-	if (sock == INVALID_SOCKET) err_quit("socket()");
-
-	// connect() : TCP프로토콜 수준에서 서버와 논리적 연결을 설정 (bind() 역할 수행, 능동적)
-	struct sockaddr_in serveraddr;
-	memset(&serveraddr, 0, sizeof(serveraddr));
-	serveraddr.sin_family = AF_INET;
-	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
-	serveraddr.sin_port = htons(SERVERPORT);
-	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR) err_quit("connect()");
-	printf("connect 성공");
-
 	while (true)
 	{
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -80,7 +57,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.Clear();
 
-	closesocket(sock);
 	WSACleanup();
 
 	return (int)msg.wParam;
