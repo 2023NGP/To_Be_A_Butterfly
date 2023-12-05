@@ -53,7 +53,7 @@ void WGameFramework::OnDraw(HDC hdc)
 void WGameFramework::OnUpdate(const float frameTime)
 {
 	CurScene->Update(frameTime);
-	mainCamera->Update(frameTime);
+	// mainCamera->Update(frameTime);
 }
 
 void WGameFramework::KeyBoard(UINT iMessage, WPARAM wParam, LPARAM lParam)

@@ -70,6 +70,9 @@ NetWork::NetWork()
 	// 소켓 생성
 	sock = socket(AF_INET, SOCK_STREAM, 0);
 	if (sock == INVALID_SOCKET) err_quit("socket()");
+	
+	u_long on = 1;
+	retval = ioctlsocket(sock, FIONBIO, &on);
 
 	// connect() : TCP프로토콜 수준에서 서버와 논리적 연결을 설정 (bind() 역할 수행, 능동적)
 	struct sockaddr_in serveraddr;
@@ -77,9 +80,21 @@ NetWork::NetWork()
 	serveraddr.sin_family = AF_INET;
 	inet_pton(AF_INET, SERVERIP, &serveraddr.sin_addr);
 	serveraddr.sin_port = htons(SERVERPORT);
-	retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
-	if (retval == SOCKET_ERROR) err_quit("connect()");
-	printf("connect 성공");
+
+	while (1) {
+	CONNECT_AGAIN:
+		retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
+		if (retval == SOCKET_ERROR) 
+		{
+			if (WSAGetLastError() == WSAEWOULDBLOCK) {
+				goto CONNECT_AGAIN;
+			}
+		}
+		printf("connect 성공");
+		break;
+	}
+
+
 
 
 }
@@ -97,7 +112,8 @@ bool NetWork::RecvInitData()
 {
 	char buf[BUFSIZE + 1];
 	int retval = recv(sock, buf, BUFSIZE, 0);
-	if (retval != -1) {
+	if (retval != SOCKET_ERROR) {
+		cout << buf << endl;
 		return true;
 	}
 	return false;
@@ -106,12 +122,14 @@ bool NetWork::RecvInitData()
 void NetWork::SendClientPos(int px, int py)
 {
 	// 데이터 보내기(고정 길이)
-	retval = send(sock, (char*)&px, sizeof(int), 0);
-	if (retval == SOCKET_ERROR) {
+	const char* str = "보내요";
+	int retval = send(sock, str, strlen(str), 0);
+	if (retval == SOCKET_ERROR)
+	{
 		err_display("send()");
 	}
-	cout << px << endl;
 }
+
 void NetWork::RecvOtherClientPos()
 {
 }
