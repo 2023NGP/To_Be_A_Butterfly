@@ -15,6 +15,7 @@ void err_display(char* msg);
 int recvn(SOCKET s, char* buf, int len, int flags);
 void CountStart();
 bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex);
+void SendInitData(MyThread* thread);
 void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend);
 bool SendPlayerInit(SOCKET sock, int PlayerIndex);
 void CheckEnding(int iCurIndex);
@@ -135,13 +136,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			else
 			{
 				SetEvent(hGameStartEvent);
-				const char* str = "보내요";
-				printf("%d 클라이언트 시작~~\n", pThread->iIndex);
-				retval = send(pThread->sock, str, strlen(str), 0);
-				if (retval == SOCKET_ERROR)
-				{
-					err_display("send()");
-				}
+				SendInitData(pThread);
 				isGameStart = true;
 			}
 		}
@@ -338,6 +333,17 @@ bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex)
 	}
 
 	return TRUE;
+}
+
+void SendInitData(MyThread* thread)
+{
+	const char* str = "보내요";
+	printf("%d 클라이언트 시작~~\n", thread->iIndex);
+	int retval = send(thread->sock, str, strlen(str), 0);
+	if (retval == SOCKET_ERROR)
+	{
+		err_display("send()");
+	}
 }
 
 // 플레이어 인덱스별 위치 설정함수
