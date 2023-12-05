@@ -24,28 +24,28 @@ void  stage2Scene::InitSound()
     pSystem->playSound(bgSound, NULL, 0, &Channel[0]);
 }
 void stage2Scene::InitCloud() {       //txt파일에서 구름 정보 받아오는 함수
-    FILE* fp;
-    fopen_s(&fp, "image/map2.txt", "r");
-    random_device rd;
-    uniform_int_distribution <int> dis(0, 49);
+    //FILE* fp;
+    //fopen_s(&fp, "image/map2.txt", "r");
+    //random_device rd;
+    //uniform_int_distribution <int> dis(0, 49);
 
-    int i = 0;
-    if (fp == NULL)//열기 실패일 때
-    {
-        perror("fopen 실패");//에러 메시지 출력
-        return;
-    }
+    //int i = 0;
+    //if (fp == NULL)//열기 실패일 때
+    //{
+    //    perror("fopen 실패");//에러 메시지 출력
+    //    return;
+    //}
 
-    while (!feof(fp)) {
-        int t;
-        fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &t);
-        cloud[i].SetType(t);
-        cloud[i].animIndex = dis(rd);
-        ++i;
-    }
+    //while (!feof(fp)) {
+    //    int t;
+    //    fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &t);
+    //    cloud[i].SetType(t);
+    //    cloud[i].animIndex = dis(rd);
+    //    ++i;
+    //}
 
-    cloud_index = i;
-    fclose(fp);
+    //cloud_index = i;
+    //fclose(fp);
 }
 void stage2Scene::InitHeart() {
     FILE* fp;

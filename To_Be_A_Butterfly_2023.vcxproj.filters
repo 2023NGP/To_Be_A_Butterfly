@@ -7,9 +7,6 @@
     <ClCompile Include="clearScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Cloud.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="client.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -64,9 +61,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="common.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="Cloud.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Define.h">

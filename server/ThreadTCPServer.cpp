@@ -22,6 +22,9 @@ void CheckEnding(int iCurIndex);
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos);
 bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
 
+std::vector<Cloud> vCloud;
+void InitCloud();	// 맵 파일에서 구름 정보 받아오기
+
 MyThread mThread[3]{};			// 스레드 배열로 관리
 HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
 HANDLE hGameStartEvent;
@@ -469,5 +472,30 @@ void CheckCollision(int index)
 		if (storeData.playersInfo[i].isDead)
 			continue;
 
+	}
+}
+
+void InitCloud()
+{
+	std::random_device rd;
+	std::uniform_int_distribution <int> dis(0, 49);
+
+	FILE* fp;
+	fopen_s(&fp, "map/map2.txt", "r");
+
+	if (fp == NULL) {
+		perror("fopen 실패");
+		return;
+	}
+
+	while (!feof(fp)) {
+		float pos[2];
+		int type;
+		fscanf_s(fp, "%f %f %d", &pos[0], &pos[1], &type);
+		
+		vCloud.push_back({ });
+		vCloud.back().SetPosition({ pos[0], pos[1]});
+		vCloud.back().SetType(type);
+		vCloud.back().animIndex = dis(rd);
 	}
 }

@@ -28,28 +28,28 @@ void  gameScene::InitSound()
 }
 
 void gameScene::InitCloud() {       //txt���Ͽ��� ���� ���� �޾ƿ��� �Լ�
-	FILE* fp;
-	fopen_s(&fp, "image/map1.txt", "r");
-	random_device rd;
-	uniform_int_distribution <int> dis(0, 49);
+	//FILE* fp;
+	//fopen_s(&fp, "image/map1.txt", "r");
+	//random_device rd;
+	//uniform_int_distribution <int> dis(0, 49);
 
-	int i = 0;
-	if (fp == NULL)//���� ������ ��
-	{
-		perror("fopen ����");//���� �޽��� ���
-		return;
-	}
+	//int i = 0;
+	//if (fp == NULL)//���� ������ ��
+	//{
+	//	perror("fopen ����");//���� �޽��� ���
+	//	return;
+	//}
 
-	while (!feof(fp)) {
-		int t;
-		fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &t);
-		cloud[i].SetType(t);
-		cloud[i].animIndex = dis(rd);
-		++i;
-	}
+	//while (!feof(fp)) {
+	//	int t;
+	//	fscanf_s(fp, "%d %d %d", &cloud[i].cx, &cloud[i].cy, &t);
+	//	cloud[i].SetType(t);
+	//	cloud[i].animIndex = dis(rd);
+	//	++i;
+	//}
 
-	cloud_index = i;
-	fclose(fp);
+	//cloud_index = i;
+	//fclose(fp);
 }
 void gameScene::InitHeart() {
 	FILE* fp;

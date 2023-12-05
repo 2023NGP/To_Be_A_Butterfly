@@ -133,7 +133,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Cloud.h" />
     <ClInclude Include="gameScene.h" />
     <ClInclude Include="HPBar.h" />
     <ClInclude Include="Camera.h">
@@ -158,7 +157,6 @@
     <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Cloud.cpp" />
     <ClCompile Include="gameScene.cpp" />
     <ClCompile Include="HPBar.cpp" />
     <ClCompile Include="Camera.cpp">
