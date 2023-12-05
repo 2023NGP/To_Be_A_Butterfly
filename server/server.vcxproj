@@ -134,10 +134,7 @@
     <ClCompile Include="Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Headers\AbstractFactory.h" />
     <ClInclude Include="Headers\Define.h" />
-    <ClInclude Include="Headers\Function.h" />
-    <ClInclude Include="Headers\Functor.h" />
     <ClInclude Include="Headers\Struct.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Timer.h" />

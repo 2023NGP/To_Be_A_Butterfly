@@ -18,9 +18,6 @@
 
 #include "Headers/Define.h"
 #include "Headers/Struct.h"
-#include "Headers/Function.h"
-#include "Headers/Functor.h"
-#include "Headers/AbstractFactory.h"
 
 #include "Timer.h"
 

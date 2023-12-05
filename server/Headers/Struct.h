@@ -44,7 +44,7 @@ typedef struct Frame
 // 플레이어 초기화 정보 (위치, 시작 여부, 플레이어 수, 및 인덱스)
 typedef struct PlayerInit
 {
-	POS pos[3] = { 0 };
+	POS pos[3] = { 3 };
 	bool start;
 	int iCount = 0;
 	int idx;
@@ -77,7 +77,7 @@ typedef struct PlayerInfo
 }PLAYER_INFO;
 
 // 데이터 저장 (전송 용도)
-typedef struct tagStoreData
+typedef struct StoreData
 {
 	PLAYER_INFO playersInfo[3] = { 0 };
 	int id = 0;

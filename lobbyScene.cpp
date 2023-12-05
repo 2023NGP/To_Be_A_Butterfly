@@ -39,7 +39,13 @@ void lobbyScene::processKey(UINT iMessage, WPARAM wParam, LPARAM lParam)
 
 void lobbyScene::Update(const float frameTime)
 {
-	//애니메이션 있으면 여기서 업데이트
+	if (framework.net->RecvInitData()) {
+		Scene* scene = framework.CurScene;   ////현재 씬을 tmp에 넣고 지워줌
+		framework.CurScene = new stage2Scene;
+		framework.CurScene->init();
+		framework.NowScene = STAGE2;
+		delete scene;
+	}
 }
 
 void lobbyScene::Render(HDC hdc)
