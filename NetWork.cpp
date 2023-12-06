@@ -113,6 +113,22 @@ void NetWork::RecvOtherClientPos()
 {
 }
 
+void NetWork::RecvCloudData(std::vector<Cloud>& vCloud)
+{
+	size_t size;
+	int retval = recv(sock, (char*)&size, sizeof(size_t), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	retval = recv(sock, (char*)&vCloud, size, 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("recv()");
+	}
+
+	std::cout << "recv cloud data\n";
+}
+
 bool SendRecvPlayerInfo(SOCKET sock)
 {
 	int retval;

@@ -1,8 +1,8 @@
 #pragma once
 #include <Windows.h>
 #include <atlimage.h>
+#include "stdafx.h"
 #include "Player.h"
-#include "Cloud.h"
 #include "Item.h"
 
 enum GAME_STATUS{RUN, PAUSE, GAMEOVER};

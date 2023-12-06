@@ -16,5 +16,6 @@ public:
 	void SendClientPos(int px, int py);
 	void RecvOtherClientPos();
 
+	void RecvCloudData(std::vector<Cloud>& vCloud);
 };
 

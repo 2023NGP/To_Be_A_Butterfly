@@ -24,6 +24,7 @@ bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
 
 std::vector<Cloud> vCloud;
 void InitCloud();	// 맵 파일에서 구름 정보 받아오기
+void SendCloudData(MyThread* thread);	// 맵 정보 보내기
 
 MyThread mThread[3]{};			// 스레드 배열로 관리
 HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
@@ -140,6 +141,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			{
 				SetEvent(hGameStartEvent);
 				SendInitData(pThread);
+				SendCloudData(pThread);
 				isGameStart = true;
 			}
 		}
@@ -488,6 +490,8 @@ void InitCloud()
 		return;
 	}
 
+	vCloud.reserve(200);
+
 	while (!feof(fp)) {
 		float pos[2];
 		int type;
@@ -499,3 +503,22 @@ void InitCloud()
 		vCloud.back().animIndex = dis(rd);
 	}
 }
+
+void SendCloudData(MyThread* thread)
+{
+	// vCloud 의 크기를 보냅니다
+	size_t size = sizeof(Cloud) * vCloud.size();
+	int retval = send(thread->sock, (char*)&size, sizeof(size_t), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
+	// vCloud 를 보냅니다
+	retval = send(thread->sock, (char*)&vCloud, sizeof(Cloud) * vCloud.size(), 0);
+	if (retval == SOCKET_ERROR) {
+		err_display("send()");
+	}
+
+	std::cout << "send cloud data\n";
+}
+

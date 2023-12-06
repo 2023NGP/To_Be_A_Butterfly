@@ -145,7 +145,7 @@ void stage2Scene::init()
     
     InitSound();
     InitAnimation();
-    InitCloud();
+    framework.net->RecvCloudData(vCloud);
     InitHeart();
     gravity = 1;
 
@@ -169,26 +169,26 @@ void stage2Scene::drawBackGround(HDC hdc) {
 }
 void stage2Scene::drawCloud(HDC hdc) {
     //구름 그리는 함수
-    for (int j = 0; j < cloud_index; ++j) {
-        switch (cloud[j].GetType()) {
+    for (int j = 0; j < vCloud.size(); ++j) {
+        switch (vCloud[j].GetType()) {
         case 1:
-            if (cloud[j].animIndex >= 25 && cloud[j].animIndex <= 59) {
-                darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE + 45);
-                lightning.Draw(hdc, cloud[j].cx, cloud[j].cy + (CLOUD_HEIGHT - 30), CLOUD_WIDTH, CLOUD_HEIGHT, rain_ani[cloud[j].animIndex - 25].left, rain_ani[cloud[j].animIndex - 25].top, CLOUD_IMAGE_SIZE, RAIN_IMAGE);
+            if (vCloud[j].animIndex >= 25 && vCloud[j].animIndex <= 59) {
+                darkCloud.Draw(hdc, vCloud[j].GetPosition().fX, vCloud[j].GetPosition().fY, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[vCloud[j].animIndex].left, cloud_ani[vCloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE + 45);
+                lightning.Draw(hdc, vCloud[j].GetPosition().fY, vCloud[j].GetPosition().fY + (CLOUD_HEIGHT - 30), CLOUD_WIDTH, CLOUD_HEIGHT, rain_ani[vCloud[j].animIndex - 25].left, rain_ani[vCloud[j].animIndex - 25].top, CLOUD_IMAGE_SIZE, RAIN_IMAGE);
             }
             else
-                darkCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT-30, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE + 45);
+                darkCloud.Draw(hdc, vCloud[j].GetPosition().fX, vCloud[j].GetPosition().fY, CLOUD_WIDTH, CLOUD_HEIGHT-30, cloud_ani[vCloud[j].animIndex].left, cloud_ani[vCloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE + 45);
             break;
         case 2:
-            if (cloud[j].animIndex >= 25 && cloud[j].animIndex <= 59) {
-                rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
-                rain.Draw(hdc, cloud[j].cx, cloud[j].cy + (CLOUD_HEIGHT - 30), CLOUD_WIDTH, CLOUD_HEIGHT, rain_ani[cloud[j].animIndex - 25].left, rain_ani[cloud[j].animIndex - 25].top, CLOUD_IMAGE_SIZE, RAIN_IMAGE);
+            if (vCloud[j].animIndex >= 25 && vCloud[j].animIndex <= 59) {
+                rainCloud.Draw(hdc, vCloud[j].GetPosition().fX, vCloud[j].GetPosition().fY, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[vCloud[j].animIndex].left, cloud_ani[vCloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
+                rain.Draw(hdc, vCloud[j].GetPosition().fX, vCloud[j].GetPosition().fY + (CLOUD_HEIGHT - 30), CLOUD_WIDTH, CLOUD_HEIGHT, rain_ani[vCloud[j].animIndex - 25].left, rain_ani[vCloud[j].animIndex - 25].top, CLOUD_IMAGE_SIZE, RAIN_IMAGE);
             }
             else
-                rainCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
+                rainCloud.Draw(hdc, vCloud[j].GetPosition().fX, vCloud[j].GetPosition().fY, CLOUD_WIDTH, CLOUD_HEIGHT - 30, cloud_ani[vCloud[j].animIndex].left, cloud_ani[vCloud[j].animIndex].top, CLOUD_IMAGE_SIZE, RAINCLOUD_IMAGE);
             break;
         case 3:
-            normalCloud.Draw(hdc, cloud[j].cx, cloud[j].cy, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[cloud[j].animIndex].left, cloud_ani[cloud[j].animIndex].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
+            normalCloud.Draw(hdc, vCloud[j].GetPosition().fX, vCloud[j].GetPosition().fY, CLOUD_WIDTH, CLOUD_HEIGHT, cloud_ani[vCloud[j].animIndex].left, cloud_ani[vCloud[j].animIndex].top, CLOUD_IMAGE_SIZE, CLOUD_IMAGE_SIZE);
             break;
         }
     }
@@ -207,8 +207,8 @@ void stage2Scene::drawItems(HDC hdc) {
 }
 void stage2Scene::drawBox(HDC hdc) {
     Rectangle(hdc, pRECT.left, pRECT.top, pRECT.right, pRECT.bottom);
-    for (int i = 0; i < cloud_index; ++i) {
-        Rectangle(hdc, cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT);
+    for (int i = 0; i < vCloud.size(); ++i) {
+        Rectangle(hdc, vCloud[i].GetPosition().fX + 30, vCloud[i].GetPosition().fY + 30, vCloud[i].GetPosition().fX + CLOUD_COLLIDE_WIDTH, vCloud[i].GetPosition().fY + CLOUD_COLLIDE_HEIGHT);
     }
 }
 void stage2Scene::moveItem() {
@@ -281,22 +281,22 @@ void stage2Scene::Update(const float frameTime)
 
     player.SetStatus(IDLE);
 
-    for (int i = 0; i < cloud_index; ++i) {
-        cloud[i].animIndex++;
-        if (cloud[i].animIndex == 74)
-            cloud[i].animIndex = 0;
-        cRECT = { cloud[i].cx + 30, cloud[i].cy + 30, cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + CLOUD_COLLIDE_HEIGHT };
+    for (int i = 0; i < vCloud.size(); ++i) {
+        vCloud[i].animIndex++;
+        if (vCloud[i].animIndex == 74)
+            vCloud[i].animIndex = 0;
+        cRECT = { vCloud[i].GetPosition().fX + 30, vCloud[i].GetPosition().fY + 30, vCloud[i].GetPosition().fX + CLOUD_COLLIDE_WIDTH, vCloud[i].GetPosition().fY + CLOUD_COLLIDE_HEIGHT };
         if (IntersectRect(&tmp, &cRECT, &pRECT) && i > 6) {                             //충돌 검사
             player.SetStatus(COLLIDED);
             player.animIndex = 50;
         }
-        if (cloud[i].GetType() != 3 && cloud[i].animIndex >= 35 && cloud[i].animIndex <= 59) {       //번개나 비 충돌 검사
-            cRECT = { cloud[i].cx + 30, cloud[i].cy + (CLOUD_HEIGHT - 30),              //비 범위
-                cloud[i].cx + CLOUD_COLLIDE_WIDTH, cloud[i].cy + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
+        if (vCloud[i].GetType() != 3 && vCloud[i].animIndex >= 35 && vCloud[i].animIndex <= 59) {       //번개나 비 충돌 검사
+            cRECT = { vCloud[i].GetPosition().fX + 30, vCloud[i].GetPosition().fY + (CLOUD_HEIGHT - 30),              //비 범위
+                vCloud[i].GetPosition().fX + CLOUD_COLLIDE_WIDTH, vCloud[i].GetPosition().fY + (CLOUD_HEIGHT - 30) + CLOUD_HEIGHT };
             if (IntersectRect(&tmp, &cRECT, &pRECT)) {                                  //충돌 검사
                 player.SetStatus(COLLIDED);
                 player.animIndex = 50;
-                if (cloud[i].GetType() == 1) {
+                if (vCloud[i].GetType() == 1) {
                     player.isShocked = TRUE;
                     player.shockTime = 0.0f;
                 }

@@ -8,7 +8,6 @@ public:
 	RECT cloud_ani[75];
 	RECT rain_ani[35];
 
-	int cloud_index;	//구름 개수
 	int item_index;		//하트랑 스톤 개수
 	int bar_startY;
 	float bar_w;
@@ -33,7 +32,7 @@ public:
 	FMOD::Channel* Channel[3];
 
 	Player player;
-	Cloud cloud[200];
+	std::vector<Cloud> vCloud;
 	Item item[15];
 	HPBar bar;
 
@@ -63,3 +62,4 @@ public:
 
 	void InitSound();
 };
+
