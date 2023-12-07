@@ -168,9 +168,6 @@
     <ClInclude Include="Stage.h">
       <Filter>소스 파일\04.Scene\02.Stage</Filter>
     </ClInclude>
-    <ClInclude Include="Tile.h">
-      <Filter>소스 파일\01.Obj\06.Tile</Filter>
-    </ClInclude>
     <ClInclude Include="IceAttack.h">
       <Filter>소스 파일\01.Obj\07.Attack\02.IceAttack</Filter>
     </ClInclude>
@@ -206,6 +203,9 @@
     </ClInclude>
     <ClInclude Include="DataMgr.h">
       <Filter>소스 파일\98.Manager\08.DataMgr</Filter>
+    </ClInclude>
+    <ClInclude Include="Coin.h">
+      <Filter>소스 파일\01.Obj\10.Potion</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -263,9 +263,6 @@
     <ClCompile Include="Stage.cpp">
       <Filter>소스 파일\04.Scene\02.Stage</Filter>
     </ClCompile>
-    <ClCompile Include="Tile.cpp">
-      <Filter>소스 파일\01.Obj\06.Tile</Filter>
-    </ClCompile>
     <ClCompile Include="IceAttack.cpp">
       <Filter>소스 파일\01.Obj\07.Attack\02.IceAttack</Filter>
     </ClCompile>
@@ -298,6 +295,9 @@
     </ClCompile>
     <ClCompile Include="DataMgr.cpp">
       <Filter>소스 파일\98.Manager\08.DataMgr</Filter>
+    </ClCompile>
+    <ClCompile Include="Coin.cpp">
+      <Filter>소스 파일\01.Obj\10.Potion</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

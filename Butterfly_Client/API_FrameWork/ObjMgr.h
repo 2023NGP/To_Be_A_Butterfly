@@ -27,9 +27,10 @@ public:
 	bool Get_AllDead(OBJID::ID _eID);
 	list<CObj*>& Get_list(OBJID::ID _eID) { return m_listObj[_eID]; }
 
-	// 체력약 관련 함수
+	// heart 관련 함수
 public:
 	void Delete_Potion(LONG index);
+	void Delete_Coin(LONG index);
 
 	// 싱글톤 패턴
 public:

@@ -77,6 +77,6 @@ void CStage::Add_Potion()
 
 		CObj* pObj1 = CAbstractFactory<CPotion>::Create();
 		pObj1->Set_Pos(iX, iY);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::GOLD, pObj1);
+		CObjMgr::Get_Instance()->Add_Object(OBJID::HEART, pObj1);
 	}
 }

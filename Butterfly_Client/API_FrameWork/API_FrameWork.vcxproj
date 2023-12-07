@@ -161,6 +161,7 @@
     <ClInclude Include="API_FrameWork.h" />
     <ClInclude Include="BlastAttack.h" />
     <ClInclude Include="BmpMgr.h" />
+    <ClInclude Include="Coin.h" />
     <ClInclude Include="DataMgr.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="FireAttack.h" />
@@ -199,6 +200,7 @@
     </ClCompile>
     <ClCompile Include="BlastAttack.cpp" />
     <ClCompile Include="BmpMgr.cpp" />
+    <ClCompile Include="Coin.cpp" />
     <ClCompile Include="DataMgr.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="FireAttack.cpp" />

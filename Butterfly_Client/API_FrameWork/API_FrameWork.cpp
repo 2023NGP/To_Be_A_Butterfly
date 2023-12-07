@@ -32,6 +32,7 @@ DWORD WINAPI ServerProcess(LPVOID arg);
 bool SendRecvPlayerInfo(SOCKET sock);
 
 bool SendRecvHpPotionInfo(SOCKET sock);
+bool SendRecvCoinInfo(SOCKET sock);
 bool SendRecvAttacks(SOCKET sock);
 bool RecvPlayerInit(SOCKET sock);
 
@@ -44,14 +45,18 @@ HANDLE hSocketEvent;
 char SERVERIP[512] =  /*"192.168.122.249"*/"127.0.0.1";
 
 
-// 체력약 관련 변수, 함수
+// 하트 관련 변수, 함수
 POTIONRES g_tHpPotionRes;
+// 코인 관련
+COINRES g_tCoinRes;
 
 // 게임시작 관련
 PLAYER_INIT_SEND g_tPlayerInit;
 
 void Add_Potion(HpPotionCreate);
 void Delete_Potion(HpPotionDelete hpPotionDelete);
+void Add_Coin(CoinCreate);
+void Delete_Coin(CoinDelete coinDelete);
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -384,6 +389,48 @@ bool SendRecvHpPotionInfo(SOCKET sock)
 	return TRUE;
 }
 
+bool SendRecvCoinInfo(SOCKET sock)
+{
+	int retval;
+
+	// 코인 정보받기 생성&삭제
+	CoinInfo tCoinInfo;
+	retval = recvn(sock, (char*)&tCoinInfo, sizeof(CoinInfo), 0);
+	if (retval == SOCKET_ERROR)
+	{
+		err_display("recv()");
+		return FALSE;
+	}
+	else if (retval == 0)
+		return FALSE;
+
+	// 체력약 생성
+	if (tCoinInfo.tCoinCreate.bCreateOn)
+	{
+		Add_Coin(tCoinInfo.tCoinCreate);
+		printf("체력약 생성\n");
+	}
+
+	// 체력약 삭제
+	if (tCoinInfo.tCoinDelete.bDeleteOn)
+	{
+		Delete_Coin(tCoinInfo.tCoinDelete);
+		printf("체력약 삭제됨(다른 클라에 의해)\n");
+	}
+
+	// 체력약 충돌 정보 보내기
+	retval = send(sock, (char*)&g_tCoinRes, sizeof(COINRES), 0); // 길이가 고정된 값이 아닌 가변인자인 len
+	if (retval == SOCKET_ERROR)
+	{
+		err_display("send()");
+		return 0;
+	}
+
+	ZeroMemory(&g_tCoinRes, sizeof(COINRES));
+
+	return TRUE;
+}
+
 bool SendRecvAttacks(SOCKET sock)
 {
 	int retval;
@@ -486,13 +533,28 @@ void Add_Potion(HpPotionCreate hpPotionCreate)
     CObj* pObj1 = CAbstractFactory<CPotion>::Create();
     pObj1->Set_Pos(hpPotionCreate.pos.fX, hpPotionCreate.pos.fY);
     dynamic_cast<CPotion*>(pObj1)->SetIndex(hpPotionCreate.index);
-    CObjMgr::Get_Instance()->Add_Object(OBJID::GOLD, pObj1);
+    CObjMgr::Get_Instance()->Add_Object(OBJID::HEART, pObj1);
 }
 
 void Delete_Potion(HpPotionDelete hpPotionDelete)
 {
 	// index 일치하는 체력약 찾아서 삭제하기
 	CObjMgr::Get_Instance()->Delete_Potion(hpPotionDelete.index);
+}
+
+
+void Add_Coin(CoinCreate coinCreate)
+{
+    CObj* pObj1 = CAbstractFactory<CPotion>::Create();
+    pObj1->Set_Pos(coinCreate.pos.fX, coinCreate.pos.fY);
+    dynamic_cast<CPotion*>(pObj1)->SetIndex(coinCreate.index);
+    CObjMgr::Get_Instance()->Add_Object(OBJID::COIN, pObj1);
+}
+
+void Delete_Coin(CoinDelete coinDelete)
+{
+	// index 일치하는 체력약 찾아서 삭제하기
+	CObjMgr::Get_Instance()->Delete_Coin(coinDelete.index);
 }
 
 bool RecvPlayerInit(SOCKET sock)
