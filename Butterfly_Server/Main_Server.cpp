@@ -370,8 +370,7 @@ bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex)
 
     g_tStoreData.iHp[iCurIndex] = tPlayerInfo.iHp;
     g_tStoreData.start = tPlayerInfo.start;
-    if (iCurIndex < 2) { g_tStoreData.team[iCurIndex] = TEAMNUM::TEAM1; }
-    else { g_tStoreData.team[iCurIndex] = TEAMNUM::TEAM2; }
+    g_tStoreData.team[iCurIndex] = TEAMNUM::TEAM1;
 
     g_tStoreData.tPlayersInfo[iCurIndex].isHit = g_isHit[iCurIndex];
     if (g_isHit[iCurIndex])
@@ -545,7 +544,6 @@ void CreateCoin()
 
 bool SendRecv_CoinInfo(SOCKET sock)
 {
-    printf("send recv coin info\n");
     int retval;
 
     // 동기화 오류
@@ -756,10 +754,7 @@ void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend)
 
     for (int i = 0; i < 4; ++i)
     {
-        if (i < 2)
-            tPlayerInitSend.team[i] = TEAMNUM::TEAM1;
-        else
-            tPlayerInitSend.team[i] = TEAMNUM::TEAM2;
+        tPlayerInitSend.team[i] = TEAMNUM::TEAM1;
     }
 }
 
