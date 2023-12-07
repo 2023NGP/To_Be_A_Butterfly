@@ -1,5 +1,4 @@
 #include "pch.h"
-#include <iostream>
 
 struct MyThread
 {
@@ -13,15 +12,17 @@ int g_iClientCount = 0; //접속한 클라 갯수
 
 CGameTimer m_GameTimer;
 
-// 체력약 관련
+// 하트 관련
 HpPotionInfo g_tHpPotionInfo;
 float fPotionCreateTime = 0.f;
 LONG iHpPotionIndex;
+std::vector<POS> g_HeartPos;
 
 // 코인 관련
 CoinInfo g_tCoinInfo;
 float fCoinCreateTime = 0.f;
-LONG iCoinIndex;
+int iCoinIndex = 0;
+std::vector<POS> g_CoinPos;
 
 // 게임시작 관련
 PLAYER_INIT g_PlayerInit;
@@ -43,13 +44,18 @@ bool SendPlayerInit(SOCKET sock, int PlayerIndex);  // 게임시작여부 보내기
 bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex);
 
 
-// 체력약 관련
+// 하트 관련
 void CreateHpPotion();
 bool SendRecv_HpPotionInfo(SOCKET sock);
 
 // 코인 관련
 void CreateCoin();
 bool SendRecv_CoinInfo(SOCKET sock);
+
+// 하트, 코인 맵 데이터 불러오기
+void InitItem();
+
+
 
 bool SendRecv_AttackInfo(SOCKET sock, int clientIndex);
 
@@ -125,6 +131,8 @@ int main(int argc, char* argv[])
 
     // ServerMain 스레드
     CreateThread(NULL, 0, ServerMain, 0, 0, NULL);
+
+    InitItem();
 
     int retval;
 
@@ -258,7 +266,7 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 
 
 
-        // 체력약
+        // 하트
         if (!SendRecv_HpPotionInfo(client_sock))
         {
             SetEvent(g_hClientEvent[iCurIndex]);
@@ -317,7 +325,7 @@ DWORD WINAPI ServerMain(LPVOID arg)
 
     while (true)
     {
-        // 1. 체력약/코인 시간재서 보내기
+        // 1. 하트/코인 시간재서 보내기
         if (g_iClientCount == 4)   // 클라 4명이면 스타트
         {
             m_GameTimer.Tick(60.0f);
@@ -423,17 +431,19 @@ void CreateHpPotion()
 {
     fPotionCreateTime += m_GameTimer.GetTimeElapsed();
 
-    if (fPotionCreateTime >= POTION_TIME)
+    if (fPotionCreateTime >= POTION_TIME && iHpPotionIndex < g_HeartPos.size())
     {
         EnterCriticalSection(&g_csHpPotion);
 
         fPotionCreateTime = 0.f;
         g_tHpPotionInfo.thpPotionCreate.cnt = 0;
         g_tHpPotionInfo.thpPotionCreate.bCreateOn = true;
+
+        g_tHpPotionInfo.thpPotionCreate.pos.fX = g_HeartPos[iHpPotionIndex].fX;
+        g_tHpPotionInfo.thpPotionCreate.pos.fY = g_HeartPos[iHpPotionIndex].fY;
         g_tHpPotionInfo.thpPotionCreate.index = iHpPotionIndex++;
-        g_tHpPotionInfo.thpPotionCreate.pos.fX = (rand() % 1000) + 50; // 범위 재설정 필요
-        g_tHpPotionInfo.thpPotionCreate.pos.fY = (rand() % 500) + 50;  // 범위 재설정 필요
-        //printf("포션생성\n");
+        //std::cout << "heart!!!!\t" << iHpPotionIndex << '\t' << g_HeartPos.size() << '\n';
+        //printf("하트생성\n");
         LeaveCriticalSection(&g_csHpPotion);
 
     }
@@ -451,7 +461,7 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
 
     EnterCriticalSection(&g_csHpPotion);
 
-    // 체력약 생성 정보 보내기
+    // 하트 생성 정보 보내기
     retval = send(sock, (char*)&g_tHpPotionInfo, sizeof(HpPotionInfo), 0);
     if (retval == SOCKET_ERROR)
     {
@@ -461,24 +471,24 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
         return FALSE;
     }
 
-    // [체력약생성] 현재접속된 모든 클라에 보냈으면 변수 초기화
+    // [하트생성] 현재접속된 모든 클라에 보냈으면 변수 초기화
     if (g_tHpPotionInfo.thpPotionCreate.bCreateOn)
     {
         g_tHpPotionInfo.thpPotionCreate.cnt++;
 
-        // 접속한 클라에 개수만큼 체력약 정보 보냈으면 다시 0으로 리셋
+        // 접속한 클라에 개수만큼 하트 정보 보냈으면 다시 0으로 리셋
         if (g_tHpPotionInfo.thpPotionCreate.cnt == g_iClientCount)
         {
             ZeroMemory(&g_tHpPotionInfo.thpPotionCreate, sizeof(HpPotionCreate));
         }
     }
 
-    // [체력약삭제] 현재접속된 모든 클라에 보냈으면 변수 초기화
+    // [하트삭제] 현재접속된 모든 클라에 보냈으면 변수 초기화
     if (g_tHpPotionInfo.thpPotionDelete.bDeleteOn)
     {
         g_tHpPotionInfo.thpPotionDelete.cnt++;
 
-        // 접속한 클라에 개수만큼 체력약 정보 보냈으면 다시 0으로 리셋
+        // 접속한 클라에 개수만큼 하트 정보 보냈으면 다시 0으로 리셋
         if (g_tHpPotionInfo.thpPotionDelete.cnt == g_iClientCount)
         {
             ZeroMemory(&g_tHpPotionInfo.thpPotionDelete, sizeof(HpPotionDelete));
@@ -487,7 +497,7 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
     LeaveCriticalSection(&g_csHpPotion);
 
 
-    // 체력약 충돌 정보 받기
+    // 하트 충돌 정보 받기
     POTIONRES tHpPotionRes;
 
     retval = recvn(sock, (char*)&tHpPotionRes, sizeof(POTIONRES), 0);
@@ -502,7 +512,7 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
     // 충돌일 경우 처리 - 맵에서 삭제 및 다른 클라에 알리기
     if (tHpPotionRes.bCollision)
     {
-        //printf("포션삭제\n");
+        //printf("하트삭제\n");
 
         // 접속 클라 1개인 경우
         if (g_iClientCount == 1)
@@ -522,19 +532,20 @@ void CreateCoin()
 {
     fCoinCreateTime += m_GameTimer.GetTimeElapsed();
 
-    if (fCoinCreateTime >= COIN_TIME)
+    if (fCoinCreateTime >= COIN_TIME && iCoinIndex < g_CoinPos.size())
     {
         EnterCriticalSection(&g_csCoin);
 
         fCoinCreateTime = 0.f;
         g_tCoinInfo.tCoinCreate.cnt = 0;
         g_tCoinInfo.tCoinCreate.bCreateOn = true;
+
+        g_tCoinInfo.tCoinCreate.pos.fX = g_CoinPos[iCoinIndex].fX;
+        g_tCoinInfo.tCoinCreate.pos.fY = g_CoinPos[iCoinIndex].fY;
         g_tCoinInfo.tCoinCreate.index = iCoinIndex++;
-        g_tCoinInfo.tCoinCreate.pos.fX = (rand() % 1000) + 50; // 범위 재설정 필요
-        g_tCoinInfo.tCoinCreate.pos.fY = (rand() % 500) + 50;  // 범위 재설정 필요
+        //std::cout << iCoinIndex << '\t' << g_CoinPos.size() << '\n';
         //printf("코인생성\n");
         LeaveCriticalSection(&g_csCoin);
-
     }
 
 }
@@ -613,6 +624,42 @@ bool SendRecv_CoinInfo(SOCKET sock)
     }
 
     return TRUE;
+}
+
+void InitItem()
+{
+    // 하트, 코인 맵 데이터 불러오기
+
+    FILE* fp;
+    fopen_s(&fp, "../Butterfly_Client/Image/mapdata/map2(heart).txt", "r");
+
+    std::random_device rd;
+    std::uniform_int_distribution <int> dis(0, 49);
+
+    int i = 0;
+    if (fp == NULL)//열기 실패일 때
+    {
+        perror("fopen 실패");//에러 메시지 출력
+        return;
+    }
+
+    while (!feof(fp)) {
+        int x, y, type;
+        fscanf_s(fp, "%d %d %d", &x, &y, &type);
+
+        if (type == 1) {            // 하트
+            g_HeartPos.push_back({ });
+            g_HeartPos.back().fX = x;
+            g_HeartPos.back().fY = y;
+        }
+        else if (type == 2) {       // 코인
+            g_CoinPos.push_back({ });
+            g_CoinPos.back().fX = x;
+            g_CoinPos.back().fY = y;
+        }
+    }
+    
+    fclose(fp);
 }
 
 
