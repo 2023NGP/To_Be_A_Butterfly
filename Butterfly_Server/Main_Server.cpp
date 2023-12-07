@@ -601,8 +601,6 @@ bool SendRecv_CoinInfo(SOCKET sock)
     // 충돌일 경우 처리 - 맵에서 삭제 및 다른 클라에 알리기
     if (tCoinRes.bCollision)
     {
-        printf("코인충돌 -> 코인삭제\n");
-
         // 접속 클라 1개인 경우
         if (g_iClientCount == 1)
             return TRUE;

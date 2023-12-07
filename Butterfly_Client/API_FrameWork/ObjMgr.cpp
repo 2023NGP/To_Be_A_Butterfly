@@ -147,7 +147,7 @@ void CObjMgr::Delete_Coin(LONG index)
 {
 	for (auto& coin : m_listObj[OBJID::COIN])
 	{
-		if (dynamic_cast<CPotion*>(coin)->GetIndex() == index)
+		if (dynamic_cast<CCoin*>(coin)->GetIndex() == index)
 		{
 			coin->Set_Dead();
 			break;
