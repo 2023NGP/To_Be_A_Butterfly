@@ -22,10 +22,6 @@ void CheckEnding(int iCurIndex);
 bool Check_Sphere(INFO& tMePos, INFO& tYouPos);
 bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y);
 
-std::vector<Cloud> vCloud;
-void InitCloud();	// 맵 파일에서 구름 정보 받아오기
-void SendCloudData(MyThread* thread);	// 맵 정보 보내기
-
 MyThread mThread[3]{};			// 스레드 배열로 관리
 HANDLE clientEvent[3]{};		// 클라이언트 별 이벤트
 HANDLE hGameStartEvent;
@@ -141,7 +137,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
 			{
 				SetEvent(hGameStartEvent);
 				SendInitData(pThread);
-				SendCloudData(pThread);
 				isGameStart = true;
 			}
 		}
@@ -476,49 +471,3 @@ void CheckCollision(int index)
 
 	}
 }
-
-void InitCloud()
-{
-	std::random_device rd;
-	std::uniform_int_distribution <int> dis(0, 49);
-
-	FILE* fp;
-	fopen_s(&fp, "map/map2.txt", "r");
-
-	if (fp == NULL) {
-		perror("fopen 실패");
-		return;
-	}
-
-	vCloud.reserve(200);
-
-	while (!feof(fp)) {
-		float pos[2];
-		int type;
-		fscanf_s(fp, "%f %f %d", &pos[0], &pos[1], &type);
-		
-		vCloud.push_back({ });
-		vCloud.back().SetPosition({ pos[0], pos[1]});
-		vCloud.back().SetType(type);
-		vCloud.back().animIndex = dis(rd);
-	}
-}
-
-void SendCloudData(MyThread* thread)
-{
-	// vCloud 의 크기를 보냅니다
-	size_t size = sizeof(Cloud) * vCloud.size();
-	int retval = send(thread->sock, (char*)&size, sizeof(size_t), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-
-	// vCloud 를 보냅니다
-	retval = send(thread->sock, (char*)&vCloud, sizeof(Cloud) * vCloud.size(), 0);
-	if (retval == SOCKET_ERROR) {
-		err_display("send()");
-	}
-
-	std::cout << "send cloud data\n";
-}
-

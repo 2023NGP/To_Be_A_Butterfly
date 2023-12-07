@@ -87,33 +87,6 @@ typedef struct StoreData
 
 //////////////////////////////////// 
 
-// 구름
-class Cloud
-{
-	int type;	// 1 번개구름, 2 비구름, 3 일반구름
-	POS pos;
-	
-public:
-	int animIndex;
-
-public:
-	void SetType(int value) {
-		type = value;
-	}
-
-	int GetType() const {
-		return type;
-	}
-
-	void SetPosition(POS value) {
-		pos = value;
-	}
-
-	POS GetPosition() const {
-		return pos;
-	}
-};
-
 // 체력 Up 아이템 (Heart)
 typedef struct Heart
 {
