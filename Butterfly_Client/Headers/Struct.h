@@ -166,6 +166,12 @@ typedef struct tagCoinRes
 	int		iIndex;
 }COINRES;
 
+//// 구름 구조체
+typedef struct Cloud {
+	POS pos;
+	int type;
+}CLOUD;
+
 typedef struct tagAttackInfo
 {
 	size_t			iType = 0;			 

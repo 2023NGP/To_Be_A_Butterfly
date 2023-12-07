@@ -24,6 +24,10 @@ float fCoinCreateTime = 0.f;
 int iCoinIndex = 0;
 std::vector<POS> g_CoinPos;
 
+// 구름 관련
+int g_cloudCount = 0;
+CLOUD g_Clouds[200];
+
 // 게임시작 관련
 PLAYER_INIT g_PlayerInit;
 float fStartTime = 0.f;
@@ -54,6 +58,10 @@ bool SendRecv_CoinInfo(SOCKET sock);
 
 // 하트, 코인 맵 데이터 불러오기
 void InitItem();
+
+// 구름
+void InitCloud();
+int SendCloudInfo(SOCKET sock);
 
 
 
@@ -133,6 +141,7 @@ int main(int argc, char* argv[])
     CreateThread(NULL, 0, ServerMain, 0, 0, NULL);
 
     InitItem();
+    InitCloud();
 
     int retval;
 
@@ -235,14 +244,22 @@ DWORD WINAPI ProcessClient(LPVOID arg)
     addrlen = sizeof(clientaddr);
     getpeername(client_sock, (SOCKADDR*)&clientaddr, &addrlen);
 
+    retval = SendCloudInfo(client_sock);
+    if (retval == SOCKET_ERROR)
+    {
+        err_display("sendcloudinfo()");
+        return FALSE;
+    }
+
     while (1)
     {
         if (!isGameStart)
         {
             if (g_iCurClientCount < CLIENT_COUNT)
                 continue;
-            else
+            else {
                 isGameStart = true;
+            }
         }
 
         if (g_iCurClientCount >= 2)
@@ -660,6 +677,46 @@ void InitItem()
     }
     
     fclose(fp);
+}
+
+void InitCloud()
+{
+    FILE* fp;
+    fopen_s(&fp, "../Butterfly_Client/Image/mapdata/map2.txt", "r");
+    std::random_device rd;
+    std::uniform_int_distribution <int> dis(0, 49);
+    int i = 0;
+    if (fp == NULL)
+    {
+        perror("fopen 실패");
+        return;
+    }
+    while (!feof(fp)) {
+        int x, y, type;
+        fscanf_s(fp, "%d %d %d", &x, &y, &type);
+
+        g_Clouds[i].pos = { (float)x, (float)y };
+        g_Clouds[i].type = type;
+        ++i;
+    }
+    g_cloudCount = i;
+    fclose(fp);
+}
+
+int SendCloudInfo(SOCKET sock)
+{
+    int retval = 0;
+
+    for (int i = 0; i < CLOUD_COUNT; ++i) {
+        retval = send(sock, (char*)&g_Clouds[i], sizeof(CLOUD), 0);
+        if (retval == SOCKET_ERROR) {
+            break;
+        }
+        else if (retval == 0) {
+            break;
+        }
+    }
+    return retval;
 }
 
 

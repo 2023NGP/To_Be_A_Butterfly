@@ -5,6 +5,7 @@
 
 // 최대 접속 가능한 클라이언트 수
 #define CLIENT_COUNT 3
+#define CLOUD_COUNT 85
 
 #define WINCX 1280
 #define WINCY 720
@@ -38,4 +39,7 @@
 
 #define MAP_EDGE 50
 #define	REVIVE_TIME 10000
+
+#define BUF_SIZE 1024
+
 #endif // !__DEFINE_H__

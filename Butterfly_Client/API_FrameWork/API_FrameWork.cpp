@@ -53,6 +53,7 @@ COINRES g_tCoinRes;
 
 // 게임시작 관련
 PLAYER_INIT_SEND g_tPlayerInit;
+CLOUD g_Clouds[200];
 
 void Add_Potion(HpPotionCreate);
 void Delete_Potion(HpPotionDelete hpPotionDelete);
@@ -276,6 +277,17 @@ DWORD WINAPI ServerProcess(LPVOID arg)
     setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&nagleopt, sizeof(nagleopt));
 
 
+	for (int i = 0; i < CLOUD_COUNT; ++i) {
+		retval = recvn(sock, (char*)&g_Clouds[i], sizeof(CLOUD), 0);
+		if (retval == SOCKET_ERROR)
+		{
+			err_display("recv()");
+			return FALSE;
+		}
+		else if (retval == 0)
+			return FALSE;
+	}
+
     while (1)
     {
         WaitForSingleObject(hSocketEvent, INFINITE);
@@ -300,7 +312,6 @@ DWORD WINAPI ServerProcess(LPVOID arg)
 		// 코인
 		retval = SendRecvCoinInfo(sock);
 		if (retval == FALSE) {
-			err_display("asdf");
 			break;
 		}
 
@@ -581,9 +592,10 @@ bool RecvPlayerInit(SOCKET sock)
 	//buf[retval] = '\0';
 	//printf("(%f, %f)\n", g_tPlayerInit.tPos.fX, g_tPlayerInit.tPos.fY);
 	//std::cout<< CDataMgr::Get_Instance()->m_tStoreData.team[1] << std::endl;
-	for (int i = 0; i < CLIENT_COUNT; ++i)
-	{
-		std::cout << g_tPlayerInit.team[i] << std::endl;
-	}
+	//for (int i = 0; i < CLIENT_COUNT; ++i)
+	//{
+	//	std::cout << g_tPlayerInit.team[i] << std::endl;
+	//}
 
+	return TRUE;
 }
