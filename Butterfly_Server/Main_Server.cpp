@@ -61,11 +61,8 @@ CRITICAL_SECTION g_csCoin;
 
 //충돌
 void CheckCollision(int iIndex);
-bool Check_Sphere_PlayerSkill(POS& tMePos, INFO& tYouPos);
 bool Check_Sphere_SkillPlayer(INFO& tMePos, POS& tYouPos);
 
-bool Check_Sphere(POS& tMePos, POS& tYouPos);
-bool Check_Rect(POS& tMePos, POS& tYouPos, float* _x, float* _y);
 bool g_isHit[4] = { false };
 
 // 엔딩
@@ -535,7 +532,7 @@ void CreateCoin()
         g_tCoinInfo.tCoinCreate.index = iCoinIndex++;
         g_tCoinInfo.tCoinCreate.pos.fX = (rand() % 1000) + 50; // 범위 재설정 필요
         g_tCoinInfo.tCoinCreate.pos.fY = (rand() % 500) + 50;  // 범위 재설정 필요
-        printf("코인생성\n");
+        //printf("코인생성\n");
         LeaveCriticalSection(&g_csCoin);
 
     }
@@ -604,7 +601,7 @@ bool SendRecv_CoinInfo(SOCKET sock)
     // 충돌일 경우 처리 - 맵에서 삭제 및 다른 클라에 알리기
     if (tCoinRes.bCollision)
     {
-        printf("코인삭제\n");
+        printf("코인충돌 -> 코인삭제\n");
 
         // 접속 클라 1개인 경우
         if (g_iClientCount == 1)
@@ -789,29 +786,6 @@ void CheckCollision(int iIndex)
     }
 }
 
-bool Check_Sphere(INFO& tMePos, INFO& tYouPos)
-{
-    float fRadius = (float)((tMePos.iCX + tYouPos.iCY) >> 1);
-    //float fRadius = 30;
-
-    float fX = tMePos.fX - tYouPos.fX;
-    float fY = tMePos.fY - tYouPos.fY;
-    float fDis = sqrtf(fX * fX + fY * fY);
-
-    return fRadius > fDis;
-}
-
-bool Check_Sphere_PlayerSkill(POS& tMePos, INFO& tYouPos)
-{
-    float fRadius = (float)((30 + tYouPos.iCY) >> 1);
-
-    float fX = tMePos.fX - tYouPos.fX;
-    float fY = tMePos.fY - tYouPos.fY;
-    float fDis = sqrtf(fX * fX + fY * fY);
-
-    return fRadius > fDis;
-}
-
 bool Check_Sphere_SkillPlayer(INFO& tMePos, POS& tYouPos)
 {
     float fRadius = (float)((tMePos.iCY + 80) >> 1);
@@ -821,26 +795,4 @@ bool Check_Sphere_SkillPlayer(INFO& tMePos, POS& tYouPos)
     float fDis = sqrtf(fX * fX + fY * fY);
 
     return fRadius > fDis;
-}
-
-bool Check_Rect(INFO& tMePos, INFO& tYouPos, float* _x, float* _y)
-{
-    float fX = abs(tMePos.fX - tYouPos.fX);
-    float fY = abs(tMePos.fY - tYouPos.fY);
-
-    //float fCX = (float)((_Dst->Get_Info().iCX + _Src->Get_Info().iCX) >> 1);
-    //float fCY = (float)((_Dst->Get_Info().iCY + _Src->Get_Info().iCY) >> 1);
-
-    //플레이어 30,80
-    float fCX = 30.f;
-    float fCY = 80.f;
-
-    if (fCX > fX && fCY > fY)
-    {
-        *_x = fCX - fX;
-        *_y = fCY - fY;
-        return true;
-    }
-
-    return false;
 }

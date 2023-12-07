@@ -2,6 +2,8 @@
 #include "ObjMgr.h"
 #include "Obj.h"
 #include "Potion.h"
+#include "Coin.h"
+#include "CollisionMgr.h"
 #include "DataMgr.h"
 
 CObjMgr* CObjMgr::m_pInstance = nullptr;
@@ -33,6 +35,10 @@ void CObjMgr::Update()
 				++iter;
 		}
 	}
+
+	// collision
+	CCollisionMgr::Collision_Heart(m_listObj[OBJID::PLAYER], m_listObj[OBJID::HEART]);
+	CCollisionMgr::Collision_Coin(m_listObj[OBJID::PLAYER], m_listObj[OBJID::COIN]);
 
 }
 

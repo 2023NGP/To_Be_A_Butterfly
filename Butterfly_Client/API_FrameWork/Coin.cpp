@@ -59,6 +59,6 @@ void CCoin::Release()
 void CCoin::CallBackCollision()
 {
 	// 서버에 알린다.
-	g_tHpPotionRes.iIndex = m_lIndex;
-	g_tHpPotionRes.bCollision = true;
+	g_tCoinRes.iIndex = m_lIndex;
+	g_tCoinRes.bCollision = true;
 }
