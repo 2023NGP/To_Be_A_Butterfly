@@ -212,7 +212,7 @@ void CPlayer::Render(HDC _DC)
 		, RGB(255, 0, 255));
 
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < CLIENT_COUNT; ++i)
 	{
 		STORE_DATA tStoreData = CDataMgr::Get_Instance()->m_tStoreData;
 

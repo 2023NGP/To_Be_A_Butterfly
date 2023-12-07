@@ -20,6 +20,7 @@
 #include "Define_Server.h"
 
 #include "../Butterfly_Client/Headers/Include.h"
+#include "../Butterfly_Client/Headers/Define.h"
 #include "Timer.h"
 
 #endif //PCH_H

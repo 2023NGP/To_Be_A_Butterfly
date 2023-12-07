@@ -6,9 +6,9 @@ struct MyThread
     SOCKET sock = 0;
 };
 
-HANDLE g_hClientEvent[4];
-int g_iWaitClientIndex[4];
-int g_iClientCount = 0; //접속한 클라 갯수
+HANDLE g_hClientEvent[CLIENT_COUNT];
+int g_iWaitClientIndex[CLIENT_COUNT];
+int g_iCurClientCount = 0; //접속한 클라 갯수
 
 CGameTimer m_GameTimer;
 
@@ -34,7 +34,7 @@ STORE_DATA g_tStoreData;
 bool isGameStart = false;
 
 // 공격 관련
-AttackData g_pAttackData[4];
+AttackData g_pAttackData[CLIENT_COUNT];
 
 DWORD WINAPI ProcessClient(LPVOID arg);
 DWORD WINAPI ServerMain(LPVOID arg);
@@ -69,7 +69,7 @@ CRITICAL_SECTION g_csCoin;
 void CheckCollision(int iIndex);
 bool Check_Sphere_SkillPlayer(INFO& tMePos, POS& tYouPos);
 
-bool g_isHit[4] = { false };
+bool g_isHit[CLIENT_COUNT] = { false };
 
 // 엔딩
 bool g_bEnding = false;
@@ -166,11 +166,11 @@ int main(int argc, char* argv[])
 
 
     //이벤트 생성
-    //클라4개 접속중일때 0이 3번, 1이 0번, 2가 1번, 3이 2번, 이벤트 기다림
-    for (int i = 0; i < 4; ++i)
+    //클라 3개 접속중일때 0이 2번, 1이 0번, 2가 1번 이벤트 기다림
+    for (int i = 0; i < CLIENT_COUNT; ++i)
     {
-        g_hClientEvent[i] = CreateEvent(NULL, FALSE, (i < 3 ? FALSE : TRUE), NULL);
-        g_iWaitClientIndex[i] = (i == 0) ? 3 : i - 1; // 3 0 1 2
+        g_hClientEvent[i] = CreateEvent(NULL, FALSE, (i < 2 ? FALSE : TRUE), NULL);
+        g_iWaitClientIndex[i] = (i == 0) ? 2 : i - 1; // 2 0 1
     }
 
 
@@ -191,7 +191,7 @@ int main(int argc, char* argv[])
         setsockopt(client_sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&nagleopt, sizeof(nagleopt));
 
         tThread.sock = client_sock;
-        ++g_iClientCount;
+        ++g_iCurClientCount;
         ++tThread.iIndex;
 
         // 접속한 클라이언트 정보 출력
@@ -239,13 +239,13 @@ DWORD WINAPI ProcessClient(LPVOID arg)
     {
         if (!isGameStart)
         {
-            if (g_iClientCount < 4)
+            if (g_iCurClientCount < CLIENT_COUNT)
                 continue;
             else
                 isGameStart = true;
         }
 
-        if (g_iClientCount >= 2)
+        if (g_iCurClientCount >= 2)
             WaitForSingleObject(g_hClientEvent[g_iWaitClientIndex[iCurIndex]], INFINITE);
 
         // 타이머, 플레이어 배치, 팀 나누기
@@ -292,9 +292,9 @@ DWORD WINAPI ProcessClient(LPVOID arg)
     }
 
 
-    if (--g_iClientCount >= 2)
+    if (--g_iCurClientCount >= 2)
     {
-        for (int i = 0; i < 4; ++i)
+        for (int i = 0; i < CLIENT_COUNT; ++i)
         {
             //자신을 참조하던 클라를 찾음
             if (g_iWaitClientIndex[i] == iCurIndex)
@@ -326,7 +326,7 @@ DWORD WINAPI ServerMain(LPVOID arg)
     while (true)
     {
         // 1. 하트/코인 시간재서 보내기
-        if (g_iClientCount == 4)   // 클라 4명이면 스타트
+        if (g_iCurClientCount == CLIENT_COUNT)   // 클라 3명이면 스타트
         {
             m_GameTimer.Tick(60.0f);
             if (!g_PlayerInit.start)
@@ -356,7 +356,7 @@ bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex)
     // 받은 데이터 출력
     //buf[retval] = '\0';
     //printf("[%d] (%f, %f)\n", iCurIndex, tPlayerInfo.tPos.fX, tPlayerInfo.tPos.fY);
-    if (g_iClientCount == 4)    // 클라 4명이면 스타트
+    if (g_iCurClientCount == CLIENT_COUNT)    // 클라 3명이면 스타트
     {
         tPlayerInfo.start = true;
     }
@@ -404,7 +404,7 @@ void CheckEnding(int iCurIndex)
     {
         TEAMNUM::TEAM eNowTeam = g_tStoreData.team[iCurIndex];
 
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < CLIENT_COUNT; i++)
         {
             if (i == iCurIndex)
                 continue;
@@ -414,7 +414,7 @@ void CheckEnding(int iCurIndex)
                 g_bEnding = true;
                 g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::LOSE;
                 g_tStoreData.tPlayersInfo[i].eEnding = ENDING::LOSE;
-                for (int j = 0; j < 4; j++)
+                for (int j = 0; j < CLIENT_COUNT; j++)
                 {
                     if (j == i || j == iCurIndex)
                         continue;
@@ -477,7 +477,7 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
         g_tHpPotionInfo.thpPotionCreate.cnt++;
 
         // 접속한 클라에 개수만큼 하트 정보 보냈으면 다시 0으로 리셋
-        if (g_tHpPotionInfo.thpPotionCreate.cnt == g_iClientCount)
+        if (g_tHpPotionInfo.thpPotionCreate.cnt == g_iCurClientCount)
         {
             ZeroMemory(&g_tHpPotionInfo.thpPotionCreate, sizeof(HpPotionCreate));
         }
@@ -489,7 +489,7 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
         g_tHpPotionInfo.thpPotionDelete.cnt++;
 
         // 접속한 클라에 개수만큼 하트 정보 보냈으면 다시 0으로 리셋
-        if (g_tHpPotionInfo.thpPotionDelete.cnt == g_iClientCount)
+        if (g_tHpPotionInfo.thpPotionDelete.cnt == g_iCurClientCount)
         {
             ZeroMemory(&g_tHpPotionInfo.thpPotionDelete, sizeof(HpPotionDelete));
         }
@@ -515,7 +515,7 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
         //printf("하트삭제\n");
 
         // 접속 클라 1개인 경우
-        if (g_iClientCount == 1)
+        if (g_iCurClientCount == 1)
             return TRUE;
 
         g_tHpPotionInfo.thpPotionDelete.bDeleteOn = true;
@@ -577,7 +577,7 @@ bool SendRecv_CoinInfo(SOCKET sock)
         g_tCoinInfo.tCoinCreate.cnt++;
 
         // 접속한 클라에 개수만큼 코인 정보 보냈으면 다시 0으로 리셋
-        if (g_tCoinInfo.tCoinCreate.cnt == g_iClientCount)
+        if (g_tCoinInfo.tCoinCreate.cnt == g_iCurClientCount)
         {
             ZeroMemory(&g_tCoinInfo.tCoinCreate, sizeof(CoinCreate));
         }
@@ -589,7 +589,7 @@ bool SendRecv_CoinInfo(SOCKET sock)
         g_tCoinInfo.tCoinDelete.cnt++;
 
         // 접속한 클라에 개수만큼 코인 정보 보냈으면 다시 0으로 리셋
-        if (g_tCoinInfo.tCoinDelete.cnt == g_iClientCount)
+        if (g_tCoinInfo.tCoinDelete.cnt == g_iCurClientCount)
         {
             ZeroMemory(&g_tCoinInfo.tCoinDelete, sizeof(CoinDelete));
         }
@@ -613,7 +613,7 @@ bool SendRecv_CoinInfo(SOCKET sock)
     if (tCoinRes.bCollision)
     {
         // 접속 클라 1개인 경우
-        if (g_iClientCount == 1)
+        if (g_iCurClientCount == 1)
             return TRUE;
 
         g_tCoinInfo.tCoinDelete.bDeleteOn = true;
@@ -711,7 +711,7 @@ bool SendRecv_AttackInfo(SOCKET sock, int clientIndex)
     ////////////////////////////////////////////////////////////////////
 
 
-    for (int i = 0; i < 4; i++)
+    for (int i = 0; i < CLIENT_COUNT; i++)
     {
         //if (i == clientIndex)
         //    continue;
@@ -779,22 +779,19 @@ void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend)
     switch (idx)
     {
     case 0:
-        tPlayerInitSend.tPos = { 300.f, 300.f };
+        tPlayerInitSend.tPos = { WINCX / 3, 600.f };
         break;
     case 1:
-        tPlayerInitSend.tPos = { 900.f, 300.f };
+        tPlayerInitSend.tPos = { WINCX / 2, 600.f };
         break;
     case 2:
-        tPlayerInitSend.tPos = { 300.f, 600.f };
-        break;
-    case 3:
-        tPlayerInitSend.tPos = { 900.f, 600.f };
+        tPlayerInitSend.tPos = { WINCX * 2 / 3, 600.f };
         break;
     default:
         break;
     }
 
-    for (int i = 0; i < 4; ++i)
+    for (int i = 0; i < CLIENT_COUNT; ++i)
     {
         tPlayerInitSend.team[i] = TEAMNUM::TEAM1;
     }
@@ -806,7 +803,7 @@ void CheckCollision(int iIndex)
 
     float x = 0.f, y = 0.f;
 
-    for (int i = 0; i < 4/*g_iClientCount*/; ++i)
+    for (int i = 0; i < CLIENT_COUNT; ++i)
     {
         //자기 자신 검사x
         if (iCurIndex == i)

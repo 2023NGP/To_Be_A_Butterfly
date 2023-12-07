@@ -68,7 +68,7 @@ void CUI::Render(HDC _DC)
 
 	hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"UI_BAR");		//체력바 틀
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < CLIENT_COUNT; ++i)
 	{
 		STORE_DATA tStoreData = CDataMgr::Get_Instance()->m_tStoreData;
 
@@ -100,7 +100,7 @@ void CUI::Render(HDC _DC)
 		244, 32,
 		RGB(255, 0, 255));
 
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < CLIENT_COUNT; ++i)
 	{
 		STORE_DATA tStoreData = CDataMgr::Get_Instance()->m_tStoreData;
 		if (i != tStoreData.iClientIndex)

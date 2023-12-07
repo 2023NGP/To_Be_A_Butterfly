@@ -472,7 +472,7 @@ bool SendRecvAttacks(SOCKET sock)
 
 
 
-	for (int i = 0; i < 4; i++)
+	for (int i = 0; i < CLIENT_COUNT; i++)
 	{
 		iSize = 0;
 		// 공격 정보 받기 - 1. 배열의 크기
@@ -581,7 +581,7 @@ bool RecvPlayerInit(SOCKET sock)
 	//buf[retval] = '\0';
 	//printf("(%f, %f)\n", g_tPlayerInit.tPos.fX, g_tPlayerInit.tPos.fY);
 	//std::cout<< CDataMgr::Get_Instance()->m_tStoreData.team[1] << std::endl;
-	for (int i = 0; i < 4; ++i)
+	for (int i = 0; i < CLIENT_COUNT; ++i)
 	{
 		std::cout << g_tPlayerInit.team[i] << std::endl;
 	}
