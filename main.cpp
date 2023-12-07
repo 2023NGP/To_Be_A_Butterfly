@@ -6,7 +6,6 @@
 #define MAX_LOADSTRING 100
 
 char* SERVERIP = (char*)"127.0.0.1";
-//char* SERVERIP;
 #define SERVERPORT 9000
 #define BUFSIZE 1024
 
@@ -14,8 +13,10 @@ char* SERVERIP = (char*)"127.0.0.1";
 HINSTANCE hInst;                                // 현재 인스턴스입니다.
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+
 //static WGameFramework gGameFramework;
 WGameFramework framework;
+
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
 BOOL                InitInstance(HINSTANCE, int);
@@ -44,7 +45,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.prevFrameTime = framework.curFrameTime = clock();
 
-
 	while (true)
 	{
 		if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -57,10 +57,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
 	framework.Clear();
 
-	// 소켓 닫기
-	// closesocket(sock);
-
-	// 윈속 종료
 	WSACleanup();
 
 	return (int)msg.wParam;
@@ -232,6 +228,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 	case WM_DESTROY:
 	{
+		framework.Clear();
 		FreeConsole();	// 콘솔창 닫기
 		PostQuitMessage(0);
 	}

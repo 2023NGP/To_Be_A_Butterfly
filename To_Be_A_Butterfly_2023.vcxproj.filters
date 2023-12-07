@@ -111,6 +111,9 @@
     <ClInclude Include="LobbyScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="리소스 파일">

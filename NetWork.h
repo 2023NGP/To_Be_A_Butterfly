@@ -2,7 +2,7 @@
 class NetWork
 {
 private:
-	char* SERVERIP = (char*)"127.0.0.1";
+	char* SERVERIP = (char*)"192.168.42.36";
 	int SERVERPORT = 9000;
 	int BUFSIZE = 1024;
 
@@ -15,7 +15,6 @@ public:
 	bool RecvInitData();
 	void SendClientPos(int px, int py);
 	void RecvOtherClientPos();
-
-	void RecvCloudData(std::vector<Cloud>& vCloud);
+	void CloseNet();
 };
 

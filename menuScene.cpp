@@ -1,5 +1,6 @@
 #include "menuScene.h"
 #include "stdafx.h"
+#include "server.h"
 
 extern WGameFramework framework;
 
