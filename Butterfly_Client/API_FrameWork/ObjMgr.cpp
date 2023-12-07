@@ -127,11 +127,23 @@ bool CObjMgr::Get_AllDead(OBJID::ID _eID)
 
 void CObjMgr::Delete_Potion(LONG index)
 {
-	for (auto& hpPotion : m_listObj[OBJID::GOLD])
+	for (auto& hpPotion : m_listObj[OBJID::HEART])
 	{
 		if (dynamic_cast<CPotion*>(hpPotion)->GetIndex() == index)
 		{
 			hpPotion->Set_Dead();
+			break;
+		}
+	}
+}
+
+void CObjMgr::Delete_Coin(LONG index)
+{
+	for (auto& coin : m_listObj[OBJID::COIN])
+	{
+		if (dynamic_cast<CPotion*>(coin)->GetIndex() == index)
+		{
+			coin->Set_Dead();
 			break;
 		}
 	}

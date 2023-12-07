@@ -130,12 +130,41 @@ struct HpPotionInfo
 	HpPotionDelete thpPotionDelete;
 };
 
+struct CoinCreate
+{
+	int		cnt; // 
+	int		index; // 
+	bool	bCreateOn;
+	POS		pos;
+};
+
+struct CoinDelete
+{
+	int		cnt; // 
+	int		index; // 
+	bool	bDeleteOn;
+};
+
+
+struct CoinInfo
+{
+	CoinCreate tCoinCreate;
+	CoinDelete tCoinDelete;
+};
+
 //struct HpPotion
 typedef struct tagHpPotionRes
 {
 	bool	bCollision;
 	int		iIndex;
 }POTIONRES;
+
+//struct coin
+typedef struct tagCoinRes
+{
+	bool	bCollision;
+	int		iIndex;
+}COINRES;
 
 typedef struct tagAttackInfo
 {
