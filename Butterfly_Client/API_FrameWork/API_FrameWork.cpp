@@ -6,6 +6,7 @@
 
 #include "MainGame.h"
 #include "Potion.h"
+#include "Coin.h"
 #include "ObjMgr.h"
 #include "MyButton.h"
 #include "DataMgr.h"
@@ -296,6 +297,13 @@ DWORD WINAPI ServerProcess(LPVOID arg)
         if (retval == FALSE)
             break;
 
+		// 코인
+		retval = SendRecvCoinInfo(sock);
+		if (retval == FALSE) {
+			err_display("asdf");
+			break;
+		}
+
         // 공격
         retval = SendRecvAttacks(sock);
         if (retval == FALSE)
@@ -545,9 +553,9 @@ void Delete_Potion(HpPotionDelete hpPotionDelete)
 
 void Add_Coin(CoinCreate coinCreate)
 {
-    CObj* pObj1 = CAbstractFactory<CPotion>::Create();
+    CObj* pObj1 = CAbstractFactory<CCoin>::Create();
     pObj1->Set_Pos(coinCreate.pos.fX, coinCreate.pos.fY);
-    dynamic_cast<CPotion*>(pObj1)->SetIndex(coinCreate.index);
+    dynamic_cast<CCoin*>(pObj1)->SetIndex(coinCreate.index);
     CObjMgr::Get_Instance()->Add_Object(OBJID::COIN, pObj1);
 }
 

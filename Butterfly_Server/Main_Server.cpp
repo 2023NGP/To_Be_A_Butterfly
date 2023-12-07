@@ -18,6 +18,11 @@ HpPotionInfo g_tHpPotionInfo;
 float fPotionCreateTime = 0.f;
 LONG iHpPotionIndex;
 
+// 코인 관련
+CoinInfo g_tCoinInfo;
+float fCoinCreateTime = 0.f;
+LONG iCoinIndex;
+
 // 게임시작 관련
 PLAYER_INIT g_PlayerInit;
 float fStartTime = 0.f;
@@ -41,12 +46,18 @@ bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex);
 // 체력약 관련
 void CreateHpPotion();
 bool SendRecv_HpPotionInfo(SOCKET sock);
+
+// 코인 관련
+void CreateCoin();
+bool SendRecv_CoinInfo(SOCKET sock);
+
 bool SendRecv_AttackInfo(SOCKET sock, int clientIndex);
 
 void CountStart();
 void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend);
 
 CRITICAL_SECTION g_csHpPotion;
+CRITICAL_SECTION g_csCoin;
 
 //충돌
 void CheckCollision(int iIndex);
@@ -111,6 +122,7 @@ int recvn(SOCKET s, char* buf, int len, int flags)
 int main(int argc, char* argv[])
 {
     InitializeCriticalSection(&g_csHpPotion);
+    InitializeCriticalSection(&g_csCoin);
 
     srand(unsigned int(time(NULL)));
 
@@ -192,6 +204,7 @@ int main(int argc, char* argv[])
     closesocket(listen_sock);
 
     DeleteCriticalSection(&g_csHpPotion);
+    DeleteCriticalSection(&g_csCoin);
 
     // 윈속 종료
     WSACleanup();
@@ -255,6 +268,13 @@ DWORD WINAPI ProcessClient(LPVOID arg)
             break;
         }
 
+        // 코인
+        if (!SendRecv_CoinInfo(client_sock))
+        {
+            SetEvent(g_hClientEvent[iCurIndex]);
+            break;
+        }
+
         // 공격
         if (!SendRecv_AttackInfo(client_sock, iCurIndex))
         {
@@ -300,13 +320,14 @@ DWORD WINAPI ServerMain(LPVOID arg)
 
     while (true)
     {
-        // 1. 체력약 시간재서 보내기
+        // 1. 체력약/코인 시간재서 보내기
         if (g_iClientCount == 4)   // 클라 4명이면 스타트
         {
             m_GameTimer.Tick(60.0f);
             if (!g_PlayerInit.start)
                 CountStart();
             CreateHpPotion();
+            CreateCoin();
         }
 
     }
@@ -500,6 +521,107 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
 
     return TRUE;
 }
+
+void CreateCoin()
+{
+    fCoinCreateTime += m_GameTimer.GetTimeElapsed();
+
+    if (fCoinCreateTime >= COIN_TIME)
+    {
+        EnterCriticalSection(&g_csCoin);
+
+        fCoinCreateTime = 0.f;
+        g_tCoinInfo.tCoinCreate.cnt = 0;
+        g_tCoinInfo.tCoinCreate.bCreateOn = true;
+        g_tCoinInfo.tCoinCreate.index = iCoinIndex++;
+        g_tCoinInfo.tCoinCreate.pos.fX = (rand() % 1000) + 50; // 범위 재설정 필요
+        g_tCoinInfo.tCoinCreate.pos.fY = (rand() % 500) + 50;  // 범위 재설정 필요
+        printf("코인생성\n");
+        LeaveCriticalSection(&g_csCoin);
+
+    }
+
+}
+
+bool SendRecv_CoinInfo(SOCKET sock)
+{
+    printf("send recv coin info\n");
+    int retval;
+
+    // 동기화 오류
+    // 여기서 g_tCoinInfo는 공유자원
+    // 서로 다른 스레드에서 동시에 접근하므로 객체가 변함
+    // Main스레드도 동기화를 해야함
+
+    EnterCriticalSection(&g_csCoin);
+
+    // 코인 생성 정보 보내기
+    retval = send(sock, (char*)&g_tCoinInfo, sizeof(CoinInfo), 0);
+    if (retval == SOCKET_ERROR)
+    {
+        err_display("send()");
+        LeaveCriticalSection(&g_csCoin);
+
+        return FALSE;
+    }
+
+    // [코인생성] 현재접속된 모든 클라에 보냈으면 변수 초기화
+    if (g_tCoinInfo.tCoinCreate.bCreateOn)
+    {
+        g_tCoinInfo.tCoinCreate.cnt++;
+
+        // 접속한 클라에 개수만큼 코인 정보 보냈으면 다시 0으로 리셋
+        if (g_tCoinInfo.tCoinCreate.cnt == g_iClientCount)
+        {
+            ZeroMemory(&g_tCoinInfo.tCoinCreate, sizeof(CoinCreate));
+        }
+    }
+
+    // [코인삭제] 현재접속된 모든 클라에 보냈으면 변수 초기화
+    if (g_tCoinInfo.tCoinDelete.bDeleteOn)
+    {
+        g_tCoinInfo.tCoinDelete.cnt++;
+
+        // 접속한 클라에 개수만큼 코인 정보 보냈으면 다시 0으로 리셋
+        if (g_tCoinInfo.tCoinDelete.cnt == g_iClientCount)
+        {
+            ZeroMemory(&g_tCoinInfo.tCoinDelete, sizeof(CoinDelete));
+        }
+    }
+    LeaveCriticalSection(&g_csCoin);
+
+
+    // 코인 충돌 정보 받기
+    COINRES tCoinRes;
+
+    retval = recvn(sock, (char*)&tCoinRes, sizeof(COINRES), 0);
+    if (retval == SOCKET_ERROR)
+    {
+        err_display("recv()");
+        return FALSE;
+    }
+    else if (retval == 0)
+        return FALSE;
+
+    // 충돌일 경우 처리 - 맵에서 삭제 및 다른 클라에 알리기
+    if (tCoinRes.bCollision)
+    {
+        printf("코인삭제\n");
+
+        // 접속 클라 1개인 경우
+        if (g_iClientCount == 1)
+            return TRUE;
+
+        g_tCoinInfo.tCoinDelete.bDeleteOn = true;
+        g_tCoinInfo.tCoinDelete.cnt = 1;
+        g_tCoinInfo.tCoinDelete.index = tCoinRes.iIndex;
+
+
+    }
+
+    return TRUE;
+}
+
 
 bool SendRecv_AttackInfo(SOCKET sock, int clientIndex)
 {
