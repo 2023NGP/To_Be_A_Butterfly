@@ -67,9 +67,6 @@
     <Filter Include="소스 파일\01.Obj\09.UI\00.PlayerUI">
       <UniqueIdentifier>{8056eb37-cfc5-4bff-9251-193ee49f3ade}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01.Obj\09.UI\01.SkillBar">
-      <UniqueIdentifier>{fcdf7c2c-3d85-424b-b20d-52d677bc5ce5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\01.Obj\10.Potion">
       <UniqueIdentifier>{57499108-e112-42d9-af0a-4de402d456fe}</UniqueIdentifier>
     </Filter>
@@ -134,9 +131,6 @@
     </ClInclude>
     <ClInclude Include="UI.h">
       <Filter>소스 파일\01.Obj\09.UI\00.PlayerUI</Filter>
-    </ClInclude>
-    <ClInclude Include="SkillBar.h">
-      <Filter>소스 파일\01.Obj\09.UI\01.SkillBar</Filter>
     </ClInclude>
     <ClInclude Include="Potion.h">
       <Filter>소스 파일\01.Obj\10.Potion</Filter>
@@ -205,9 +199,6 @@
     </ClCompile>
     <ClCompile Include="UI.cpp">
       <Filter>소스 파일\01.Obj\09.UI\00.PlayerUI</Filter>
-    </ClCompile>
-    <ClCompile Include="SkillBar.cpp">
-      <Filter>소스 파일\01.Obj\09.UI\01.SkillBar</Filter>
     </ClCompile>
     <ClCompile Include="Potion.cpp">
       <Filter>소스 파일\01.Obj\10.Potion</Filter>

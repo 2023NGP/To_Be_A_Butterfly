@@ -6,7 +6,6 @@
 #include "ScrollMgr.h"
 #include "Mouse.h"
 #include "UI.h"
-#include "SkillBar.h"
 #include "KeyMgr.h"
 #include "Potion.h"
 
@@ -33,10 +32,6 @@ void CStage::Initialize()
 	CObjMgr::Get_Instance()->Add_Object(OBJID::PLAYER, m_pPlayer);
 
 	CObj* pObj = CAbstractFactory<CUI>::Create();
-	pObj->Set_Target(m_pPlayer);
-	CObjMgr::Get_Instance()->Add_Object(OBJID::INGAME_UI, pObj);
-
-	pObj = CAbstractFactory<CSkillBar>::Create();
 	pObj->Set_Target(m_pPlayer);
 	CObjMgr::Get_Instance()->Add_Object(OBJID::INGAME_UI, pObj);
 	
