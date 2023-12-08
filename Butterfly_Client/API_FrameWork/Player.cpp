@@ -1,7 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 #include "stdafx.h"
 #include "Player.h"
-#include "Shield.h"
 #include "ObjMgr.h"
 #include "KeyMgr.h"
 #include "ScrollMgr.h"
@@ -568,56 +567,3 @@ void CPlayer::Hit()
 		}
 	}
 }
-
-void CPlayer::Shield_Att()
-{
-	////////////////////////////////½¯µå
-	//if (CKeyMgr::Get_Instance()->Key_Down('R'))
-	if (false == m_bR_Cool && true == m_bR_On && CKeyMgr::Get_Instance()->Key_Down('R'))
-	{
-		m_bR_Cool = true;
-		m_dRCool_Time = GetTickCount();
-		CObj* pObj = CAbstractFactory<CShield>::Create(m_tInfo.fX, m_tInfo.fY, 0);
-		pObj->Set_Target(this);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::SHIELD, pObj);
-
-		pObj = CAbstractFactory<CShield>::Create(m_tInfo.fX, m_tInfo.fY, 45);
-		pObj->Set_Target(this);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::SHIELD, pObj);
-
-		pObj = CAbstractFactory<CShield>::Create(m_tInfo.fX, m_tInfo.fY, 90);
-		pObj->Set_Target(this);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::SHIELD, pObj);
-
-		pObj = CAbstractFactory<CShield>::Create(m_tInfo.fX, m_tInfo.fY, 135);
-		pObj->Set_Target(this);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::SHIELD, pObj);
-
-		pObj = CAbstractFactory<CShield>::Create(m_tInfo.fX, m_tInfo.fY, 180);
-		pObj->Set_Target(this);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::SHIELD, pObj);
-
-		pObj = CAbstractFactory<CShield>::Create(m_tInfo.fX, m_tInfo.fY, 225);
-		pObj->Set_Target(this);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::SHIELD, pObj);
-
-		pObj = CAbstractFactory<CShield>::Create(m_tInfo.fX, m_tInfo.fY, 270);
-		pObj->Set_Target(this);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::SHIELD, pObj);
-
-		pObj = CAbstractFactory<CShield>::Create(m_tInfo.fX, m_tInfo.fY, 315);
-		pObj->Set_Target(this);
-		CObjMgr::Get_Instance()->Add_Object(OBJID::SHIELD, pObj);
-	}
-
-	//ÄðÅ¸ÀÓ
-	if (true == m_bR_Cool)
-	{
-		if (m_dRCool_Time + 6000 < GetTickCount())
-			m_bR_Cool = false;
-	}
-}
-
-
-
-

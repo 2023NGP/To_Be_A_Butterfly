@@ -31,9 +31,6 @@
     <Filter Include="소스 파일\98.Manager">
       <UniqueIdentifier>{d79c9e8b-7691-4835-9ab9-d274f8c8d1dd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01.Obj\04.Shield">
-      <UniqueIdentifier>{47daebd6-e58b-44a7-9876-7648aa3eea2a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\98.Manager\01.CObjMgr">
       <UniqueIdentifier>{7ab95b0f-ee79-4df2-ac53-cab1634e34ea}</UniqueIdentifier>
     </Filter>
@@ -63,12 +60,6 @@
     </Filter>
     <Filter Include="소스 파일\01.Obj\05.Button">
       <UniqueIdentifier>{6f5ac5e8-843a-43ff-89cf-3945c61a2aa6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\01.Obj\06.Tile">
-      <UniqueIdentifier>{6c65920b-9dd2-4de4-8e5c-98509e5b6158}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\01.Obj\07.Attack">
-      <UniqueIdentifier>{234ee5f5-a287-4bc7-9617-7ef033c91414}</UniqueIdentifier>
     </Filter>
     <Filter Include="소스 파일\01.Obj\09.UI">
       <UniqueIdentifier>{03795a71-1bdb-4ab9-ac2a-e06d30095b63}</UniqueIdentifier>
@@ -110,9 +101,6 @@
     </ClInclude>
     <ClInclude Include="Mouse.h">
       <Filter>소스 파일\01.Obj\03.Mouse</Filter>
-    </ClInclude>
-    <ClInclude Include="Shield.h">
-      <Filter>소스 파일\01.Obj\04.Shield</Filter>
     </ClInclude>
     <ClInclude Include="ObjMgr.h">
       <Filter>소스 파일\98.Manager\01.CObjMgr</Filter>
@@ -187,9 +175,6 @@
     </ClCompile>
     <ClCompile Include="Mouse.cpp">
       <Filter>소스 파일\01.Obj\03.Mouse</Filter>
-    </ClCompile>
-    <ClCompile Include="Shield.cpp">
-      <Filter>소스 파일\01.Obj\04.Shield</Filter>
     </ClCompile>
     <ClCompile Include="ObjMgr.cpp">
       <Filter>소스 파일\98.Manager\01.CObjMgr</Filter>
