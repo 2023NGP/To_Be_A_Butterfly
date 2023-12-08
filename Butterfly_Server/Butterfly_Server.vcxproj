@@ -127,11 +127,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Define_Server.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="vector.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Main_Server.cpp" />
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Timer.cpp" />

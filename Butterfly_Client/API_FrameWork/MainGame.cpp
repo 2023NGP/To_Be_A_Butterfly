@@ -43,14 +43,16 @@ void CMainGame::Late_Update()
 
 void CMainGame::Render()
 {
-	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"Back");
+	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"Back");	// 게임 배경
 	HDC hBackBuffer = CBmpMgr::Get_Instance()->Find_Bmp(L"BackBuffer");
-	BitBlt(hBackBuffer, 0, 0, WINCX, WINCY, hMemDC, 0, 0, SRCCOPY);
-
+	//BitBlt(hBackBuffer, 0, 0, WINCX, WINCY, hMemDC, 0, 0, SRCCOPY);
+	StretchBlt(hBackBuffer, 0, 0, WINCX, WINCY,
+		hMemDC, 0, g_CameraLookAt_Y, WINCX, WINCY, SRCCOPY);
 	CSceneMgr::Get_Instance()->Render(hBackBuffer);
 
+	// m_DC
 	BitBlt(m_DC, 0, 0, WINCX, WINCY, hBackBuffer, 0, 0, SRCCOPY);
-
+	
 	// 프레임레이트 출력 
 	++m_iFPS;
 	if (m_dwTime + 1000 < GetTickCount())

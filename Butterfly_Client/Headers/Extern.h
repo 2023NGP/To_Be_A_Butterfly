@@ -7,6 +7,7 @@ extern HWND g_hWnd;
 extern POTIONRES g_tHpPotionRes;
 extern COINRES g_tCoinRes;
 extern CLOUDRES g_tCloudRes;
+extern float g_CameraLookAt_Y;
 extern PLAYER_INIT_SEND g_tPlayerInit;
 extern HANDLE hServerProcess;
 extern DWORD WINAPI ServerProcess(LPVOID arg);

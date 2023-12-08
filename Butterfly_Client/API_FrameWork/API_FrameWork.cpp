@@ -34,6 +34,10 @@ DWORD WINAPI ServerProcess(LPVOID arg);
 
 bool SendRecvPlayerInfo(SOCKET sock);
 
+// 카메라
+float g_CameraLookAt_Y;
+bool RecvCameraData(SOCKET sock);
+
 bool SendRecvHpPotionInfo(SOCKET sock);
 bool SendRecvCoinInfo(SOCKET sock);
 bool SendRecvAttacks(SOCKET sock);
@@ -315,6 +319,11 @@ DWORD WINAPI ServerProcess(LPVOID arg)
         if (retval == FALSE)
             break;
 
+		// 카메라
+		retval = RecvCameraData(sock);
+		if (retval == FALSE) {
+			break;
+		}
    
         // 체력약
         retval = SendRecvHpPotionInfo(sock);
@@ -376,6 +385,18 @@ bool SendRecvPlayerInfo(SOCKET sock)
 
 
     return TRUE;
+}
+
+bool RecvCameraData(SOCKET sock)
+{
+	int retval = recvn(sock, (char*)&g_CameraLookAt_Y, sizeof(float), 0);
+	if (retval == SOCKET_ERROR)
+	{
+		err_display("recv()");
+		return FALSE;
+	}
+	else if (retval == 0)
+		return FALSE;
 }
 
 bool SendRecvHpPotionInfo(SOCKET sock)

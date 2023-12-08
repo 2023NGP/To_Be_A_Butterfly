@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Camera.h"
 
 struct MyThread
 {
@@ -11,6 +12,9 @@ int g_iWaitClientIndex[CLIENT_COUNT];
 int g_iCurClientCount = 0; //접속한 클라 갯수
 
 CGameTimer m_GameTimer;
+Camera* m_Camera;
+
+bool SendCameraData(SOCKET sock);
 
 // 하트 관련
 HpPotionInfo g_tHpPotionInfo;
@@ -143,6 +147,9 @@ int main(int argc, char* argv[])
     InitItem();
     InitCloud();
 
+    m_Camera = new Camera;
+    m_Camera->setLookAt(0, STAGE2_HEIGHT - WINCY);
+
     int retval;
 
     // 윈속 초기화
@@ -228,6 +235,20 @@ int main(int argc, char* argv[])
 
 
 
+bool SendCameraData(SOCKET sock)
+{
+    m_Camera->Update(m_GameTimer.GetTimeElapsed());
+
+    float cy = m_Camera->getLookAt().y;
+    int retval = send(sock, (char*)&cy, sizeof(float), 0);
+    if (retval == SOCKET_ERROR)
+    {
+        err_display("send()");
+        return false;
+    }
+    return true;
+}
+
 // 클라이언트와 데이터 통신
 DWORD WINAPI ProcessClient(LPVOID arg)
 {
@@ -281,7 +302,12 @@ DWORD WINAPI ProcessClient(LPVOID arg)
         }
         //////////////////////////////////////////////////////
 
+        // 카메라
+        if (!SendCameraData(client_sock)) {
 
+            SetEvent(g_hClientEvent[iCurIndex]);
+            break;
+        }
 
         // 하트
         if (!SendRecv_HpPotionInfo(client_sock))

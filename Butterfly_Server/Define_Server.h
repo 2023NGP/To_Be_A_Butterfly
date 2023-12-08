@@ -5,3 +5,5 @@
 #define POTION_TIME 3
 #define COIN_TIME 3
 #define START_TIME 5
+
+#define STAGE2_HEIGHT		4650
