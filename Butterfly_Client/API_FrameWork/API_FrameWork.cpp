@@ -10,6 +10,7 @@
 #include "ObjMgr.h"
 #include "MyButton.h"
 #include "DataMgr.h"
+#include "Cloud.h"
 
 #define MAX_LOADSTRING 100
 
@@ -286,6 +287,13 @@ DWORD WINAPI ServerProcess(LPVOID arg)
 		}
 		else if (retval == 0)
 			return FALSE;
+
+		CObj* pObj1 = CAbstractFactory<CCloud>::Create();
+		pObj1->Set_Pos(g_Clouds[i].pos.fX, g_Clouds[i].pos.fY);
+		dynamic_cast<CCloud*>(pObj1)->SetIndex(i);
+		dynamic_cast<CCloud*>(pObj1)->SetType(g_Clouds[i].type);
+		CObjMgr::Get_Instance()->Add_Object(OBJID::CLOUD, pObj1);
+
 	}
 
     while (1)
