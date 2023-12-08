@@ -67,7 +67,9 @@ void CStage::Release()
 }
 void CStage::Add_Potion()
 {
-	// 랜덤하게 체력약 생성
+	// 랜덤하게 
+	// 
+	//  생성
 	if (GetTickCount64() - m_lStartTime > 10000)
 	{
 		m_lStartTime = GetTickCount64();

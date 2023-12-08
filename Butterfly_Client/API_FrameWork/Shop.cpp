@@ -34,7 +34,7 @@ int CShop::Update()
 	if (m_bDead)
 		return OBJ_DEAD;
 
-	Update_Rect();
+	Update_Rect_UI();
 
 	return OBJ_NOEVENT;
 }

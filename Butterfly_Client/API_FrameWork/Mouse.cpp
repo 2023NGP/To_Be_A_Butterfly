@@ -35,7 +35,7 @@ int CMouse::Update()
 	m_tInfo.fX = (float)pt.x;
 	m_tInfo.fY = (float)pt.y;
 
-	Update_Rect();
+	Update_Rect_UI();
 	return OBJ_NOEVENT;
 }
 

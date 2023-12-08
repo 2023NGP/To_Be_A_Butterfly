@@ -146,9 +146,10 @@ int CPlayer::Update()
 	if (g_tPlayerInit.start && !m_bStart)
 	{
 		Set_Pos(g_tPlayerInit.tPos.fX, g_tPlayerInit.tPos.fY);
-		//Add_Cloud();
 		m_bStart = true;
 	}
+
+	Update_Rect_UI();
 
 	return OBJ_NOEVENT;
 }
@@ -195,13 +196,10 @@ void CPlayer::Render(HDC _DC)
 {
 	//충돌 이후 좌표 갱신
 	//UpdateBeforeRender();
-	
-	
-	Update_Rect();
 
-	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(m_pFrameKey);
+	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"Player_DOWN");
 
-	//Rectangle(_DC, m_tRect.left + iScrollX, m_tRect.top + iScrollY, m_tRect.right + iScrollX, m_tRect.bottom + iScrollY);
+	// Rectangle(_DC, m_tRect.left + 0.f, m_tRect.top + 0.f, m_tRect.right + 0.f, m_tRect.bottom + 0.f);
 
 	//cout << "Player xy: " << m_tInfo.fX << " , " << m_tInfo.fY << endl;
 
@@ -343,7 +341,7 @@ void CPlayer::Key_Check()
 		Move();
 	}
 
-	Update_Rect();
+	Update_Rect_UI();
 }
 
 void CPlayer::OffSet()

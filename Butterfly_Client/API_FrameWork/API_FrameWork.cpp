@@ -67,7 +67,6 @@ void Add_Potion(HpPotionCreate);
 void Delete_Potion(HpPotionDelete hpPotionDelete);
 void Add_Coin(CoinCreate);
 void Delete_Coin(CoinDelete coinDelete);
-void Add_Cloud();
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -101,7 +100,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	CMyButton button;
 
 	//hServerProcess = CreateThread(NULL, 0, ServerProcess, NULL, 0, NULL);
-
 
 	DWORD	dwTime1 = GetTickCount();
 
@@ -233,7 +231,6 @@ void err_quit(char* msg)
 	LocalFree(lpMsgBuf);
 	exit(1);
 }
-
 int recvn(SOCKET s, char* buf, int len, int flags)
 {
 	int received;
@@ -284,6 +281,8 @@ DWORD WINAPI ServerProcess(LPVOID arg)
     setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (const char*)&nagleopt, sizeof(nagleopt));
 
 
+
+	// 구름 정보 받아 오기 및 생성
 	for (int i = 0; i < CLOUD_COUNT; ++i) {
 		retval = recvn(sock, (char*)&g_Clouds[i], sizeof(CLOUD), 0);
 		if (retval == SOCKET_ERROR)
@@ -299,10 +298,8 @@ DWORD WINAPI ServerProcess(LPVOID arg)
 		dynamic_cast<CCloud*>(pObj1)->SetIndex(i);
 		dynamic_cast<CCloud*>(pObj1)->SetType(g_Clouds[i].type);
 		CObjMgr::Get_Instance()->Add_Object(OBJID::CLOUD, pObj1);
-
 	}
 
-	//Add_Cloud();
 
     while (1)
     {
@@ -327,7 +324,7 @@ DWORD WINAPI ServerProcess(LPVOID arg)
 			}
 		//}
    
-        // 체력약
+        // 하트
         retval = SendRecvHpPotionInfo(sock);
         if (retval == FALSE)
             break;
@@ -362,13 +359,18 @@ bool SendRecvPlayerInfo(SOCKET sock)
 {
     int retval;
 
-    //자기 좌표 보내기
+    // 현재 클라이언트 정보 보내기
     PLAYER_INFO tPlayerInfo = CDataMgr::Get_Instance()->m_tPlayerInfo;
     retval = send(sock, (char*)&tPlayerInfo, sizeof(PLAYER_INFO), 0);
     if (retval == SOCKET_ERROR)
+    {
         err_display("send()");
+        return FALSE;
+    }
+    else if (retval == 0)
+        return FALSE;
 
-    //모든 좌표 받기
+    // 다른 클라이언트 정보 받기
     retval = recvn(sock, (char*)&(CDataMgr::Get_Instance()->m_tStoreData), sizeof(STORE_DATA), 0);
     if (retval == SOCKET_ERROR)
     {
@@ -377,16 +379,8 @@ bool SendRecvPlayerInfo(SOCKET sock)
     }
     else if (retval == 0)
         return FALSE;
-
-	// 여기서 엔딩 확인
-
-
-    //충돌된 좌표로 갱신
-    //Player Render 에서
-
-
-
-    return TRUE;
+    
+	return TRUE;
 }
 
 bool RecvCameraData(SOCKET sock)
@@ -399,13 +393,14 @@ bool RecvCameraData(SOCKET sock)
 	}
 	else if (retval == 0)
 		return FALSE;
+	return TRUE;
 }
 
 bool SendRecvHpPotionInfo(SOCKET sock)
 {
 	int retval;
 
-	// 체력약 정보받기 생성&삭제
+	// 하트 정보받기 생성&삭제
 	HpPotionInfo tHpPotionInfo;
 	retval = recvn(sock, (char*)&tHpPotionInfo, sizeof(HpPotionInfo), 0);
 	if (retval == SOCKET_ERROR)
@@ -416,21 +411,19 @@ bool SendRecvHpPotionInfo(SOCKET sock)
 	else if (retval == 0)
 		return FALSE;
 
-	// 체력약 생성
+	// 하트 생성
 	if (tHpPotionInfo.thpPotionCreate.bCreateOn)
 	{
 		Add_Potion(tHpPotionInfo.thpPotionCreate);
-		printf("체력약 생성\n");
 	}
 
-	// 체력약 삭제
+	// 하트 삭제
 	if (tHpPotionInfo.thpPotionDelete.bDeleteOn)
 	{
 		Delete_Potion(tHpPotionInfo.thpPotionDelete);
-		printf("체력약 삭제됨(다른 클라에 의해)\n");
 	}
 
-	// 체력약 충돌 정보 보내기
+	// 하트 충돌 정보 보내기
 	retval = send(sock, (char*)&g_tHpPotionRes, sizeof(POTIONRES), 0); // 길이가 고정된 값이 아닌 가변인자인 len
 	if (retval == SOCKET_ERROR)
 	{
@@ -458,21 +451,21 @@ bool SendRecvCoinInfo(SOCKET sock)
 	else if (retval == 0)
 		return FALSE;
 
-	// 체력약 생성
+	// 하트 생성
 	if (tCoinInfo.tCoinCreate.bCreateOn)
 	{
 		Add_Coin(tCoinInfo.tCoinCreate);
-		printf("체력약 생성\n");
+		printf("하트 생성\n");
 	}
 
-	// 체력약 삭제
+	// 하트 삭제
 	if (tCoinInfo.tCoinDelete.bDeleteOn)
 	{
 		Delete_Coin(tCoinInfo.tCoinDelete);
-		printf("체력약 삭제됨(다른 클라에 의해)\n");
+		printf("하트 삭제됨(다른 클라에 의해)\n");
 	}
 
-	// 체력약 충돌 정보 보내기
+	// 하트 충돌 정보 보내기
 	retval = send(sock, (char*)&g_tCoinRes, sizeof(COINRES), 0); // 길이가 고정된 값이 아닌 가변인자인 len
 	if (retval == SOCKET_ERROR)
 	{
@@ -592,10 +585,9 @@ void Add_Potion(HpPotionCreate hpPotionCreate)
 
 void Delete_Potion(HpPotionDelete hpPotionDelete)
 {
-	// index 일치하는 체력약 찾아서 삭제하기
+	// index 일치하는 하트 찾아서 삭제하기
 	CObjMgr::Get_Instance()->Delete_Potion(hpPotionDelete.index);
 }
-
 
 void Add_Coin(CoinCreate coinCreate)
 {
@@ -605,22 +597,9 @@ void Add_Coin(CoinCreate coinCreate)
     CObjMgr::Get_Instance()->Add_Object(OBJID::COIN, pObj1);
 }
 
-
-void Add_Cloud()
-{
-	//	for (int i = 0; CLOUD_COUNT; ++i) {
-	//	     CObj* pObj1 = CAbstractFactory<CCloud>::Create();
-	//	     pObj1->Set_Pos(g_Clouds[i].pos.fX, g_Clouds[i].pos.fY);
-	//	     dynamic_cast<CCloud*>(pObj1)->type = g_Clouds[i].type;
-	//	     dynamic_cast<CCloud*>(pObj1)->SetIndex(i);
-	//	     CObjMgr::Get_Instance()->Add_Object(OBJID::CLOUD, pObj1);
-	//	 }
-	//
-}
-
 void Delete_Coin(CoinDelete coinDelete)
 {
-	// index 일치하는 체력약 찾아서 삭제하기
+	// index 일치하는 하트 찾아서 삭제하기
 	CObjMgr::Get_Instance()->Delete_Coin(coinDelete.index);
 }
 

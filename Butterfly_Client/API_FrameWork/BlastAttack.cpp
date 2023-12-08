@@ -50,7 +50,7 @@ int CBlastAttack::Update()
 	Scene_Change();
 	Frame_Move();
 
-	Update_Rect();
+	Update_Rect_UI();
 
 	return OBJ_NOEVENT;
 }

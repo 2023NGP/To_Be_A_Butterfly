@@ -28,8 +28,8 @@ void CCloud::Initialize()
 	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Cloud/rain.bmp", L"RAINCLOUD");
 	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Cloud/normal.bmp", L"NORMALCLOUD");
 	
-	m_tInfo.iCX = 200;
-	m_tInfo.iCY = 200;
+	m_tInfo.iCX = 50;
+	m_tInfo.iCY = 50;
 
 	m_eGroup = GROUPID::CLOUD;
 }
@@ -63,11 +63,13 @@ void CCloud::Render(HDC _DC)
 {
 	int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();
 	int iScrollY = (int)CScrollMgr::Get_Instance()->Get_ScrollY();
+
 	
+
 	if (i_type == 1) {
 		HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"THUNDERCLOUD");
-		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top - g_CameraLookAt_Y,
-			m_tInfo.iCX, m_tInfo.iCY,
+		GdiTransparentBlt(_DC, m_tInfo.fX, m_tInfo.fY - g_CameraLookAt_Y,
+			200, 200,
 			hMemDC,
 			frame * 512, 0,
 			512, 500,
@@ -75,8 +77,8 @@ void CCloud::Render(HDC _DC)
 	}
 	else if (i_type == 2) {
 		HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"RAINCLOUD");
-		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top - g_CameraLookAt_Y,
-			m_tInfo.iCX, m_tInfo.iCY,
+		GdiTransparentBlt(_DC, m_tInfo.fX, m_tInfo.fY - g_CameraLookAt_Y,
+			200, 200,
 			hMemDC,
 			frame * 512, 0,
 			512, 500,
@@ -85,14 +87,16 @@ void CCloud::Render(HDC _DC)
 	}
 	else if (i_type == 3) {
 		HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"NORMALCLOUD");
-		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top - g_CameraLookAt_Y,
-			m_tInfo.iCX, m_tInfo.iCY,
+		GdiTransparentBlt(_DC, m_tInfo.fX, m_tInfo.fY - g_CameraLookAt_Y,
+			200, 200,
 			hMemDC,
 			frame * 512, 0,
 			512, 500,
 			RGB(255, 255, 255));
 	}
 	std::cout << m_lIndex << '\t';
+
+	Rectangle(_DC, m_tRect.left + 0.f, m_tRect.top + 0.f, m_tRect.right + 0.f, m_tRect.bottom + 0.f);
 }
 
 void CCloud::Release()

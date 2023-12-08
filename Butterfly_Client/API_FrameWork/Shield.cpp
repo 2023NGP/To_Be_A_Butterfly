@@ -81,7 +81,7 @@ int CShield::Update()
 	else if (Angle >= -60 && Angle < -30)
 		m_tFrame.iFrameStart = 1;
 
-	Update_Rect();
+	Update_Rect_UI();
 	return OBJ_NOEVENT;
 }
 

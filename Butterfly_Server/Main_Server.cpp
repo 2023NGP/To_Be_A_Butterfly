@@ -482,8 +482,6 @@ void CreateHpPotion()
         g_tHpPotionInfo.thpPotionCreate.pos.fX = g_HeartPos[iHpPotionIndex].fX;
         g_tHpPotionInfo.thpPotionCreate.pos.fY = g_HeartPos[iHpPotionIndex].fY;
         g_tHpPotionInfo.thpPotionCreate.index = iHpPotionIndex++;
-        //std::cout << "heart!!!!\t" << iHpPotionIndex << '\t' << g_HeartPos.size() << '\n';
-        //printf("하트생성\n");
         LeaveCriticalSection(&g_csHpPotion);
 
     }
@@ -501,7 +499,7 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
 
     EnterCriticalSection(&g_csHpPotion);
 
-    // 하트 생성 정보 보내기
+    // 하트 정보 보내기
     retval = send(sock, (char*)&g_tHpPotionInfo, sizeof(HpPotionInfo), 0);
     if (retval == SOCKET_ERROR)
     {
@@ -552,8 +550,6 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
     // 충돌일 경우 처리 - 맵에서 삭제 및 다른 클라에 알리기
     if (tHpPotionRes.bCollision)
     {
-        //printf("하트삭제\n");
-
         // 접속 클라 1개인 경우
         if (g_iCurClientCount == 1)
             return TRUE;
@@ -561,8 +557,6 @@ bool SendRecv_HpPotionInfo(SOCKET sock)
         g_tHpPotionInfo.thpPotionDelete.bDeleteOn = true;
         g_tHpPotionInfo.thpPotionDelete.cnt = 1;
         g_tHpPotionInfo.thpPotionDelete.index = tHpPotionRes.iIndex;
-
-
     }
 
     return TRUE;

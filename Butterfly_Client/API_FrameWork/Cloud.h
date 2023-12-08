@@ -29,5 +29,6 @@ private:
 	int frame = 0;
 	float frame_time = 0;
 	double prev_time = 0;
+	POS cloud_pos;
 };
 

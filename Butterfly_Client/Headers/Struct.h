@@ -114,10 +114,10 @@ typedef struct tagStoreData
 //////////////////////////////////// 
 struct HpPotionCreate
 {
-	int		cnt; // 
-	int		index; // 
-	bool	bCreateOn;
-	POS		pos;
+	int		cnt;			// 서버에서 사용, 보낸 클라이언트의 개수 판단할 때 사용함.
+	int		index;			// 하트 생성 시, 하트의 인덱스
+	bool	bCreateOn;		// 하트 생성 여부
+	POS		pos;			// 하트 생성 위치
 };
 
 struct HpPotionDelete
@@ -129,8 +129,8 @@ struct HpPotionDelete
 
 struct HpPotionInfo
 {
-	HpPotionCreate thpPotionCreate;
-	HpPotionDelete thpPotionDelete;
+	HpPotionCreate thpPotionCreate;			//  생성 시 정보
+	HpPotionDelete thpPotionDelete;			// 삭제 시 정보
 };
 
 struct CoinCreate
@@ -158,8 +158,8 @@ struct CoinInfo
 //struct HpPotion
 typedef struct tagHpPotionRes
 {
-	bool	bCollision;
-	int		iIndex;
+	bool	bCollision;				// 충돌 여부
+	int		iIndex;					// 충돌된 객체의 인덱스
 }POTIONRES;
 
 //struct coin

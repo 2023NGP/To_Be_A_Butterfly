@@ -74,7 +74,7 @@ void CSkillBar::Late_Update()
 
 void CSkillBar::Render(HDC _DC)
 {
-	Update_Rect();
+	Update_Rect_UI();
 
 	//int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();
 	//int iScrollY = (int)CScrollMgr::Get_Instance()->Get_ScrollY();

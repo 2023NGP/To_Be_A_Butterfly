@@ -4,6 +4,7 @@
 #include "ScrollMgr.h"
 #include "Potion.h"
 #include "Coin.h"
+#include "DataMgr.h"
 #include "Cloud.h"
 
 int CCollisionMgr::m_iGold_Idx = 0;
@@ -130,6 +131,9 @@ void CCollisionMgr::Collision_Cloud(list<CObj*>& _Dst, list<CObj*>& _Src)
 			{
 				dynamic_cast<CCloud*>(Src)->CallBackCollision();
 				Dst->Set_Hp(-1);
+				if (Dst->Get_Hp() <= 0) {
+					CDataMgr::Get_Instance()->m_tPlayerInfo.isDead = true;
+				}
 			}
 		}
 	}
@@ -153,7 +157,6 @@ void CCollisionMgr::Collision_Sphere(list<CObj*>& _Dst, list<CObj*>& _Src)
 		}
 	}
 }
-
 
 bool CCollisionMgr::Check_Sphere(CObj* _Dst, CObj* _Src)
 {

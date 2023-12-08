@@ -32,9 +32,9 @@ private:
 	static CDataMgr* m_pInstance;
 
 public:
-	PLAYER_INIT			m_tPlayerInit;
-	PLAYER_INFO			m_tPlayerInfo;
-	STORE_DATA			m_tStoreData;
+	PLAYER_INIT			m_tPlayerInit;			// 플레이어 초기 정보
+	PLAYER_INFO			m_tPlayerInfo;			// 플레이어 인 게임 정보
+	STORE_DATA			m_tStoreData;			// 타 플레이어 인 게임 정보
 	AttackData			m_pAttackData;
 	AttackData			m_pOthersAttackData[4];
 

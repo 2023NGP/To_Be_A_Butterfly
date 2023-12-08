@@ -50,7 +50,7 @@ void CUI::Late_Update()
 
 void CUI::Render(HDC _DC)
 {
-	Update_Rect();
+	Update_Rect_UI();
 	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"UI_PLAYERBAR");
 
 	//int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();

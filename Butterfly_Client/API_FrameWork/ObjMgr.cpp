@@ -12,7 +12,6 @@ CObjMgr::CObjMgr()
 {
 }
 
-
 CObjMgr::~CObjMgr()
 {
 	Release();

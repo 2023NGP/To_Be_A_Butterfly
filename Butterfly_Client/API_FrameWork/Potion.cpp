@@ -26,10 +26,12 @@ void CPotion::Initialize()
 
 int CPotion::Update()
 {
+	// set_dead() 함수를 통해 m_bDead 변수가 true가 되고 OBJ_DEAD 이벤트 발생
+	// obj_mgr에서 이벤트 받아서 삭제함.
 	if (m_bDead)
 		return OBJ_DEAD;
 
-	Update_Rect();
+	Update_Rect_UI();
 
 	return OBJ_NOEVENT;
 }
@@ -59,6 +61,6 @@ void CPotion::Release()
 void CPotion::CallBackCollision()
 {
 	// 서버에 알린다.
-	g_tHpPotionRes.iIndex = m_lIndex;
-	g_tHpPotionRes.bCollision = true;
+	g_tHpPotionRes.iIndex = m_lIndex;				// 현재 충돌한 하트의 인덱스
+	g_tHpPotionRes.bCollision = true;				// 충돌 여부 true로 변환
 }

@@ -31,7 +31,7 @@ void CObj::Set_Hp(int hp)
 	}
 }
 
-void CObj::Update_Rect()
+void CObj::Update_Rect_UI()
 {
 	//m_tInfo.fY -= g_CameraLookAt_Y;
 
@@ -40,7 +40,19 @@ void CObj::Update_Rect()
 	m_tRect.right = (LONG)(m_tInfo.fX + (m_tInfo.iCX >> 1));
 	m_tRect.bottom = (LONG)(m_tInfo.fY + (m_tInfo.iCY >> 1));
 }
+void CObj::Update_Rect()
+{
+	//m_tInfo.fY -= g_CameraLookAt_Y;
 
+	m_tRect.left = (LONG)(m_tInfo.fX + 100.f - (m_tInfo.iCX >> 1));
+	m_tRect.top = (LONG)(m_tInfo.fY + 100.f - (m_tInfo.iCY >> 1));
+	m_tRect.right = (LONG)(m_tInfo.fX + 100.f + (m_tInfo.iCX >> 1));
+	m_tRect.bottom = (LONG)(m_tInfo.fY + 100.f + (m_tInfo.iCY >> 1));
+
+
+	m_tRect.top -= g_CameraLookAt_Y;
+	m_tRect.bottom -= g_CameraLookAt_Y;
+}
 void CObj::Frame_Move()
 {
 	if (m_tFrame.dwFrameTime + m_tFrame.dwFrameSpeed < GetTickCount())

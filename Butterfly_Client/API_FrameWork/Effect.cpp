@@ -26,7 +26,7 @@ int CEffect::Update()
 {
 	if (m_bDead)
 		return OBJ_DEAD;
-	Update_Rect();
+	Update_Rect_UI();
 
 	if (dwTime + 300 < GetTickCount())
 		m_bDead = true;

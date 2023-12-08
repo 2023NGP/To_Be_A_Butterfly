@@ -56,6 +56,7 @@ public:
 	const bool Get_Attack() { return m_bAttack; }
 
 protected:
+	void Update_Rect_UI();
 	void Update_Rect();
 	void Frame_Move();
 
