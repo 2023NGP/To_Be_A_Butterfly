@@ -167,7 +167,6 @@
     <ClInclude Include="Effect.h" />
     <ClInclude Include="FireAttack.h" />
     <ClInclude Include="Potion.h" />
-    <ClInclude Include="IceAttack.h" />
     <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Mouse.h" />
@@ -204,7 +203,6 @@
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="FireAttack.cpp" />
     <ClCompile Include="Potion.cpp" />
-    <ClCompile Include="IceAttack.cpp" />
     <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="Mouse.cpp" />

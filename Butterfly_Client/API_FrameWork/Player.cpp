@@ -9,7 +9,6 @@
 
 #include "NormalAttack.h"
 #include "FireAttack.h"
-#include "IceAttack.h"
 
 
 #include "DataMgr.h"
@@ -715,75 +714,6 @@ void CPlayer::Fire_Att()
 			++m_iRight_Remain;
 			m_dRight_Time = GetTickCount();
 		}
-	}
-}
-
-void CPlayer::Ice_Att()
-{
-	////////////////////////////////¾ÆÀÌ½º½¯µå
-	
-	//if (CKeyMgr::Get_Instance()->Key_Down('Q'))
-	if (false == m_bQ_Cool && true == m_bQ_On && CKeyMgr::Get_Instance()->Key_Down('Q'))
-	{
-
-		m_bQ_Cool = true;
-		m_dQCool_Time = GetTickCount();
-		if (120 <= m_iMana)
-		{
-			m_iMana = 0;
-			CObj* pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 0);
-			pObj->Set_Target(this);
-			pObj->Set_Ultimate(true);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 60);
-			pObj->Set_Target(this);
-			pObj->Set_Ultimate(true);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 120);
-			pObj->Set_Target(this);
-			pObj->Set_Ultimate(true);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 180);
-			pObj->Set_Target(this);
-			pObj->Set_Ultimate(true);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 240);
-			pObj->Set_Target(this);
-			pObj->Set_Ultimate(true);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 300);
-			pObj->Set_Target(this);
-			pObj->Set_Ultimate(true);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-		}
-
-		else
-		{
-
-			CObj* pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 0);
-			pObj->Set_Target(this);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 120);
-			pObj->Set_Target(this);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			pObj = CAbstractFactory<CIceAttack>::Create(m_tInfo.fX, m_tInfo.fY, 240);
-			pObj->Set_Target(this);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-		}
-	}
-
-	//ÄðÅ¸ÀÓ
-	if (true == m_bQ_Cool)
-	{
-		if (m_dQCool_Time + 6000 < GetTickCount())
-			m_bQ_Cool = false;
 	}
 }
 
