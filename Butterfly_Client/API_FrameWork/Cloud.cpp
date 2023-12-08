@@ -91,7 +91,7 @@ void CCloud::Render(HDC _DC)
 	}
 	std::cout << m_lIndex << '\t';
 
-	Rectangle(_DC, m_tRect.left + 0.f, m_tRect.top + 0.f, m_tRect.right + 0.f, m_tRect.bottom + 0.f);
+	// Rectangle(_DC, m_tRect.left + 0.f, m_tRect.top + 0.f, m_tRect.right + 0.f, m_tRect.bottom + 0.f);
 }
 
 void CCloud::Release()

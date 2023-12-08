@@ -52,7 +52,7 @@ void CMouse::Render(HDC _DC)
 		hMemDC,
 		0, 0,
 		m_tInfo.iCX, m_tInfo.iCY,
-		RGB(255, 0, 255));
+		RGB(255, 255, 255));
 	//Ellipse(_DC, m_tRect.left, m_tRect.top, m_tRect.right, m_tRect.bottom);
 }
 
