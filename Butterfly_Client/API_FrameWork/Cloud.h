@@ -28,5 +28,6 @@ private:
 	LONG m_lIndex;
 	int frame = 0;
 	float frame_time = 0;
+	double prev_time = 0;
 };
 

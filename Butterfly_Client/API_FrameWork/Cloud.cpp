@@ -41,11 +41,15 @@ int CCloud::Update()
 
 	Update_Rect();
 
-	frame_time += GetTickCount();
-	if (frame_time > 1.f)
+	// 게임 누적 시간 받아옴
+	clock_t time = clock();
+	double timeSecond = (double)(time / CLOCKS_PER_SEC);
+	
+	// 게임 누적 시간과 prev_time 계산해서 다를 때 frame 업데이트
+	if (prev_time != timeSecond)
 	{
-		frame = (int)(frame + frame_time) % 10;
-		frame_time = 0.f;
+		frame = (frame + 1) % 10;
+		prev_time = timeSecond;
 	}
 
 	return OBJ_NOEVENT;
