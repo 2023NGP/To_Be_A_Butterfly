@@ -44,10 +44,19 @@ void CObj::Update_Rect()
 {
 	//m_tInfo.fY -= g_CameraLookAt_Y;
 
-	m_tRect.left = (LONG)(m_tInfo.fX + 100.f - (m_tInfo.iCX >> 1));
-	m_tRect.top = (LONG)(m_tInfo.fY + 100.f - (m_tInfo.iCY >> 1));
-	m_tRect.right = (LONG)(m_tInfo.fX + 100.f + (m_tInfo.iCX >> 1));
-	m_tRect.bottom = (LONG)(m_tInfo.fY + 100.f + (m_tInfo.iCY >> 1));
+	if (Get_GroupID() == GROUPID::CLOUD)
+	{
+		m_tRect.left = (LONG)(m_tInfo.fX + 50.f - (m_tInfo.iCX >> 1));
+		m_tRect.top = (LONG)(m_tInfo.fY + 100.f - (m_tInfo.iCY >> 1));
+		m_tRect.right = (LONG)(m_tInfo.fX + 150.f + (m_tInfo.iCX >> 1));
+		m_tRect.bottom = (LONG)(m_tInfo.fY + 100.f + (m_tInfo.iCY >> 1));
+	}
+	else {
+		m_tRect.left = (LONG)(m_tInfo.fX + 15.f - (m_tInfo.iCX >> 1));
+		m_tRect.top = (LONG)(m_tInfo.fY + 15.f - (m_tInfo.iCY >> 1));
+		m_tRect.right = (LONG)(m_tInfo.fX + 15.f + (m_tInfo.iCX >> 1));
+		m_tRect.bottom = (LONG)(m_tInfo.fY + 15.f + (m_tInfo.iCY >> 1));
+	}
 
 
 	m_tRect.top -= g_CameraLookAt_Y;

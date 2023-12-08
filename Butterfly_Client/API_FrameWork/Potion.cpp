@@ -31,7 +31,7 @@ int CPotion::Update()
 	if (m_bDead)
 		return OBJ_DEAD;
 
-	Update_Rect_UI();
+	Update_Rect();
 
 	return OBJ_NOEVENT;
 }
@@ -42,16 +42,14 @@ void CPotion::Late_Update()
 
 void CPotion::Render(HDC _DC)
 {
-	int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();
-	int iScrollY = (int)CScrollMgr::Get_Instance()->Get_ScrollY();
-
 	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"POTION");
-	GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
-		m_tInfo.iCX, m_tInfo.iCY,
+	GdiTransparentBlt(_DC, m_tInfo.fX, m_tInfo.fY - g_CameraLookAt_Y,
+		40, 40,
 		hMemDC,
 		0, 0,
 		64, 64,
 		RGB(255, 0, 255));
+	// Rectangle(_DC, m_tRect.left + 0.f, m_tRect.top + 0.f, m_tRect.right + 0.f, m_tRect.bottom + 0.f);
 }
 
 void CPotion::Release()

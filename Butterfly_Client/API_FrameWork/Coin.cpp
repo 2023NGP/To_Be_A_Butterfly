@@ -41,12 +41,14 @@ void CCoin::Late_Update()
 void CCoin::Render(HDC _DC)
 {
 	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"COIN");
-	GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
-		m_tInfo.iCX, m_tInfo.iCY,
+	GdiTransparentBlt(_DC, m_tInfo.fX, m_tInfo.fY - g_CameraLookAt_Y,
+		40, 40,
 		hMemDC,
 		0, 0,
 		64, 64,
 		RGB(255, 0, 255));
+
+	// Rectangle(_DC, m_tRect.left + 0.f, m_tRect.top + 0.f, m_tRect.right + 0.f, m_tRect.bottom + 0.f);
 }
 
 void CCoin::Release()
