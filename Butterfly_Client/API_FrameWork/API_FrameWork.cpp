@@ -40,7 +40,6 @@ bool RecvCameraData(SOCKET sock);
 
 bool SendRecv_HeartInfo(SOCKET sock);
 bool SendRecvCoinInfo(SOCKET sock);
-bool SendRecvAttacks(SOCKET sock);
 bool RecvPlayerInit(SOCKET sock);
 
 // 서버 관련 변수
@@ -333,12 +332,6 @@ DWORD WINAPI ServerProcess(LPVOID arg)
 			break;
 		}
 
-        // 공격
-        retval = SendRecvAttacks(sock);
-        if (retval == FALSE)
-            break;
-
-
         //////////////////////////////////////////////////////////
 
         SetEvent(hGameEvent);
@@ -470,103 +463,6 @@ bool SendRecvCoinInfo(SOCKET sock)
 	}
 
 	ZeroMemory(&g_tCoinRes, sizeof(COINRES));
-
-	return TRUE;
-}
-
-bool SendRecvAttacks(SOCKET sock)
-{
-	int retval;
-
-	// 공격 정보 보내기 - 1. 벡터의 크기
-	CDataMgr::Get_Instance()->SetAttackArr();
-	ATTACKINFO* pAttackInfo = CDataMgr::Get_Instance()->m_pAttackData.pAttackInfo;
-	int iSize = CDataMgr::Get_Instance()->m_pAttackData.iSize;
-
-	retval = send(sock, (char*)&iSize, sizeof(int), 0); // 길이가 고정된 값이 아닌 가변인자인 len
-	if (retval == SOCKET_ERROR)
-	{
-		err_display("send()");
-		return 0;
-	}
-
-	if (iSize != 0)
-	{
-		retval = send(sock, (char*)pAttackInfo, iSize * sizeof(ATTACKINFO), 0); // 길이가 고정된 값이 아닌 가변인자인 len
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("send()");
-			return 0;
-		}
-		//for (int i = 0; i < iSize; ++i)
-		//{
-		//	printf("vec.front(): %d\n", pAttackInfo[i].iType);
-		//}
-		//printf("\n");
-	}
-
-
-
-	for (int i = 0; i < CLIENT_COUNT; i++)
-	{
-		iSize = 0;
-		// 공격 정보 받기 - 1. 배열의 크기
-		retval = recvn(sock, (char*)&iSize, sizeof(int), 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("recv()");
-			return FALSE;
-		}
-		else if (retval == 0)
-			return FALSE;
-
-		CDataMgr::Get_Instance()->m_pOthersAttackData[i].iSize = iSize;
-
-		if (iSize == 0)
-			continue;
-
-		// 공격 정보 받기 - 2. 배열
-		if (CDataMgr::Get_Instance()->m_pOthersAttackData[i].pAttackInfo != nullptr)
-			delete[] CDataMgr::Get_Instance()->m_pOthersAttackData[i].pAttackInfo;
-		CDataMgr::Get_Instance()->m_pOthersAttackData[i].pAttackInfo = new ATTACKINFO[iSize];
-
-		retval = recvn(sock, (char*)CDataMgr::Get_Instance()->m_pOthersAttackData[i].pAttackInfo, iSize * sizeof(ATTACKINFO), 0);
-		if (retval == SOCKET_ERROR)
-		{
-			err_display("recv()");
-			return FALSE;
-		}
-		else if (retval == 0)
-			return FALSE;
-
-		//for (int j = 0; j < iSize; ++j)
-		//{
-		//	printf("other_vec.front(): %d\n",
-		//		CDataMgr::Get_Instance()->m_pOthersAttackData[i].pAttackInfo[j].iType);
-		//}
-
-
-		//받고 자기꺼 돌면서 충돌된거 있으면 dead true
-		int iCurIndex = CDataMgr::Get_Instance()->m_tStoreData.iClientIndex;
-		if (i == iCurIndex)
-		{
-			for (int j = 0; j < CDataMgr::Get_Instance()->m_pOthersAttackData[i].iSize; ++j)
-			{
-				if (CDataMgr::Get_Instance()->m_pOthersAttackData[i].pAttackInfo[j].bCollision)
-				{
-					auto& iter = CObjMgr::Get_Instance()->Get_list(OBJID::ATTACK).begin();
-
-					std::advance(iter, j);
-					(*iter)->Set_Dead();
-					//cout << "Skill Dead\n";
-				}
-			}
-		}
-
-	}
-
-
-	
 
 	return TRUE;
 }

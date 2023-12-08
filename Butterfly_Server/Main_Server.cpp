@@ -68,18 +68,12 @@ void InitCloud();
 int SendCloudInfo(SOCKET sock);
 
 
-
-bool SendRecv_AttackInfo(SOCKET sock, int clientIndex);
-
 void CountStart();
 void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend);
 
 CRITICAL_SECTION g_csHpPotion;
 CRITICAL_SECTION g_csCoin;
 
-//충돌
-void CheckCollision(int iIndex);
-bool Check_Sphere_SkillPlayer(INFO& tMePos, POS& tYouPos);
 
 bool g_isHit[CLIENT_COUNT] = { false };
 
@@ -323,14 +317,6 @@ DWORD WINAPI ProcessClient(LPVOID arg)
             SetEvent(g_hClientEvent[iCurIndex]);
             break;
         }
-
-        // 공격
-        if (!SendRecv_AttackInfo(client_sock, iCurIndex))
-        {
-            SetEvent(g_hClientEvent[iCurIndex]);
-            break;
-        }
-
 
         SetEvent(g_hClientEvent[iCurIndex]);
     }
@@ -738,84 +724,6 @@ int SendCloudInfo(SOCKET sock)
     return retval;
 }
 
-bool SendRecv_AttackInfo(SOCKET sock, int clientIndex)
-{
-    int retval;
-
-    // 공격 정보 받기 - 1. 벡터의 크기
-    int iSize = 0;
-    retval = recvn(sock, (char*)&iSize, sizeof(int), 0);
-    if (retval == SOCKET_ERROR)
-    {
-        err_display("recv()");
-        return FALSE;
-    }
-    else if (retval == 0)
-        return FALSE;
-
-    //if(iSize != 0)
-    //    printf("vec: %d\n", iSize);
-
-    g_pAttackData[clientIndex].iSize = iSize;
-
-    if (iSize != 0)
-    {
-        // 동적배열 초기화
-        delete[] g_pAttackData[clientIndex].pAttackInfo;
-        g_pAttackData[clientIndex].pAttackInfo = new ATTACKINFO[iSize];
-
-        // 공격 정보 받기 - 2. 벡터
-        retval = recvn(sock, (char*)g_pAttackData[clientIndex].pAttackInfo, iSize * sizeof(ATTACKINFO), 0);
-        if (retval == SOCKET_ERROR)
-        {
-            err_display("recv()");
-            return FALSE;
-        }
-        else if (retval == 0)
-            return FALSE;
-
-        //for (int i = 0; i < iSize; ++i)
-        //{
-        //    printf("vec.front(): %d\n", g_pAttackData[clientIndex].pAttackInfo[i].iType);
-        //}
-    }
-
-    ////////////////////////////////////////////////////////////////////
-    //충돌체크
-    CheckCollision(clientIndex);
-    ////////////////////////////////////////////////////////////////////
-
-
-    for (int i = 0; i < CLIENT_COUNT; i++)
-    {
-        //if (i == clientIndex)
-        //    continue;
-
-        // 공격 정보 보내기 - 1. 배열의 크기
-        retval = send(sock, (char*)&g_pAttackData[i].iSize, sizeof(int), 0);
-        if (retval == SOCKET_ERROR)
-        {
-            err_display("recv()");
-            return FALSE;
-        }
-        iSize = g_pAttackData[i].iSize;
-
-        if (iSize == 0)
-            continue;
-
-        // 공격 정보 보내기 - 2. 배열
-        retval = send(sock, (char*)g_pAttackData[i].pAttackInfo, iSize * sizeof(ATTACKINFO), 0);
-        if (retval == SOCKET_ERROR)
-        {
-            err_display("recv()");
-            return FALSE;
-        }
-    }
-
-    return TRUE;
-
-}
-
 bool SendPlayerInit(SOCKET sock, int PlayerIndex)
 {
     int retval;
@@ -878,46 +786,4 @@ void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend)
             tPlayerInitSend.team[i] = TEAMNUM::TEAM3;
         }
     }
-}
-
-void CheckCollision(int iIndex)
-{
-    int iCurIndex = iIndex;
-
-    float x = 0.f, y = 0.f;
-
-    for (int i = 0; i < CLIENT_COUNT; ++i)
-    {
-        //자기 자신 검사x
-        if (iCurIndex == i)
-            continue;
-
-        //죽었으면 충돌x
-        if (g_tStoreData.tPlayersInfo[i].isDead)
-            continue;
-
-        //같은팀이면 충돌x
-        if (g_tStoreData.team[iCurIndex] == g_tStoreData.team[i])
-            continue;
-
-        for (int j = 0; j < g_pAttackData[iCurIndex].iSize; ++j) //본인의 스킬 갯수
-        {
-            if (Check_Sphere_SkillPlayer(g_pAttackData[iCurIndex].pAttackInfo[j].tInfo, g_tStoreData.tPlayersInfo[i].tPos))
-            {
-                g_pAttackData[iCurIndex].pAttackInfo[j].bCollision = true;
-                g_isHit[i] = true;
-            }
-        }
-    }
-}
-
-bool Check_Sphere_SkillPlayer(INFO& tMePos, POS& tYouPos)
-{
-    float fRadius = (float)((tMePos.iCY + 80) >> 1);
-
-    float fX = tMePos.fX - tYouPos.fX;
-    float fY = tMePos.fY - tYouPos.fY;
-    float fDis = sqrtf(fX * fX + fY * fY);
-
-    return fRadius > fDis;
 }
