@@ -33,6 +33,8 @@ void CObj::Set_Hp(int hp)
 
 void CObj::Update_Rect()
 {
+	//m_tInfo.fY -= g_CameraLookAt_Y;
+
 	m_tRect.left = (LONG)(m_tInfo.fX - (m_tInfo.iCX >> 1));
 	m_tRect.top =  (LONG)(m_tInfo.fY - (m_tInfo.iCY >> 1));
 	m_tRect.right = (LONG)(m_tInfo.fX + (m_tInfo.iCX >> 1));

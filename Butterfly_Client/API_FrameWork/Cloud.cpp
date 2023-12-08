@@ -66,7 +66,7 @@ void CCloud::Render(HDC _DC)
 	
 	if (i_type == 1) {
 		HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"THUNDERCLOUD");
-		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
+		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top - g_CameraLookAt_Y,
 			m_tInfo.iCX, m_tInfo.iCY,
 			hMemDC,
 			frame * 512, 0,
@@ -75,7 +75,7 @@ void CCloud::Render(HDC _DC)
 	}
 	else if (i_type == 2) {
 		HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"RAINCLOUD");
-		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
+		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top - g_CameraLookAt_Y,
 			m_tInfo.iCX, m_tInfo.iCY,
 			hMemDC,
 			frame * 512, 0,
@@ -85,7 +85,7 @@ void CCloud::Render(HDC _DC)
 	}
 	else if (i_type == 3) {
 		HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"NORMALCLOUD");
-		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
+		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top - g_CameraLookAt_Y,
 			m_tInfo.iCX, m_tInfo.iCY,
 			hMemDC,
 			frame * 512, 0,

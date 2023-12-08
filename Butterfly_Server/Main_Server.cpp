@@ -148,7 +148,6 @@ int main(int argc, char* argv[])
     InitCloud();
 
     m_Camera = new Camera;
-    m_Camera->setLookAt(0, STAGE2_HEIGHT - WINCY);
 
     int retval;
 
@@ -303,11 +302,13 @@ DWORD WINAPI ProcessClient(LPVOID arg)
         //////////////////////////////////////////////////////
 
         // 카메라
-        if (!SendCameraData(client_sock)) {
+        //if (g_PlayerInit.start) {
+            if (!SendCameraData(client_sock)) {
 
-            SetEvent(g_hClientEvent[iCurIndex]);
-            break;
-        }
+                SetEvent(g_hClientEvent[iCurIndex]);
+                break;
+            }
+        //}
 
         // 하트
         if (!SendRecv_HpPotionInfo(client_sock))
