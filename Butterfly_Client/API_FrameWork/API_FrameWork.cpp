@@ -45,7 +45,9 @@ bool RecvPlayerInit(SOCKET sock);
 // 서버 관련 변수
 HANDLE hServerProcess;
 
+// 접속인원 < 3 일때 대기
 HANDLE hGameEvent;
+// 신호상태일때 갱신하기 위한 이벤트
 HANDLE hSocketEvent;
 
 char SERVERIP[512] =  /*"192.168.122.249"*/"127.0.0.1";
