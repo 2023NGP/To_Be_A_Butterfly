@@ -99,7 +99,6 @@ void CUI::Render(HDC _DC)
 		0, 0,
 		244, 32,
 		RGB(255, 0, 255));
-
 	for (int i = 0; i < CLIENT_COUNT; ++i)
 	{
 		STORE_DATA tStoreData = CDataMgr::Get_Instance()->m_tStoreData;
@@ -118,6 +117,7 @@ void CUI::Render(HDC _DC)
 					, 244, 32
 					, RGB(255, 0, 255));
 			}
+			SetBkMode(_DC, 1);
 			if (g_tPlayerInit.team[i] == TEAMNUM::TEAM1)
 			{
 				BeginPaint(g_hWnd, &ps);
