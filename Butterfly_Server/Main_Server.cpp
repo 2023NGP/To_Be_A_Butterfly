@@ -850,7 +850,15 @@ void Get_InitPos(int idx, PLAYER_INIT_SEND& tPlayerInitSend)
 
     for (int i = 0; i < CLIENT_COUNT; ++i)
     {
-        tPlayerInitSend.team[i] = TEAMNUM::TEAM1;
+        if (i == 0) {
+            tPlayerInitSend.team[i] = TEAMNUM::TEAM1;
+        }
+        else if (i == 1) {
+            tPlayerInitSend.team[i] = TEAMNUM::TEAM2;
+        }
+        else {
+            tPlayerInitSend.team[i] = TEAMNUM::TEAM3;
+        }
     }
 }
 

@@ -24,7 +24,7 @@ namespace ATTACK
 }
 namespace TEAMNUM
 {
-	enum TEAM { NONE, TEAM1, TEAM2 };
+	enum TEAM { NONE, TEAM1, TEAM2, TEAM3, END };
 }
 namespace ENDING
 {

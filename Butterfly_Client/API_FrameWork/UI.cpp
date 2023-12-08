@@ -126,6 +126,14 @@ void CUI::Render(HDC _DC)
 				TextOut(_DC, tRect.left + Image_Dif_X, tRect.top + Image_Dif_Y - 60, lpOut, lstrlen(lpOut));
 				EndPaint(g_hWnd, &ps);
 			}
+			else if (g_tPlayerInit.team[i] == TEAMNUM::TEAM2)
+			{
+				BeginPaint(g_hWnd, &ps);
+				SetTextColor(_DC, RGB(0, 255, 0));
+				wsprintf(lpOut, TEXT("%d"), i + 1);	//캐릭터 번호부여
+				TextOut(_DC, tRect.left + Image_Dif_X, tRect.top + Image_Dif_Y - 60, lpOut, lstrlen(lpOut));
+				EndPaint(g_hWnd, &ps);
+			}
 			else
 			{
 				BeginPaint(g_hWnd, &ps);
@@ -146,6 +154,14 @@ void CUI::Render(HDC _DC)
 			{
 				BeginPaint(g_hWnd, &ps);
 				SetTextColor(_DC, RGB(0, 0, 255));
+				wsprintf(lpOut, TEXT("ME(%d)"), tStoreData.iClientIndex + 1);
+				TextOut(_DC, tRect.left + Image_Dif_X, tRect.top + Image_Dif_Y - 60, lpOut, lstrlen(lpOut));
+				EndPaint(g_hWnd, &ps);
+			}
+			else if (g_tPlayerInit.team[i] == TEAMNUM::TEAM2)
+			{
+				BeginPaint(g_hWnd, &ps);
+				SetTextColor(_DC, RGB(0, 255, 0));
 				wsprintf(lpOut, TEXT("ME(%d)"), tStoreData.iClientIndex + 1);
 				TextOut(_DC, tRect.left + Image_Dif_X, tRect.top + Image_Dif_Y - 60, lpOut, lstrlen(lpOut));
 				EndPaint(g_hWnd, &ps);
