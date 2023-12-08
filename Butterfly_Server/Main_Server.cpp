@@ -738,7 +738,6 @@ int SendCloudInfo(SOCKET sock)
     return retval;
 }
 
-
 bool SendRecv_AttackInfo(SOCKET sock, int clientIndex)
 {
     int retval;
