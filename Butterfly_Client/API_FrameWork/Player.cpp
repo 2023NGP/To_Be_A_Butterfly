@@ -28,10 +28,10 @@ CPlayer::~CPlayer()
 void CPlayer::Initialize()
 {
 	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/UI/UI_HPBAR.bmp", L"PLAYER_HPBAR");
-	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/Player_DOWN.bmp", L"Player_DOWN");
-	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/Player_LEFT.bmp", L"Player_LEFT");
-	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/Player_RIGHT.bmp", L"Player_RIGHT");
-	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/Player_UP.bmp", L"Player_UP");
+	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/player.bmp", L"Player_DOWN");
+	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/player.bmp", L"Player_LEFT");
+	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/player.bmp", L"Player_RIGHT");
+	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/player.bmp", L"Player_UP");
 
 	/// <summary>
 	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/Player/Normal_ATTACK.bmp", L"Normal_ATTACK");
@@ -209,9 +209,9 @@ void CPlayer::Render(HDC _DC)
 		, m_tRect.left + Image_Dif_X, m_tRect.top + Image_Dif_Y
 		, CHAR_CX, CHAR_CY
 		, hMemDC
-		, m_tFrame.iFrameStart * 180, m_tFrame.iFrameScene * 182	//시작좌표
-		, 180, 182													//길이
-		, RGB(255, 0, 255));
+		, m_tFrame.iFrameStart * 192, 0		//시작좌표
+		, 192, 182							//길이
+		, RGB(255, 255, 255));
 
 
 	for (int i = 0; i < CLIENT_COUNT; ++i)
@@ -231,9 +231,9 @@ void CPlayer::Render(HDC _DC)
 				, tRect.left + Image_Dif_X, tRect.top + Image_Dif_Y
 				, CHAR_CX, CHAR_CY
 				, hMemDC
-				, tPlayerInfo.tFrameInfo.iFrameStart * 180, tPlayerInfo.tFrameInfo.iFrameScene * 182
-				, 180, 182													
-				, RGB(255, 0, 255));
+				, tPlayerInfo.tFrameInfo.iFrameStart * 192, 0
+				, 192, 182													
+				, RGB(255, 255, 255));
 		}
 	}
 	int iClientIndex = CDataMgr::Get_Instance()->m_tStoreData.iClientIndex;
@@ -337,17 +337,9 @@ void CPlayer::Key_Check()
 	if (CDataMgr::Get_Instance()->m_tPlayerInfo.isDead)
 		return;
 
-	Move();
-	Dash();
-	//Normal_Att();
 	if (g_tPlayerInit.start == true)
 	{
-		Hit();
-		Normal_Att();
-		Fire_Att();
-		Ice_Att();
-		//Shield_Att();
-		Blast_Att();
+		Move();
 	}
 
 	Update_Rect();
