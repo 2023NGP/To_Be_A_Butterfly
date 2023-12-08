@@ -164,7 +164,6 @@
     <ClInclude Include="Coin.h" />
     <ClInclude Include="CollisionMgr.h" />
     <ClInclude Include="DataMgr.h" />
-    <ClInclude Include="Effect.h" />
     <ClInclude Include="Potion.h" />
     <ClInclude Include="KeyMgr.h" />
     <ClInclude Include="MainGame.h" />
@@ -197,7 +196,6 @@
     <ClCompile Include="Coin.cpp" />
     <ClCompile Include="CollisionMgr.cpp" />
     <ClCompile Include="DataMgr.cpp" />
-    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="Potion.cpp" />
     <ClCompile Include="KeyMgr.cpp" />
     <ClCompile Include="MainGame.cpp" />
