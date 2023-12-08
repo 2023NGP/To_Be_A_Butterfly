@@ -55,6 +55,9 @@ public:
 	const bool Get_Ball() { return m_bBall; }
 	const bool Get_Attack() { return m_bAttack; }
 
+	STATE	m_ePreState;
+	STATE	m_eCurState;
+
 protected:
 	void Update_Rect_UI();
 	void Update_Rect();
@@ -64,9 +67,6 @@ protected:
 	INFO	m_tInfo;
 	RECT	m_tRect;
 	FRAME	m_tFrame;
-
-	STATE	m_ePreState;
-	STATE	m_eCurState;
 
 	float	m_fSpeed;
 	
@@ -122,7 +122,8 @@ protected:
 
 public:
 	size_t	m_iAttackName;
-
+	bool m_bHit = false;
+	float hit_start_time = 0.f;
 };
 
 

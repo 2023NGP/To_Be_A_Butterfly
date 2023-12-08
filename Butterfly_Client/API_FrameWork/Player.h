@@ -18,9 +18,6 @@ public:
 	virtual void Render(HDC _DC) override;
 	virtual void Release() override;
 
-private:
-	void	CheckHit();
-	void	CheckRevie();
 public:
 	void Set_Bullet(list<CObj*>* _pBullet) { m_pBullet = _pBullet; }
 	void Set_Shield(list<CObj*>* _pShield) { m_pShield = _pShield; }
@@ -44,16 +41,11 @@ private:
 	void Key_Check();
 	void OffSet();
 	void Scene_Change();
+	void Hit();
 
 public:
 	void Move();
-	void Dash();
-	void Hit();
-	void Normal_Att();
-	void Fire_Att();
-	void Ice_Att();
-	void Shield_Att();
-	void Blast_Att();
+	float hit_progress_time = 0.f;
 
 private:
 	list<CObj*>*	m_pBullet;

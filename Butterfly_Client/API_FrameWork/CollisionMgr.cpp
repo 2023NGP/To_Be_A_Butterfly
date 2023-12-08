@@ -129,6 +129,9 @@ void CCollisionMgr::Collision_Cloud(list<CObj*>& _Dst, list<CObj*>& _Src)
 		{
 			if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
 			{
+				Dst->m_eCurState = CObj::STATE::HIT;
+				Dst->m_bHit = true;
+				Dst->hit_start_time = clock();
 				dynamic_cast<CCloud*>(Src)->CallBackCollision();
 				Dst->Set_Hp(-1);
 				if (Dst->Get_Hp() <= 0) {

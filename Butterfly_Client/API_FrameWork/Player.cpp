@@ -116,12 +116,10 @@ void CPlayer::Initialize()
 int CPlayer::Update()
 {
 	Key_Check();
-	//Jumping();
 	OffSet();
 	Scene_Change();
 	Frame_Move();
-	//cout << m_tInfo.fX << ", " << m_tInfo.fY << endl;
-
+	Hit();
 
 	/// ////////////////////////////////////////////////
 	CDataMgr::Get_Instance()->m_tPlayerInfo.tPos.fX = m_tInfo.fX;
@@ -132,8 +130,6 @@ int CPlayer::Update()
 	CDataMgr::Get_Instance()->m_tPlayerInfo.iHp = m_iHp;
 	//CDataMgr::Get_Instance()->m_tPlayerInfo.tFrame = m_tFrame;
 
-	CheckHit();
-	// CheckRevie();
 	/// ////////////////////////////////////////////////
 
 	if (g_tPlayerInit.start && !m_bStart)
@@ -189,14 +185,9 @@ void CPlayer::Late_Update()
 
 void CPlayer::Render(HDC _DC)
 {
-	//충돌 이후 좌표 갱신
-	//UpdateBeforeRender();
-
 	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"Player_DOWN");
 
 	// Rectangle(_DC, m_tRect.left + 0.f, m_tRect.top + 0.f, m_tRect.right + 0.f, m_tRect.bottom + 0.f);
-
-	//cout << "Player xy: " << m_tInfo.fX << " , " << m_tInfo.fY << endl;
 
 	GdiTransparentBlt(_DC
 		, m_tRect.left + Image_Dif_X, m_tRect.top + Image_Dif_Y
@@ -205,7 +196,6 @@ void CPlayer::Render(HDC _DC)
 		, m_tFrame.iFrameStart * 192, 0		//시작좌표
 		, 192, 182							//길이
 		, RGB(255, 255, 255));
-
 
 	for (int i = 0; i < CLIENT_COUNT; ++i)
 	{
@@ -275,51 +265,6 @@ void CPlayer::Render(HDC _DC)
 }
 
 
-
-void CPlayer::CheckHit()
-{
-	CDataMgr* dataMgr = CDataMgr::Get_Instance();
-
-	if (dataMgr->m_tPlayerInfo.isDead)
-		return;
-
-	int iIndex = dataMgr->m_tStoreData.iClientIndex;
-	if (dataMgr->m_tStoreData.tPlayersInfo[iIndex].isHit) //히트는 서버에서 판정하므로
-	{
-		m_iHp -= 8; //임의로
-		if (m_iHp < 0)
-		{
-			m_iHp = 0;
-			dataMgr->m_tPlayerInfo.isDead = true;
-			m_eCurState = DEAD;
-			m_dwDaedTime = GetTickCount();
-			m_pFrameKey = L"Player_DOWN";
-		}
-		dataMgr->m_tStoreData.tPlayersInfo[iIndex].isHit = false;
-
-		std::cout << iIndex << "번째 hp: " << m_iHp << std::endl;
-	}
-}
-
-void CPlayer::CheckRevie()
-{
-	CDataMgr* dataMgr = CDataMgr::Get_Instance();
-	int iIndex = dataMgr->m_tStoreData.iClientIndex;
-	if (dataMgr->m_tStoreData.tPlayersInfo[iIndex].eEnding == ENDING::WIN ||
-		dataMgr->m_tStoreData.tPlayersInfo[iIndex].eEnding == ENDING::LOSE)
-		return;
-
-	if (m_eCurState == DEAD)
-	{
-		if (m_dwDaedTime + REVIVE_TIME < GetTickCount())
-		{
-			dataMgr->m_tPlayerInfo.isDead = false;
-			m_iHp = m_iMaxHp;
-			m_eCurState = IDLE;
-		}
-	}
-}
-
 void CPlayer::Release()
 {
 }
@@ -379,32 +324,11 @@ void CPlayer::Scene_Change()
 			m_tFrame.dwFrameSpeed = 70;
 			m_tFrame.dwFrameTime = GetTickCount();
 			break;
-		case CPlayer::DASH:
-			m_tFrame.iFrameStart = 0;
-			m_tFrame.iFrameEnd = 7;
-			m_tFrame.iFrameScene = 2;
-			m_tFrame.dwFrameSpeed = 40;
-			m_tFrame.dwFrameTime = GetTickCount();
-			break;
-		case CPlayer::ATTACK:
-			m_tFrame.iFrameStart = 0;
-			m_tFrame.iFrameEnd = 7;
-			m_tFrame.iFrameScene = 3;
-			m_tFrame.dwFrameSpeed = 30;
-			m_tFrame.dwFrameTime = GetTickCount();
-			break;
-		case CPlayer::ATTACK2:
-			m_tFrame.iFrameStart = 0;
-			m_tFrame.iFrameEnd = 7;
-			m_tFrame.iFrameScene = 4;
-			m_tFrame.dwFrameSpeed = 30;
-			m_tFrame.dwFrameTime = GetTickCount();
-			break;
 		case CPlayer::HIT:
-			m_tFrame.iFrameStart = 0;
-			m_tFrame.iFrameEnd = 1;
-			m_tFrame.iFrameScene = 5;
-			m_tFrame.dwFrameSpeed = 80;
+			m_tFrame.iFrameStart = 10;
+			m_tFrame.iFrameEnd = 13;
+			m_tFrame.iFrameScene = 0;
+			m_tFrame.dwFrameSpeed = 200;
 			m_tFrame.dwFrameTime = GetTickCount();
 			break;
 		case CPlayer::DEAD:
@@ -419,10 +343,22 @@ void CPlayer::Scene_Change()
 	}
 }
 
+void CPlayer::Hit()
+{
+	if (m_bHit) {
+		hit_progress_time += clock();
+		if ((double)(hit_progress_time / CLOCKS_PER_SEC) - (double)(hit_start_time / CLOCKS_PER_SEC) > 1) {
+			m_bHit = false;
+			hit_progress_time = 0.f;
+			hit_start_time = 0.f;
+		}
+	}
+}
+
 void CPlayer::Move()
 {
 	////////////////////////////////이동
-	if (false == m_bDead && false == m_bDash && false == m_bAttack)
+	if (false == m_bDead && false == m_bHit && false == m_bAttack)
 	{
 		if (GetAsyncKeyState('A'))
 		{
@@ -489,81 +425,5 @@ void CPlayer::Move()
 		}
 		else
 			m_eCurState = IDLE;
-	}
-}
-
-void CPlayer::Dash()
-{
-
-	////////////////////////////////대쉬
-	if (false == m_bAttack && CKeyMgr::Get_Instance()->Key_Down(VK_SPACE))
-	{
-		m_bDash = true;
-		Dash_Time = GetTickCount();
-	}
-	if (true == m_bDash)
-	{
-		m_eCurState = DASH;
-		switch (m_eDir)
-		{
-		case CPlayer::LEFT:
-			m_tInfo.fX -= m_fDashSpeed;
-			break;
-		case CPlayer::RIGHT:
-			m_tInfo.fX += m_fDashSpeed;
-			break;
-		case CPlayer::UP:
-			m_tInfo.fY -= m_fDashSpeed;
-			break;
-		case CPlayer::DOWN:
-			m_tInfo.fY += m_fDashSpeed;
-			break;
-		case CPlayer::LEFT_UP:
-			m_tInfo.fX -= m_fDashSpeed / sqrtf(2.f);
-			m_tInfo.fY -= m_fDashSpeed / sqrtf(2.f);
-			break;
-		case CPlayer::LEFT_DOWN:
-			m_tInfo.fX -= m_fDashSpeed / sqrtf(2.f);
-			m_tInfo.fY += m_fDashSpeed / sqrtf(2.f);
-			break;
-		case CPlayer::RIGHT_UP:
-			m_tInfo.fX += m_fDashSpeed / sqrtf(2.f);
-			m_tInfo.fY -= m_fDashSpeed / sqrtf(2.f);
-			break;
-		case CPlayer::RIGHT_DOWN:
-			m_tInfo.fX += m_fDashSpeed / sqrtf(2.f);
-			m_tInfo.fY += m_fDashSpeed / sqrtf(2.f);
-			break;
-		}
-		if (Dash_Time + 320 < GetTickCount())
-		{
-			m_bDash = false;
-		}
-	}
-}
-
-void CPlayer::Hit()
-{
-	////////////////////////////////히트
-	if (true == m_bCollision)
-	{
-		m_eCurState = HIT;
-		if (false == m_bOne_Hit)
-		{
-
-			//m_iHp -= MONSTER_ATTACK;
-			m_bOne_Hit = true;
-		}
-		if (false == m_bHit_GetTick)
-		{
-			Hit_Time = GetTickCount();
-			m_bHit_GetTick = true;
-		}
-		if (Hit_Time + 230 < GetTickCount())  //몬스터 공격이랑 시간이 같아야 한번피격..?
-		{
-			m_bCollision = false;
-			m_bHit_GetTick = false;
-			m_bOne_Hit = false;
-		}
 	}
 }
