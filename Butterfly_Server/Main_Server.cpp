@@ -440,7 +440,7 @@ void CheckEnding(int iCurIndex)
         g_bEnding = true;
         return;
     }
-    else if (g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::PASS) {
+    if (g_tStoreData.tPlayersInfo[iCurIndex].eEnding == ENDING::PASS) {
         g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::WIN;
 
         for (int i = 0; i < CLIENT_COUNT; i++)
