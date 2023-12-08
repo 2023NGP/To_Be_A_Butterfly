@@ -195,9 +195,6 @@
     <ClInclude Include="Potion.h">
       <Filter>소스 파일\01.Obj\10.Potion</Filter>
     </ClInclude>
-    <ClInclude Include="Shop.h">
-      <Filter>소스 파일\01.Obj\11.Shop</Filter>
-    </ClInclude>
     <ClInclude Include="Effect.h">
       <Filter>소스 파일\01.Obj\12.Effect</Filter>
     </ClInclude>
@@ -292,9 +289,6 @@
     </ClCompile>
     <ClCompile Include="Potion.cpp">
       <Filter>소스 파일\01.Obj\10.Potion</Filter>
-    </ClCompile>
-    <ClCompile Include="Shop.cpp">
-      <Filter>소스 파일\01.Obj\11.Shop</Filter>
     </ClCompile>
     <ClCompile Include="Effect.cpp">
       <Filter>소스 파일\01.Obj\12.Effect</Filter>

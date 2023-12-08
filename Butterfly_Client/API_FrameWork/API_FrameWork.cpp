@@ -38,7 +38,7 @@ bool SendRecvPlayerInfo(SOCKET sock);
 float g_CameraLookAt_Y;
 bool RecvCameraData(SOCKET sock);
 
-bool SendRecvHpPotionInfo(SOCKET sock);
+bool SendRecv_HeartInfo(SOCKET sock);
 bool SendRecvCoinInfo(SOCKET sock);
 bool SendRecvAttacks(SOCKET sock);
 bool RecvPlayerInit(SOCKET sock);
@@ -53,7 +53,7 @@ char SERVERIP[512] =  /*"192.168.122.249"*/"127.0.0.1";
 
 
 // 하트 관련 변수, 함수
-POTIONRES g_tHpPotionRes;
+POTIONRES g_tHeartRes;
 // 코인 관련
 COINRES g_tCoinRes;
 // 구름 관련
@@ -63,8 +63,8 @@ CLOUDRES g_tCloudRes;
 PLAYER_INIT_SEND g_tPlayerInit;
 CLOUD g_Clouds[200];
 
-void Add_Potion(HpPotionCreate);
-void Delete_Potion(HpPotionDelete hpPotionDelete);
+void Add_Heart(HpPotionCreate);
+void Delete_Heart(HpPotionDelete hpPotionDelete);
 void Add_Coin(CoinCreate);
 void Delete_Coin(CoinDelete coinDelete);
 
@@ -323,7 +323,7 @@ DWORD WINAPI ServerProcess(LPVOID arg)
 		}
    
         // 하트
-        retval = SendRecvHpPotionInfo(sock);
+        retval = SendRecv_HeartInfo(sock);
         if (retval == FALSE)
             break;
 
@@ -394,13 +394,13 @@ bool RecvCameraData(SOCKET sock)
 	return TRUE;
 }
 
-bool SendRecvHpPotionInfo(SOCKET sock)
+bool SendRecv_HeartInfo(SOCKET sock)
 {
 	int retval;
 
-	// 하트 정보받기 생성&삭제
-	HpPotionInfo tHpPotionInfo;
-	retval = recvn(sock, (char*)&tHpPotionInfo, sizeof(HpPotionInfo), 0);
+	// 하트 정보 받기 생성 & 삭제
+	HpPotionInfo tHeartInfo;
+	retval = recvn(sock, (char*)&tHeartInfo, sizeof(HpPotionInfo), 0);
 	if (retval == SOCKET_ERROR)
 	{
 		err_display("recv()");
@@ -410,26 +410,26 @@ bool SendRecvHpPotionInfo(SOCKET sock)
 		return FALSE;
 
 	// 하트 생성
-	if (tHpPotionInfo.thpPotionCreate.bCreateOn)
+	if (tHeartInfo.thpPotionCreate.bCreateOn)
 	{
-		Add_Potion(tHpPotionInfo.thpPotionCreate);
+		Add_Heart(tHeartInfo.thpPotionCreate);
 	}
 
 	// 하트 삭제
-	if (tHpPotionInfo.thpPotionDelete.bDeleteOn)
+	if (tHeartInfo.thpPotionDelete.bDeleteOn)
 	{
-		Delete_Potion(tHpPotionInfo.thpPotionDelete);
+		Delete_Heart(tHeartInfo.thpPotionDelete);
 	}
 
 	// 하트 충돌 정보 보내기
-	retval = send(sock, (char*)&g_tHpPotionRes, sizeof(POTIONRES), 0); // 길이가 고정된 값이 아닌 가변인자인 len
+	retval = send(sock, (char*)&g_tHeartRes, sizeof(POTIONRES), 0); // 길이가 고정된 값이 아닌 가변인자인 len
 	if (retval == SOCKET_ERROR)
 	{
 		err_display("send()");
 		return 0;
 	}
 
-	ZeroMemory(&g_tHpPotionRes, sizeof(POTIONRES));
+	ZeroMemory(&g_tHeartRes, sizeof(POTIONRES));
 
 	return TRUE;
 }
@@ -449,22 +449,20 @@ bool SendRecvCoinInfo(SOCKET sock)
 	else if (retval == 0)
 		return FALSE;
 
-	// 하트 생성
+	// 코인 생성
 	if (tCoinInfo.tCoinCreate.bCreateOn)
 	{
 		Add_Coin(tCoinInfo.tCoinCreate);
-		printf("하트 생성\n");
 	}
 
-	// 하트 삭제
+	// 코인 삭제
 	if (tCoinInfo.tCoinDelete.bDeleteOn)
 	{
 		Delete_Coin(tCoinInfo.tCoinDelete);
-		printf("하트 삭제됨(다른 클라에 의해)\n");
 	}
 
-	// 하트 충돌 정보 보내기
-	retval = send(sock, (char*)&g_tCoinRes, sizeof(COINRES), 0); // 길이가 고정된 값이 아닌 가변인자인 len
+	// 코인 충돌 정보 보내기
+	retval = send(sock, (char*)&g_tCoinRes, sizeof(COINRES), 0);
 	if (retval == SOCKET_ERROR)
 	{
 		err_display("send()");
@@ -573,7 +571,7 @@ bool SendRecvAttacks(SOCKET sock)
 	return TRUE;
 }
 
-void Add_Potion(HpPotionCreate hpPotionCreate)
+void Add_Heart(HpPotionCreate hpPotionCreate)
 {
     CObj* pObj1 = CAbstractFactory<CPotion>::Create();
     pObj1->Set_Pos(hpPotionCreate.pos.fX, hpPotionCreate.pos.fY);
@@ -581,7 +579,7 @@ void Add_Potion(HpPotionCreate hpPotionCreate)
     CObjMgr::Get_Instance()->Add_Object(OBJID::HEART, pObj1);
 }
 
-void Delete_Potion(HpPotionDelete hpPotionDelete)
+void Delete_Heart(HpPotionDelete hpPotionDelete)
 {
 	// index 일치하는 하트 찾아서 삭제하기
 	CObjMgr::Get_Instance()->Delete_Potion(hpPotionDelete.index);

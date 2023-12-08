@@ -4,7 +4,7 @@
 #define __EXTERN_H__
 
 extern HWND g_hWnd;
-extern POTIONRES g_tHpPotionRes;
+extern POTIONRES g_tHeartRes;
 extern COINRES g_tCoinRes;
 extern CLOUDRES g_tCloudRes;
 extern float g_CameraLookAt_Y;

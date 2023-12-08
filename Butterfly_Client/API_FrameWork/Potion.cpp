@@ -61,6 +61,6 @@ void CPotion::Release()
 void CPotion::CallBackCollision()
 {
 	// 서버에 알린다.
-	g_tHpPotionRes.iIndex = m_lIndex;				// 현재 충돌한 하트의 인덱스
-	g_tHpPotionRes.bCollision = true;				// 충돌 여부 true로 변환
+	g_tHeartRes.iIndex = m_lIndex;				// 현재 충돌한 하트의 인덱스
+	g_tHeartRes.bCollision = true;				// 충돌 여부 true로 변환
 }

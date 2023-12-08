@@ -8,7 +8,6 @@
 #include "UI.h"
 #include "SkillBar.h"
 #include "Prison.h"
-#include "Shop.h"
 #include "KeyMgr.h"
 #include "Potion.h"
 

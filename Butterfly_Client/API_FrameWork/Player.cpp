@@ -191,6 +191,7 @@ void CPlayer::Late_Update()
 	if (m_tInfo.fY > WINCY + MAP_EDGE)
 		CDataMgr::Get_Instance()->m_tPlayerInfo.isDead = true;
 	// 여기서 화면 끝에 닿았을 때 클리어 조건 걸어주면 될 것 같다~!
+
 }
 
 void CPlayer::Render(HDC _DC)
