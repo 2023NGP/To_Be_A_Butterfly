@@ -442,6 +442,8 @@ void CheckEnding(int iCurIndex)
 
     if (g_tStoreData.tPlayersInfo[iCurIndex].isDead)
     {
+        // std::cout << iCurIndex << "°¡ Á×À½" << std::endl;
+        g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::LOSE;
         TEAMNUM::TEAM eNowTeam = g_tStoreData.team[iCurIndex];
 
         for (int i = 0; i < CLIENT_COUNT; i++)
