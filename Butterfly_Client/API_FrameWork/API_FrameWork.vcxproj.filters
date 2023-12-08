@@ -52,9 +52,6 @@
     <Filter Include="소스 파일\04.Scene">
       <UniqueIdentifier>{9fb3565d-c593-464e-9f28-7615dde2b66f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\04.Scene\00.Logo">
-      <UniqueIdentifier>{89e90de6-dc9f-4921-a416-30073f5e1cfb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\04.Scene\01.Menu">
       <UniqueIdentifier>{0781a394-4f0d-406f-bf4d-31417af6a11b}</UniqueIdentifier>
     </Filter>
@@ -147,9 +144,6 @@
     <ClInclude Include="Scene.h">
       <Filter>소스 파일\04.Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Logo.h">
-      <Filter>소스 파일\04.Scene\00.Logo</Filter>
-    </ClInclude>
     <ClInclude Include="SceneMgr.h">
       <Filter>소스 파일\98.Manager\06.SceneMgr</Filter>
     </ClInclude>
@@ -238,9 +232,6 @@
     </ClCompile>
     <ClCompile Include="Scene.cpp">
       <Filter>소스 파일\04.Scene</Filter>
-    </ClCompile>
-    <ClCompile Include="Logo.cpp">
-      <Filter>소스 파일\04.Scene\00.Logo</Filter>
     </ClCompile>
     <ClCompile Include="API_FrameWork.cpp">
       <Filter>소스 파일</Filter>

@@ -170,7 +170,6 @@
     <ClInclude Include="Potion.h" />
     <ClInclude Include="IceAttack.h" />
     <ClInclude Include="KeyMgr.h" />
-    <ClInclude Include="Logo.h" />
     <ClInclude Include="MainGame.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="MyBitmap.h" />
@@ -209,7 +208,6 @@
     <ClCompile Include="Potion.cpp" />
     <ClCompile Include="IceAttack.cpp" />
     <ClCompile Include="KeyMgr.cpp" />
-    <ClCompile Include="Logo.cpp" />
     <ClCompile Include="MainGame.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MyBitmap.cpp" />

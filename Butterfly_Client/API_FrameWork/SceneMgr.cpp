@@ -1,6 +1,5 @@
 #include "stdafx.h"
 #include "SceneMgr.h"
-#include "Logo.h"
 #include "MyMenu.h"
 #include "Stage.h"
 
@@ -27,9 +26,6 @@ void CSceneMgr::Scene_Change(SCENEID _eID)
 
 		switch (m_eCurScene)
 		{
-		case CSceneMgr::SCENE_LOGO:
-			m_pScene = new CLogo;
-			break;
 		case CSceneMgr::SCENE_MENU:
 			m_pScene = new CMyMenu;
 			break;
