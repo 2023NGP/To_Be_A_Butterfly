@@ -40,9 +40,6 @@ void CCoin::Late_Update()
 
 void CCoin::Render(HDC _DC)
 {
-	int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();
-	int iScrollY = (int)CScrollMgr::Get_Instance()->Get_ScrollY();
-
 	HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"COIN");
 	GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
 		m_tInfo.iCX, m_tInfo.iCY,

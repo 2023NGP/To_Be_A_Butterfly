@@ -79,9 +79,6 @@
     <Filter Include="소스 파일\01.Obj\07.Attack\02.IceAttack">
       <UniqueIdentifier>{5b1a7ef5-5876-4458-8cae-f4eacf902307}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01.Obj\07.Attack\03.BlastAttack">
-      <UniqueIdentifier>{77dff4f7-bad2-42e0-9262-1e3ed49e1dd8}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\01.Obj\09.UI">
       <UniqueIdentifier>{03795a71-1bdb-4ab9-ac2a-e06d30095b63}</UniqueIdentifier>
     </Filter>
@@ -164,9 +161,6 @@
     </ClInclude>
     <ClInclude Include="NormalAttack.h">
       <Filter>소스 파일\01.Obj\07.Attack\00.NormalAttack</Filter>
-    </ClInclude>
-    <ClInclude Include="BlastAttack.h">
-      <Filter>소스 파일\01.Obj\07.Attack\03.BlastAttack</Filter>
     </ClInclude>
     <ClInclude Include="Player.h">
       <Filter>소스 파일\01.Obj\00.Player</Filter>
@@ -256,9 +250,6 @@
     </ClCompile>
     <ClCompile Include="NormalAttack.cpp">
       <Filter>소스 파일\01.Obj\07.Attack\00.NormalAttack</Filter>
-    </ClCompile>
-    <ClCompile Include="BlastAttack.cpp">
-      <Filter>소스 파일\01.Obj\07.Attack\03.BlastAttack</Filter>
     </ClCompile>
     <ClCompile Include="UI.cpp">
       <Filter>소스 파일\01.Obj\09.UI\00.PlayerUI</Filter>

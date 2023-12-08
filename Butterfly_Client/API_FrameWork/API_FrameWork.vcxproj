@@ -159,7 +159,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="API_FrameWork.h" />
-    <ClInclude Include="BlastAttack.h" />
     <ClInclude Include="BmpMgr.h" />
     <ClInclude Include="Cloud.h" />
     <ClInclude Include="Coin.h" />
@@ -197,7 +196,6 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="BlastAttack.cpp" />
     <ClCompile Include="BmpMgr.cpp" />
     <ClCompile Include="Cloud.cpp" />
     <ClCompile Include="Coin.cpp" />

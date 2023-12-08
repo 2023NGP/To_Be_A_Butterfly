@@ -10,7 +10,6 @@
 #include "NormalAttack.h"
 #include "FireAttack.h"
 #include "IceAttack.h"
-#include "BlastAttack.h"
 
 
 #include "DataMgr.h"
@@ -834,97 +833,6 @@ void CPlayer::Shield_Att()
 	{
 		if (m_dRCool_Time + 6000 < GetTickCount())
 			m_bR_Cool = false;
-	}
-}
-
-void CPlayer::Blast_Att()
-{
-	////////////////////////////////아이스 블라스트
-	if (false == m_bE_Cool && true == m_bE_On && CKeyMgr::Get_Instance()->Key_Down('E') || true == m_bBlast_GetMouse)
-	{
-		
-		if (false == m_bBlast_GetMouse)
-		{
-			m_bE_Cool = true;
-			m_dECool_Time = GetTickCount();
-
-			m_bBlast_GetMouse = true;
-
-			m_tMouse.x = (LONG)m_pTarget->Get_Info().fX;
-			m_tMouse.y = (LONG)m_pTarget->Get_Info().fY;
-			m_tBlast.x = m_tPosin.x;
-			m_tBlast.y = m_tPosin.y;
-			m_fBlast_Dis = 40.f;
-			m_fBlast_Ang = m_fAngle;
-			m_fBlast_ScrX = CScrollMgr::Get_Instance()->Get_ScrollX();
-			m_fBlast_ScrY = CScrollMgr::Get_Instance()->Get_ScrollY();
-
-			Blast_Time = GetTickCount();
-		}
-
-		if (Blast_Time + 80 < GetTickCount() && true == m_bBlast_GetMouse && false == m_Blast_TargetPalyer)	//0.05초마다 위치 바꿔주면서 생성
-		{
-			++m_iBlast_Idx;
-			
-			m_tBlast.x += (LONG)(cosf(m_fBlast_Ang * PI / 180.f) * m_fBlast_Dis);
-			m_tBlast.y -= (LONG)(sinf(m_fBlast_Ang * PI / 180.f) * m_fBlast_Dis);
-
-			CObj* pObj = CAbstractFactory<CBlastAttack>::Create((float)m_tBlast.x, (float)m_tBlast.y);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			//m_fBlast_Dis += 20.f;
-
-			Blast_Time = GetTickCount();
-		}
-
-		//언제까지 만들껀지 조건!! -> 탈출
-		float	fX = 0.f, fY = 0.f, fDis = 0.f, fRad2 = 0.f, fDis2 = 0.f, fAng2 = 0.f;
-
-		fX = (m_tMouse.x - m_fBlast_ScrX) - m_tBlast.x;
-		fY = (m_tMouse.y - m_fBlast_ScrY) - m_tBlast.y;
-		fDis = sqrtf(fX * fX + fY * fY);
-
-		fX = (m_tInfo.fX) - m_tBlast.x;
-		fY = (m_tInfo.fY) - m_tBlast.y;
-		fDis2 = sqrtf(fX * fX + fY * fY);
-		fRad2 = acosf(fX / fDis2);
-		fAng2 = fRad2 * 180.f / PI;
-
-		if (m_tBlast.y < (m_tInfo.fY))
-			fAng2 *= -1.f;
-
-		//마우스 근처 다왔다
-		if (70 > fDis)
-		{
-			m_Blast_TargetPalyer = true;
-			//m_bBlast_GetMouse = false;
-		}
-
-		if (Blast_Time + 80 < GetTickCount() && true == m_bBlast_GetMouse && true == m_Blast_TargetPalyer)
-		{
-			++m_iBlast_Idx;
-			
-			m_tBlast.x += (LONG)(cosf(fAng2 * PI / 180.f) * m_fBlast_Dis);
-			m_tBlast.y -= (LONG)(sinf(fAng2 * PI / 180.f) * m_fBlast_Dis);
-			CObj* pObj = CAbstractFactory<CBlastAttack>::Create((float)m_tBlast.x, (float)m_tBlast.y);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-
-			Blast_Time = GetTickCount();
-		}
-
-		//플레이어 근처 다왔다
-		if (60 > fDis2 && true == m_Blast_TargetPalyer)
-		{
-			m_Blast_TargetPalyer = false;
-			m_bBlast_GetMouse = false;
-		}
-	}
-
-	//쿨타임
-	if (true == m_bE_Cool)
-	{
-		if (m_dECool_Time + 3000 < GetTickCount())
-			m_bE_Cool = false;
 	}
 }
 

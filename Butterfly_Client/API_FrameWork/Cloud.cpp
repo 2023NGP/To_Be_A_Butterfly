@@ -61,11 +61,6 @@ void CCloud::Late_Update()
 
 void CCloud::Render(HDC _DC)
 {
-	int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();
-	int iScrollY = (int)CScrollMgr::Get_Instance()->Get_ScrollY();
-
-	
-
 	if (i_type == 1) {
 		HDC hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"THUNDERCLOUD");
 		GdiTransparentBlt(_DC, m_tInfo.fX, m_tInfo.fY - g_CameraLookAt_Y,
