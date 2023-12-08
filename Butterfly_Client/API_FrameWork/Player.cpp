@@ -1,3 +1,4 @@
+#define _CRT_SECURE_NO_WARNINGS
 #include "stdafx.h"
 #include "Player.h"
 #include "Shield.h"
@@ -145,6 +146,7 @@ int CPlayer::Update()
 	if (g_tPlayerInit.start && !m_bStart)
 	{
 		Set_Pos(g_tPlayerInit.tPos.fX, g_tPlayerInit.tPos.fY);
+		//Add_Cloud();
 		m_bStart = true;
 	}
 

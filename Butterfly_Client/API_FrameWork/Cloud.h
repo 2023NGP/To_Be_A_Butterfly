@@ -20,7 +20,9 @@ public:
 public:
 	int GetIndex() { return m_lIndex; }
 	void SetIndex(LONG lIndex) { m_lIndex = lIndex; }
+
 	void SetType(int type) { i_type = type; }
+
 	void CallBackCollision();
 private:
 	LONG m_lIndex;

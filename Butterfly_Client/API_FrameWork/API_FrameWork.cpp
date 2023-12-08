@@ -7,6 +7,7 @@
 #include "MainGame.h"
 #include "Potion.h"
 #include "Coin.h"
+#include "Cloud.h"
 #include "ObjMgr.h"
 #include "MyButton.h"
 #include "DataMgr.h"
@@ -60,6 +61,7 @@ void Add_Potion(HpPotionCreate);
 void Delete_Potion(HpPotionDelete hpPotionDelete);
 void Add_Coin(CoinCreate);
 void Delete_Coin(CoinDelete coinDelete);
+void Add_Cloud();
 
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -295,6 +297,8 @@ DWORD WINAPI ServerProcess(LPVOID arg)
 		CObjMgr::Get_Instance()->Add_Object(OBJID::CLOUD, pObj1);
 
 	}
+
+	//Add_Cloud();
 
     while (1)
     {
@@ -576,6 +580,19 @@ void Add_Coin(CoinCreate coinCreate)
     pObj1->Set_Pos(coinCreate.pos.fX, coinCreate.pos.fY);
     dynamic_cast<CCoin*>(pObj1)->SetIndex(coinCreate.index);
     CObjMgr::Get_Instance()->Add_Object(OBJID::COIN, pObj1);
+}
+
+
+void Add_Cloud()
+{
+	//	for (int i = 0; CLOUD_COUNT; ++i) {
+	//	     CObj* pObj1 = CAbstractFactory<CCloud>::Create();
+	//	     pObj1->Set_Pos(g_Clouds[i].pos.fX, g_Clouds[i].pos.fY);
+	//	     dynamic_cast<CCloud*>(pObj1)->type = g_Clouds[i].type;
+	//	     dynamic_cast<CCloud*>(pObj1)->SetIndex(i);
+	//	     CObjMgr::Get_Instance()->Add_Object(OBJID::CLOUD, pObj1);
+	//	 }
+	//
 }
 
 void Delete_Coin(CoinDelete coinDelete)
