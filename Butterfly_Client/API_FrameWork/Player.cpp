@@ -8,7 +8,6 @@
 #include "BmpMgr.h"
 
 #include "NormalAttack.h"
-#include "FireAttack.h"
 
 
 #include "DataMgr.h"
@@ -647,75 +646,6 @@ void CPlayer::Normal_Att()
 	}
 }
 
-void CPlayer::Fire_Att()
-{
-	////////////////////////////////ºÒ
-	//if (GetAsyncKeyState(VK_RBUTTON))
-	
-	if (0 < m_iRight_Remain && true == m_bRight_On && CKeyMgr::Get_Instance()->Key_Down(VK_RBUTTON))
-	{
-		++m_iFire_Idx;
-		
-		--m_iRight_Remain;
-
-		//°ø°Ý¾À
-		if (3 == Attack_Scene)
-		{
-			Attack_Scene = 4;
-			m_eCurState = ATTACK;
-		}
-		else if (4 == Attack_Scene)
-		{
-			Attack_Scene = 3; //1
-			m_eCurState = ATTACK2;
-		}
-		m_bAttack = true;
-
-		Attack_Time = GetTickCount();
-
-		if (m_fAngle > -45 && m_fAngle < 45)
-			m_pFrameKey = L"Player_RIGHT";
-		else if (m_fAngle > 45 && m_fAngle < 135)
-			m_pFrameKey = L"Player_UP";
-		else if (m_fAngle > 135 || m_fAngle < -135)
-			m_pFrameKey = L"Player_LEFT";
-		else if (m_fAngle > -135 && m_fAngle < -45)
-			m_pFrameKey = L"Player_DOWN";
-
-		if (true == m_bFireLeft)
-		{
-			CObj* pObj = CAbstractFactory<CFireAttack>::Create((float)m_tPoLeft.x, (float)m_tPoLeft.y, m_fAngle - 10);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-		}
-		else
-		{
-			CObj* pObj = CAbstractFactory<CFireAttack>::Create((float)m_tPoRight.x, (float)m_tPoRight.y, m_fAngle + 10);
-			CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-		}
-
-
-		if (true == m_bFireLeft)
-			m_bFireLeft = false;
-		else
-			m_bFireLeft = true;
-
-	}
-	if (true == m_bAttack)
-	{
-		if (Attack_Time + 240 < GetTickCount())
-		{
-			m_bAttack = false;
-		}
-	}
-	if (8 > m_iRight_Remain)
-	{
-		if (m_dRight_Time + 1000 < GetTickCount())
-		{
-			++m_iRight_Remain;
-			m_dRight_Time = GetTickCount();
-		}
-	}
-}
 
 void CPlayer::Shield_Att()
 {

@@ -73,9 +73,6 @@
     <Filter Include="소스 파일\01.Obj\07.Attack\00.NormalAttack">
       <UniqueIdentifier>{36b550b9-be6b-4792-b3f6-bee12e211352}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01.Obj\07.Attack\01.FireAttack">
-      <UniqueIdentifier>{9bc81e06-af37-433d-ac90-dec89ef6029a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\01.Obj\09.UI">
       <UniqueIdentifier>{03795a71-1bdb-4ab9-ac2a-e06d30095b63}</UniqueIdentifier>
     </Filter>
@@ -149,9 +146,6 @@
     </ClInclude>
     <ClInclude Include="Stage.h">
       <Filter>소스 파일\04.Scene\02.Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="FireAttack.h">
-      <Filter>소스 파일\01.Obj\07.Attack\01.FireAttack</Filter>
     </ClInclude>
     <ClInclude Include="NormalAttack.h">
       <Filter>소스 파일\01.Obj\07.Attack\00.NormalAttack</Filter>
@@ -235,9 +229,6 @@
     </ClCompile>
     <ClCompile Include="Stage.cpp">
       <Filter>소스 파일\04.Scene\02.Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="FireAttack.cpp">
-      <Filter>소스 파일\01.Obj\07.Attack\01.FireAttack</Filter>
     </ClCompile>
     <ClCompile Include="NormalAttack.cpp">
       <Filter>소스 파일\01.Obj\07.Attack\00.NormalAttack</Filter>
