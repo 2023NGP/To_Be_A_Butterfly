@@ -44,15 +44,18 @@ void Camera::setLookAt(float x, float y)
 	m_vLookAt.y = y;
 }
 
-void Camera::Update(const float frameTime)
+void Camera::Update(const float frameTime, bool isUpdate)
 {	
-	if (m_vLookAt.y <= 0) {
-		m_vLookAt.y = 0.f;
-	}
-	else {
-		m_vLookAt.y -= 50.f * frameTime;
+	if (isUpdate)
+	{
+		if (m_vLookAt.y <= 0) {
+			m_vLookAt.y = 0.f;
+		}
+		else {
+			m_vLookAt.y -= 50.f * frameTime;
 
-		// 화면 중앙좌표와 카메라 LookAt 좌표간의 차이값 계산
-		calDiff(frameTime);
+			// 화면 중앙좌표와 카메라 LookAt 좌표간의 차이값 계산
+			calDiff(frameTime);
+		}
 	}
 }

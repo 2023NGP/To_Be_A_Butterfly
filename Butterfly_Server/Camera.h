@@ -31,6 +31,6 @@ public:
 	VECTOR2 getRenderPos(VECTOR2 _vObjPos) { return _vObjPos - m_vDiff; }
 	VECTOR2 getRealPos(VECTOR2 _vRenderPos) { return _vRenderPos + m_vDiff; }
 
-	void Update(const float frameTime);
+	void Update(const float frameTime, bool isUpdate);
 };
 

@@ -317,12 +317,10 @@ DWORD WINAPI ServerProcess(LPVOID arg)
             break;
 
 		// 카메라
-		//if (g_tPlayerInit.start) {
-			retval = RecvCameraData(sock);
-			if (retval == FALSE) {
-				break;
-			}
-		//}
+		retval = RecvCameraData(sock);
+		if (retval == FALSE) {
+			break;
+		}
    
         // 하트
         retval = SendRecvHpPotionInfo(sock);

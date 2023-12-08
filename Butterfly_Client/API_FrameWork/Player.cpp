@@ -140,7 +140,7 @@ int CPlayer::Update()
 	//CDataMgr::Get_Instance()->m_tPlayerInfo.tFrame = m_tFrame;
 
 	CheckHit();
-	CheckRevie();
+	// CheckRevie();
 	/// ////////////////////////////////////////////////
 
 	if (g_tPlayerInit.start && !m_bStart)
@@ -264,19 +264,19 @@ void CPlayer::Render(HDC _DC)
 		return; // 부활UI 출력 안하도록
 	}
 
-	if (CDataMgr::Get_Instance()->m_tPlayerInfo.isDead)
-	{
-		int leftTime = (m_dwDaedTime + REVIVE_TIME - GetTickCount())/1000;
-		hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"ReviveTime");
+	//if (CDataMgr::Get_Instance()->m_tPlayerInfo.isDead)
+	//{
+	//	int leftTime = (m_dwDaedTime + REVIVE_TIME - GetTickCount())/1000;
+	//	hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"ReviveTime");
 
-		GdiTransparentBlt(_DC
-			, WINCX/2 - 200, WINCY / 2 - 300
-			, 400, 600
-			, hMemDC
-			, leftTime * 200, 0
-			, 200, 300
-			, RGB(255, 255, 255));
-	}
+	//	GdiTransparentBlt(_DC
+	//		, WINCX/2 - 200, WINCY / 2 - 300
+	//		, 400, 600
+	//		, hMemDC
+	//		, leftTime * 200, 0
+	//		, 200, 300
+	//		, RGB(255, 255, 255));
+	//}
 }
 
 

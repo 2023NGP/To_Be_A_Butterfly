@@ -236,7 +236,7 @@ int main(int argc, char* argv[])
 
 bool SendCameraData(SOCKET sock)
 {
-    m_Camera->Update(m_GameTimer.GetTimeElapsed());
+    m_Camera->Update(m_GameTimer.GetTimeElapsed(), g_PlayerInit.start);
 
     float cy = m_Camera->getLookAt().y;
     int retval = send(sock, (char*)&cy, sizeof(float), 0);
@@ -302,13 +302,13 @@ DWORD WINAPI ProcessClient(LPVOID arg)
         //////////////////////////////////////////////////////
 
         // 카메라
-        //if (g_PlayerInit.start) {
-            if (!SendCameraData(client_sock)) {
 
-                SetEvent(g_hClientEvent[iCurIndex]);
-                break;
-            }
-        //}
+        if (!SendCameraData(client_sock)) {
+
+             SetEvent(g_hClientEvent[iCurIndex]);
+             break;
+        }
+        
 
         // 하트
         if (!SendRecv_HpPotionInfo(client_sock))
