@@ -426,34 +426,32 @@ void CheckEnding(int iCurIndex)
     if (g_bEnding)
         return;
 
+    // 죽었을 때
     if (g_tStoreData.tPlayersInfo[iCurIndex].isDead)
     {
-        // std::cout << iCurIndex << "가 죽음" << std::endl;
         g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::LOSE;
-        TEAMNUM::TEAM eNowTeam = g_tStoreData.team[iCurIndex];
+        for (int i = 0; i < CLIENT_COUNT; i++)
+        {
+            if (!g_tStoreData.tPlayersInfo[iCurIndex].isDead) {
+                return;
+            }
+        }
+        // 내가 제일 마지막에 죽은 경우
+        g_bEnding = true;
+        return;
+    }
+    else if (g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::PASS) {
+        g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::WIN;
 
         for (int i = 0; i < CLIENT_COUNT; i++)
         {
-            if (i == iCurIndex)
-                continue;
-
-            if (g_tStoreData.team[i] == eNowTeam && g_tStoreData.tPlayersInfo[i].isDead)
-            {
-                g_bEnding = true;
-                g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::LOSE;
+            if (i != iCurIndex) {
                 g_tStoreData.tPlayersInfo[i].eEnding = ENDING::LOSE;
-                for (int j = 0; j < CLIENT_COUNT; j++)
-                {
-                    if (j == i || j == iCurIndex)
-                        continue;
-                    g_tStoreData.tPlayersInfo[j].eEnding = ENDING::WIN;
-
-                }
-                break;
             }
         }
-
+        // return 게임 끝 => 한 명이라도 클리어한 경우
     }
+    g_bEnding = false;
 }
 void CreateHpPotion()
 {

@@ -67,7 +67,7 @@ void CCloud::Render(HDC _DC)
 			200, 200,
 			hMemDC,
 			frame * 512, 0,
-			512, 500,
+			512, 512,
 			RGB(255, 255, 255));
 	}
 	else if (i_type == 2) {
@@ -76,7 +76,7 @@ void CCloud::Render(HDC _DC)
 			200, 200,
 			hMemDC,
 			frame * 512, 0,
-			512, 500,
+			512, 512,
 			RGB(255, 255, 255));
 		
 	}
@@ -86,7 +86,7 @@ void CCloud::Render(HDC _DC)
 			200, 200,
 			hMemDC,
 			frame * 512, 0,
-			512, 500,
+			512, 512,
 			RGB(255, 255, 255));
 	}
 	std::cout << m_lIndex << '\t';
