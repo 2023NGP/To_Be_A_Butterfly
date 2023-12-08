@@ -369,10 +369,6 @@ bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex)
     else if (retval == 0)
         return FALSE;
 
-
-    // 받은 데이터 출력
-    //buf[retval] = '\0';
-    //printf("[%d] (%f, %f)\n", iCurIndex, tPlayerInfo.tPos.fX, tPlayerInfo.tPos.fY);
     if (g_iCurClientCount == CLIENT_COUNT)    // 클라 3명이면 스타트
     {
         tPlayerInfo.start = true;

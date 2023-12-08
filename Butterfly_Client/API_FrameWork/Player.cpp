@@ -336,6 +336,7 @@ void CPlayer::Key_Check()
 	//죽었을때 키입력 안받음
 	if (CDataMgr::Get_Instance()->m_tPlayerInfo.isDead)
 		return;
+	
 
 	if (g_tPlayerInit.start == true)
 	{
@@ -373,7 +374,7 @@ void CPlayer::Scene_Change()
 		{
 		case CPlayer::IDLE:
 			m_tFrame.iFrameStart = 0;
-			m_tFrame.iFrameEnd = 0;
+			m_tFrame.iFrameEnd = 9;
 			m_tFrame.iFrameScene = 0;
 			m_tFrame.dwFrameSpeed = 200;
 			m_tFrame.dwFrameTime = GetTickCount();
@@ -428,7 +429,7 @@ void CPlayer::Scene_Change()
 void CPlayer::Move()
 {
 	////////////////////////////////이동
-	if (false == m_bDash && false == m_bAttack)
+	if (false == m_bDead && false == m_bDash && false == m_bAttack)
 	{
 		if (GetAsyncKeyState('A'))
 		{

@@ -18,9 +18,8 @@ public:
 	static void Collision_Shield(list<CObj*>& _Dst, list<CObj*>& _Src);
 	static void Collision_Heart(list<CObj*>& _Dst, list<CObj*>& _Src);
 	static void Collision_Coin(list<CObj*>& _Dst, list<CObj*>& _Src);
-	static void Collision_Prison(list<CObj*>& _Dst, list<CObj*>& _Src);
-	//static void Collision_Wall(list<CObj*>& _Dst);
-	//static void Collision_Wall_Att(list<CObj*>& _Dst);
+	static void Collision_Cloud(list<CObj*>& _Dst, list<CObj*>& _Src);
+
 	static void Collision_Sphere(list<CObj*>& _Dst, list<CObj*>& _Src);
 	static void Collision_Ball(list<CObj*>& _Dst, list<CObj*>& _Src);
 

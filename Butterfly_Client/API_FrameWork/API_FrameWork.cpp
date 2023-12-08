@@ -52,6 +52,8 @@ char SERVERIP[512] =  /*"192.168.122.249"*/"127.0.0.1";
 POTIONRES g_tHpPotionRes;
 // 코인 관련
 COINRES g_tCoinRes;
+// 구름 관련
+CLOUDRES g_tCloudRes;
 
 // 게임시작 관련
 PLAYER_INIT_SEND g_tPlayerInit;

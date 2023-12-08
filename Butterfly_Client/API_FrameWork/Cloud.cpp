@@ -102,8 +102,8 @@ void CCloud::Release()
 void CCloud::CallBackCollision()
 {
 	// 서버에 알린다.
-	//g_tCloudRes.iIndex = m_lIndex;
-	//g_tCloudRes.bCollision = true;
+	g_tCloudRes.iIndex = m_lIndex;
+	g_tCloudRes.bCollision = true;
 
 }
 

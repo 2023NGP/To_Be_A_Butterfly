@@ -39,6 +39,7 @@ void CObjMgr::Update()
 	// collision
 	CCollisionMgr::Collision_Heart(m_listObj[OBJID::PLAYER], m_listObj[OBJID::HEART]);
 	CCollisionMgr::Collision_Coin(m_listObj[OBJID::PLAYER], m_listObj[OBJID::COIN]);
+	CCollisionMgr::Collision_Cloud(m_listObj[OBJID::PLAYER], m_listObj[OBJID::CLOUD]);
 
 }
 

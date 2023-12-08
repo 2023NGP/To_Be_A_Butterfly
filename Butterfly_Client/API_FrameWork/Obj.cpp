@@ -25,6 +25,10 @@ void CObj::Set_Hp(int hp)
 		m_iHp += hp;
 	else
 		m_iHp = m_iMaxHp;
+
+	if (m_iHp <= 0) {
+		Set_Dead();
+	}
 }
 
 void CObj::Update_Rect()

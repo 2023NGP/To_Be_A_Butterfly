@@ -106,6 +106,7 @@ typedef struct tagStoreData
 	int iHp[4] = {};
 	TEAMNUM::TEAM team[4];
 	bool start;
+	bool isDead;
 }STORE_DATA;
 
 //////////////////////////////////// 
@@ -171,6 +172,11 @@ typedef struct Cloud {
 	POS pos;
 	int type;
 }CLOUD;
+
+typedef struct tagCloudRes {
+	bool	bCollision;
+	int		iIndex;
+}CLOUDRES;
 
 typedef struct tagAttackInfo
 {

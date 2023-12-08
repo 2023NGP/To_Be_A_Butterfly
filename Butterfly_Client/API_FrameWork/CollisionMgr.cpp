@@ -4,6 +4,7 @@
 #include "ScrollMgr.h"
 #include "Potion.h"
 #include "Coin.h"
+#include "Cloud.h"
 
 int CCollisionMgr::m_iGold_Idx = 0;
 
@@ -116,102 +117,23 @@ void CCollisionMgr::Collision_Coin(list<CObj*>& _Dst, list<CObj*>& _Src)
 		}
 	}
 }
-//
-//
-//void CCollisionMgr::Collision_Wall(list<CObj*>& _Dst)
-//{
-//	float fX = 0.f, fY = 0.f;
-//	vector<CObj*> Tile = CTileMgr::Get_Instance()->Get_Tile();
-//
-//	int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();
-//	int iScrollY = (int)CScrollMgr::Get_Instance()->Get_ScrollY();
-//
-//	int iCullX = abs(iScrollX / TILE_RECTCX);
-//	int iCullY = abs(iScrollY / TILE_RECTCY);
-//
-//	int iCullEndX = iCullX + WINCX / TILE_RECTCX + 4;
-//	int iCullEndY = iCullY + WINCY / TILE_RECTCY + 4;
-//
-//
-//	for (auto& Dst : _Dst)
-//	{
-//		for (int i = iCullY; i < iCullEndY; ++i)
-//		{
-//			for (int j = iCullX; j < iCullEndX; ++j)
-//			{
-//				int iIdx = i * TILEX + j;
-//				if (0 > iIdx || Tile.size() <= (size_t)iIdx)
-//					continue;
-//
-//				if (1 == Tile[iIdx]->Get_Option())
-//				{
-//					if (Check_Rect(Dst, Tile[iIdx], &fX, &fY))
-//					{
-//						if (fX > fY)
-//						{
-//							if (Dst->Get_Info().fY < Tile[iIdx]->Get_Info().fY)
-//								Dst->Set_PosY(-fY);
-//							else
-//								Dst->Set_PosY(fY);
-//						}
-//						else
-//						{
-//							if (Dst->Get_Info().fX < Tile[iIdx]->Get_Info().fX)
-//								Dst->Set_PosX(-fX);
-//							else
-//								Dst->Set_PosX(fX);
-//						}
-//					}
-//				}
-//			}
-//		}
-//		
-//	}
-//
-//
-//}
-//
-//void CCollisionMgr::Collision_Wall_Att(list<CObj*>& _Dst)
-//{
-//	float fX = 0.f, fY = 0.f;
-//	vector<CObj*> Tile = CTileMgr::Get_Instance()->Get_Tile();
-//
-//	int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();
-//	int iScrollY = (int)CScrollMgr::Get_Instance()->Get_ScrollY();
-//
-//	int iCullX = abs(iScrollX / TILE_RECTCX);
-//	int iCullY = abs(iScrollY / TILE_RECTCY);
-//
-//	int iCullEndX = iCullX + WINCX / TILE_RECTCX + 2;
-//	int iCullEndY = iCullY + WINCY / TILE_RECTCY + 2;
-//
-//
-//	for (auto& Dst : _Dst)
-//	{
-//		if(true == Dst->Get_Arrow() || true == Dst->Get_Fire())  //몬스터 활 불 or 플레이어 불
-//		{
-//			for (int i = iCullY; i < iCullEndY; ++i)
-//			{
-//				for (int j = iCullX; j < iCullEndX; ++j)
-//				{
-//					int iIdx = i * TILEX + j;
-//					if (0 > iIdx || Tile.size() <= (size_t)iIdx)
-//						continue;
-//
-//					if (1 == Tile[iIdx]->Get_Option())
-//					{
-//						if (Check_Rect(Dst, Tile[iIdx], &fX, &fY))
-//						{
-//							Dst->Set_Dead();			//투사체 공격 없어짐
-//						}
-//					}
-//				}
-//			}
-//		}
-//
-//	}
-//
-//}
+
+void CCollisionMgr::Collision_Cloud(list<CObj*>& _Dst, list<CObj*>& _Src)
+{
+	RECT rc = {};
+
+	for (auto& Dst : _Dst)
+	{
+		for (auto& Src : _Src)
+		{
+			if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
+			{
+				dynamic_cast<CCloud*>(Src)->CallBackCollision();
+				Dst->Set_Hp(-1);
+			}
+		}
+	}
+}
 
 void CCollisionMgr::Collision_Sphere(list<CObj*>& _Dst, list<CObj*>& _Src)
 {
