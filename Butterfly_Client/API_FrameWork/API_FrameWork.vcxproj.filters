@@ -94,12 +94,6 @@
     <Filter Include="소스 파일\01.Obj\09.UI\01.SkillBar">
       <UniqueIdentifier>{fcdf7c2c-3d85-424b-b20d-52d677bc5ce5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="소스 파일\01.Obj\09.UI\02.Prison">
-      <UniqueIdentifier>{22559876-b5b5-46f9-9b9b-9822d9b4e8ec}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="소스 파일\01.Obj\11.Shop">
-      <UniqueIdentifier>{faadc588-f537-474a-b725-ab17bb74c724}</UniqueIdentifier>
-    </Filter>
     <Filter Include="소스 파일\01.Obj\12.Effect">
       <UniqueIdentifier>{3666cd58-4371-4ad0-bc5e-9e5f1a27f53d}</UniqueIdentifier>
     </Filter>
@@ -188,9 +182,6 @@
     </ClInclude>
     <ClInclude Include="SkillBar.h">
       <Filter>소스 파일\01.Obj\09.UI\01.SkillBar</Filter>
-    </ClInclude>
-    <ClInclude Include="Prison.h">
-      <Filter>소스 파일\01.Obj\09.UI\02.Prison</Filter>
     </ClInclude>
     <ClInclude Include="Potion.h">
       <Filter>소스 파일\01.Obj\10.Potion</Filter>
@@ -283,9 +274,6 @@
     </ClCompile>
     <ClCompile Include="SkillBar.cpp">
       <Filter>소스 파일\01.Obj\09.UI\01.SkillBar</Filter>
-    </ClCompile>
-    <ClCompile Include="Prison.cpp">
-      <Filter>소스 파일\01.Obj\09.UI\02.Prison</Filter>
     </ClCompile>
     <ClCompile Include="Potion.cpp">
       <Filter>소스 파일\01.Obj\10.Potion</Filter>
