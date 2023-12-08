@@ -26,6 +26,7 @@ public:
 	void CallBackCollision();
 private:
 	LONG m_lIndex;
-
+	int frame = 0;
+	float frame_time = 0;
 };
 

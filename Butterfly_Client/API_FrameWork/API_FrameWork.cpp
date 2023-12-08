@@ -93,8 +93,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	mainGame.Initialize();
 
 	CMyButton button;
-	// 서버 전송 부분 생성. 이벤트 생성해서 클라 Late_Update()까지 끝나면 send 하도록
-
 
 	//hServerProcess = CreateThread(NULL, 0, ServerProcess, NULL, 0, NULL);
 

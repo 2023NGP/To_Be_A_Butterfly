@@ -41,6 +41,13 @@ int CCloud::Update()
 
 	Update_Rect();
 
+	frame_time += GetTickCount();
+	if (frame_time > 1.f)
+	{
+		frame = (int)(frame + frame_time) % 10;
+		frame_time = 0.f;
+	}
+
 	return OBJ_NOEVENT;
 }
 
@@ -58,8 +65,8 @@ void CCloud::Render(HDC _DC)
 		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
 			m_tInfo.iCX, m_tInfo.iCY,
 			hMemDC,
-			0, 0,
-			500, 500,
+			frame * 512, 0,
+			512, 500,
 			RGB(255, 255, 255));
 	}
 	else if (i_type == 2) {
@@ -67,8 +74,8 @@ void CCloud::Render(HDC _DC)
 		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
 			m_tInfo.iCX, m_tInfo.iCY,
 			hMemDC,
-			0, 0,
-			500, 500,
+			frame * 512, 0,
+			512, 500,
 			RGB(255, 255, 255));
 		
 	}
@@ -77,12 +84,10 @@ void CCloud::Render(HDC _DC)
 		GdiTransparentBlt(_DC, m_tRect.left, m_tRect.top,
 			m_tInfo.iCX, m_tInfo.iCY,
 			hMemDC,
-			0, 0,
-			500, 500,
+			frame * 512, 0,
+			512, 500,
 			RGB(255, 255, 255));
-	
 	}
-	
 	std::cout << m_lIndex << '\t';
 }
 
