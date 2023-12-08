@@ -5,7 +5,7 @@
 
 // 최대 접속 가능한 클라이언트 수
 #define CLIENT_COUNT 3
-#define CLOUD_COUNT 3
+#define CLOUD_COUNT 73
 
 #define WINCX 1280
 #define WINCY 720

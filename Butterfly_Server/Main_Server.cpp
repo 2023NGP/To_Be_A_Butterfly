@@ -705,7 +705,7 @@ void InitItem()
 void InitCloud()
 {
     FILE* fp;
-    fopen_s(&fp, "../Butterfly_Client/Image/mapdata/test.txt", "r");
+    fopen_s(&fp, "../Butterfly_Client/Image/mapdata/map2.txt", "r");
     std::random_device rd;
     std::uniform_int_distribution <int> dis(0, 49);
     int i = 0;
