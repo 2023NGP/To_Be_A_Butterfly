@@ -179,7 +179,10 @@ void CPlayer::Late_Update()
 	// 화면 밖을 벗어나면 죽음
 	if (m_tInfo.fY > WINCY + MAP_EDGE)
 		CDataMgr::Get_Instance()->m_tPlayerInfo.isDead = true;
-	// 여기서 화면 끝에 닿았을 때 클리어 조건 걸어주면 될 것 같다~!
+	if (m_tInfo.fY > 0)
+		CDataMgr::Get_Instance()->m_tPlayerInfo.eEnding = ENDING::PASS;
+	// 여기서 화면 끝에 닿았을 때 클리어 조건 걸어주면 될 것 같다
+
 
 }
 
