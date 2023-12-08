@@ -7,9 +7,6 @@
 #include "ScrollMgr.h"
 #include "BmpMgr.h"
 
-#include "NormalAttack.h"
-
-
 #include "DataMgr.h"
 
 CPlayer::CPlayer()
@@ -571,81 +568,6 @@ void CPlayer::Hit()
 		}
 	}
 }
-
-void CPlayer::Normal_Att()
-{
-	////////////////////////////////평타
-	if (false == m_bCollision && false == m_bDash && CKeyMgr::Get_Instance()->Key_Down(VK_LBUTTON))
-	{
-		++m_iNormal_Idx;
-
-		//m_eCurState = ATTACK;
-		//m_bNormalAtt = true;
-		m_bAttack = true;
-		Attack_Time = GetTickCount();
-
-		//약간움직임
-		m_tInfo.fX += cosf(m_fAngle * PI / 180.f) * 10;
-		m_tInfo.fY -= sinf(m_fAngle * PI / 180.f) * 10;
-
-		//4방향,8방향
-		{
-			if (m_fAngle > -45 && m_fAngle < 45)
-				m_pFrameKey = L"Player_RIGHT";
-			else if (m_fAngle > 45 && m_fAngle < 135)
-				m_pFrameKey = L"Player_UP";
-			else if (m_fAngle > 135 || m_fAngle < -135)
-				m_pFrameKey = L"Player_LEFT";
-			else if (m_fAngle > -135 && m_fAngle < -45)
-				m_pFrameKey = L"Player_DOWN";
-
-
-			if (m_fAngle > -22.5 && m_fAngle < 22.5)
-				m_eDir = RIGHT;
-			else if (m_fAngle > 22.5 && m_fAngle < 67.5)
-				m_eDir = RIGHT_UP;
-			else if (m_fAngle > 67.5 && m_fAngle < 112.5)
-				m_eDir = UP;
-			else if (m_fAngle > 112.5 && m_fAngle < 157.5)
-				m_eDir = LEFT_UP;
-			else if (m_fAngle > 157.5 || m_fAngle < -157.5)
-				m_eDir = LEFT;
-			else if (m_fAngle > -157.5 && m_fAngle < -112.5)
-				m_eDir = LEFT_DOWN;
-			else if (m_fAngle > -112.5 && m_fAngle < -67.5)
-				m_eDir = DOWN;
-			else if (m_fAngle > -67.5 && m_fAngle < -22.5)
-				m_eDir = RIGHT_DOWN;
-		}
-
-		//공격 생성
-		CObj* pObj = CAbstractFactory<CNormalAttack>::Create((float)m_tPosin.x, (float)m_tPosin.y);
-		pObj->Set_Dir(m_eDir);
-		//공격씬
-		if (3 == Attack_Scene)
-		{
-			Attack_Scene = 4;
-			m_eCurState = ATTACK;
-			pObj->Set_FrameX(4);
-		}
-		else if (4 == Attack_Scene)
-		{
-			Attack_Scene = 3; //1
-			m_eCurState = ATTACK2;
-			pObj->Set_FrameX(0);
-		}
-		CObjMgr::Get_Instance()->Add_Object(OBJID::ATTACK, pObj);
-	}
-
-	if (true == m_bAttack)
-	{
-		if (Attack_Time + 240 < GetTickCount())
-		{
-			m_bAttack = false;
-		}
-	}
-}
-
 
 void CPlayer::Shield_Att()
 {

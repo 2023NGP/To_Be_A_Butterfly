@@ -172,7 +172,6 @@
     <ClInclude Include="MyBitmap.h" />
     <ClInclude Include="MyButton.h" />
     <ClInclude Include="MyMenu.h" />
-    <ClInclude Include="NormalAttack.h" />
     <ClInclude Include="Obj.h" />
     <ClInclude Include="ObjMgr.h" />
     <ClInclude Include="Player.h" />
@@ -207,7 +206,6 @@
     <ClCompile Include="MyBitmap.cpp" />
     <ClCompile Include="MyButton.cpp" />
     <ClCompile Include="MyMenu.cpp" />
-    <ClCompile Include="NormalAttack.cpp" />
     <ClCompile Include="Obj.cpp" />
     <ClCompile Include="ObjMgr.cpp" />
     <ClCompile Include="Player.cpp" />
