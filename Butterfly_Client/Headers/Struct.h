@@ -88,7 +88,7 @@ typedef struct tagPlayerInfo
 	bool				isHit = false; //충돌 판정
 	bool				isDead = false; //죽었다 살아나면 false로 변환 필요 / True일때 충돌x
 	ENDING::END_TYPE	eEnding = ENDING::ING;
-
+	int coinNum{0};
 	//FRAME tFrame;
 
 }PLAYER_INFO;

@@ -39,6 +39,7 @@ void CPlayer::Initialize()
 	// 클리어 + 오버
 	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/stageclear.bmp", L"WIN");
 	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/gameover.bmp", L"LOSE");
+	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/mvp.bmp", L"MVP");
 
 	
 	m_eCurState = IDLE;
@@ -145,7 +146,7 @@ int CPlayer::Update()
 
 void CPlayer::Late_Update()
 {
-	float	fX = 0.f, fY = 0.f, fDis = 0.f, fRad = 0.f;
+	float   fX = 0.f, fY = 0.f, fDis = 0.f, fRad = 0.f;
 	int iScrollX = (int)CScrollMgr::Get_Instance()->Get_ScrollX();
 	int iScrollY = (int)CScrollMgr::Get_Instance()->Get_ScrollY();
 
@@ -153,7 +154,7 @@ void CPlayer::Late_Update()
 	fY = (m_pTarget->Get_Info().fY - iScrollY) - m_tInfo.fY;
 	fDis = sqrtf(fX * fX + fY * fY);
 	fRad = acosf(fX / fDis);
-
+	int index = CDataMgr::Get_Instance()->m_tStoreData.iClientIndex;
 
 	m_fAngle = fRad * 180.f / PI;
 
@@ -172,15 +173,16 @@ void CPlayer::Late_Update()
 	// 맵 안에서만 움직이도록
 	if (m_tInfo.fX < MAP_EDGE)
 		m_tInfo.fX = MAP_EDGE;
-	if(m_tInfo.fX > WINCX - MAP_EDGE)
+	if (m_tInfo.fX > WINCX - MAP_EDGE)
 		m_tInfo.fX = WINCX - MAP_EDGE;
-	if (m_tInfo.fY < MAP_EDGE)
-		m_tInfo.fY = MAP_EDGE;
+	//if (m_tInfo.fY < MAP_EDGE)
+	//   m_tInfo.fY = MAP_EDGE;
 	// 화면 밖을 벗어나면 죽음
 	if (m_tInfo.fY > WINCY + MAP_EDGE)
 		CDataMgr::Get_Instance()->m_tPlayerInfo.isDead = true;
-	// 여기서 화면 끝에 닿았을 때 클리어 조건 걸어주면 될 것 같다~!
-
+	if (m_tInfo.fY <= MAP_EDGE)
+		CDataMgr::Get_Instance()->m_tPlayerInfo.eEnding = ENDING::PASS;
+	// 여기서 화면 끝에 닿았을 때 클리어 조건 걸어주면 될 것 같다
 }
 
 void CPlayer::Render(HDC _DC)
@@ -220,7 +222,7 @@ void CPlayer::Render(HDC _DC)
 		}
 	}
 	int iClientIndex = CDataMgr::Get_Instance()->m_tStoreData.iClientIndex;
-	if (CDataMgr::Get_Instance()->m_tStoreData.tPlayersInfo[iClientIndex].eEnding == ENDING::WIN)
+	if (CDataMgr::Get_Instance()->m_tStoreData.tPlayersInfo[iClientIndex].eEnding == ENDING::PASS)
 	{
 		hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"WIN");
 
@@ -248,7 +250,20 @@ void CPlayer::Render(HDC _DC)
 
 		return; // 부활UI 출력 안하도록
 	}
+	else if (CDataMgr::Get_Instance()->m_tStoreData.tPlayersInfo[iClientIndex].eEnding == ENDING::MVP)
+	{
+		hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"MVP");
 
+		GdiTransparentBlt(_DC
+			, 0, 0
+			, WINCX, WINCY
+			, hMemDC
+			, 0, 0
+			, WINCX, WINCY
+			, RGB(255, 255, 255));
+
+		return; // 부활UI 출력 안하도록
+	}
 	//if (CDataMgr::Get_Instance()->m_tPlayerInfo.isDead)
 	//{
 	//	int leftTime = (m_dwDaedTime + REVIVE_TIME - GetTickCount())/1000;

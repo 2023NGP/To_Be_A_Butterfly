@@ -28,6 +28,6 @@ namespace TEAMNUM
 }
 namespace ENDING
 {
-	enum END_TYPE { ING, WIN, LOSE, PASS, END };
+	enum END_TYPE { ING, WIN, LOSE, PASS, MVP, DIE, END };
 }
 #endif // !__ENUM_H__

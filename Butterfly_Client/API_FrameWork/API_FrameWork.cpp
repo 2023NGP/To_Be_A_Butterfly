@@ -45,10 +45,13 @@ bool RecvPlayerInit(SOCKET sock);
 // 서버 관련 변수
 HANDLE hServerProcess;
 
+// 접속인원 < 3 일때 대기
 HANDLE hGameEvent;
+// 신호상태일때 갱신하기 위한 이벤트
 HANDLE hSocketEvent;
 
-char SERVERIP[512] =  /*"192.168.122.249"*/"127.0.0.1";
+char* SERVERIP = (char*)"127.0.0.1";
+string IP = {};
 
 
 // 하트 관련 변수, 함수
@@ -67,12 +70,15 @@ void Delete_Heart(HpPotionDelete hpPotionDelete);
 void Add_Coin(CoinCreate);
 void Delete_Coin(CoinDelete coinDelete);
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR    lpCmdLine,
+	_In_ LPSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
+
 	srand(unsigned int(time(NULL)));
+
+	IP = lpCmdLine;
 
 	// TODO: 여기에 코드를 입력합니다.
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -270,7 +276,7 @@ DWORD WINAPI ServerProcess(LPVOID arg)
     SOCKADDR_IN serveraddr;
     ZeroMemory(&serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
-    serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
+    serveraddr.sin_addr.s_addr = inet_addr(IP.c_str());
     serveraddr.sin_port = htons(SERVERPORT);
     retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
     if (retval == SOCKET_ERROR)
@@ -507,14 +513,6 @@ bool RecvPlayerInit(SOCKET sock)
 	}
 	else if (retval == 0)
 		return FALSE;
-
-	//buf[retval] = '\0';
-	//printf("(%f, %f)\n", g_tPlayerInit.tPos.fX, g_tPlayerInit.tPos.fY);
-	//std::cout<< CDataMgr::Get_Instance()->m_tStoreData.team[1] << std::endl;
-	//for (int i = 0; i < CLIENT_COUNT; ++i)
-	//{
-	//	std::cout << g_tPlayerInit.team[i] << std::endl;
-	//}
 
 	return TRUE;
 }
