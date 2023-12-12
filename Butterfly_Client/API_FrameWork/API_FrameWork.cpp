@@ -50,7 +50,7 @@ HANDLE hGameEvent;
 // 신호상태일때 갱신하기 위한 이벤트
 HANDLE hSocketEvent;
 
-char SERVERIP[512] =  /*"192.168.122.249"*/"192.168.143.139";
+char* SERVERIP = (char*)"127.0.0.1";
 
 
 // 하트 관련 변수, 함수
@@ -74,7 +74,10 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	_In_ LPWSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
+
 	srand(unsigned int(time(NULL)));
+
+	SERVERIP = (char*)lpCmdLine;
 
 	// TODO: 여기에 코드를 입력합니다.
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
