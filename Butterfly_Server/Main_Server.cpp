@@ -440,7 +440,6 @@ void CheckEnding(int iCurIndex)
 		return;
 	}
 	if (g_tStoreData.tPlayersInfo[iCurIndex].eEnding == ENDING::PASS) { // PASS
-		std::cout << iCurIndex << ": PASS\n";
 		// Pass 후 나머지 대기
 		for (int i = 0; i < CLIENT_COUNT; i++)
 		{
@@ -458,7 +457,6 @@ void CheckEnding(int iCurIndex)
 				maxIndex = i;
 			}
 			g_tStoreData.tPlayersInfo[maxIndex].eEnding = ENDING::MVP;
-			std::cout << "win!! mvp는 " << maxIndex << " coin: " << g_tStoreData.tPlayersInfo[maxIndex].coinNum << '\n';
 
 			g_bEnding = true;
 		}
