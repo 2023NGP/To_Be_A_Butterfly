@@ -39,6 +39,7 @@ void CPlayer::Initialize()
 	// 클리어 + 오버
 	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/stageclear.bmp", L"WIN");
 	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/gameover.bmp", L"LOSE");
+	CBmpMgr::Get_Instance()->Insert_Bmp(L"../Image/mvp.bmp", L"MVP");
 
 	
 	m_eCurState = IDLE;
@@ -249,7 +250,20 @@ void CPlayer::Render(HDC _DC)
 
 		return; // 부활UI 출력 안하도록
 	}
+	else if (CDataMgr::Get_Instance()->m_tStoreData.tPlayersInfo[iClientIndex].eEnding == ENDING::MVP)
+	{
+		hMemDC = CBmpMgr::Get_Instance()->Find_Bmp(L"MVP");
 
+		GdiTransparentBlt(_DC
+			, 0, 0
+			, WINCX, WINCY
+			, hMemDC
+			, 0, 0
+			, WINCX, WINCY
+			, RGB(255, 255, 255));
+
+		return; // 부활UI 출력 안하도록
+	}
 	//if (CDataMgr::Get_Instance()->m_tPlayerInfo.isDead)
 	//{
 	//	int leftTime = (m_dwDaedTime + REVIVE_TIME - GetTickCount())/1000;
