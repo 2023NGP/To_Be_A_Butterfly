@@ -51,6 +51,7 @@ HANDLE hGameEvent;
 HANDLE hSocketEvent;
 
 char* SERVERIP = (char*)"127.0.0.1";
+string IP = {};
 
 
 // 하트 관련 변수, 함수
@@ -69,15 +70,15 @@ void Delete_Heart(HpPotionDelete hpPotionDelete);
 void Add_Coin(CoinCreate);
 void Delete_Coin(CoinDelete coinDelete);
 
-int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
+int APIENTRY WinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
-	_In_ LPWSTR    lpCmdLine,
+	_In_ LPSTR    lpCmdLine,
 	_In_ int       nCmdShow)
 {
 
 	srand(unsigned int(time(NULL)));
 
-	SERVERIP = (char*)lpCmdLine;
+	IP = lpCmdLine;
 
 	// TODO: 여기에 코드를 입력합니다.
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
@@ -275,7 +276,7 @@ DWORD WINAPI ServerProcess(LPVOID arg)
     SOCKADDR_IN serveraddr;
     ZeroMemory(&serveraddr, sizeof(serveraddr));
     serveraddr.sin_family = AF_INET;
-    serveraddr.sin_addr.s_addr = inet_addr(SERVERIP);
+    serveraddr.sin_addr.s_addr = inet_addr(IP.c_str());
     serveraddr.sin_port = htons(SERVERPORT);
     retval = connect(sock, (SOCKADDR*)&serveraddr, sizeof(serveraddr));
     if (retval == SOCKET_ERROR)
