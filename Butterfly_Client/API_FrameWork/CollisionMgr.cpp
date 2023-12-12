@@ -113,6 +113,7 @@ void CCollisionMgr::Collision_Coin(list<CObj*>& _Dst, list<CObj*>& _Src)
 			{
 				dynamic_cast<CCoin*>(Src)->CallBackCollision();
 				Src->Set_Dead();
+				CDataMgr::Get_Instance()->m_tPlayerInfo.coinNum += 1;
 
 			}
 		}

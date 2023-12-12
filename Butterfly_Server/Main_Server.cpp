@@ -82,6 +82,10 @@ bool g_isHit[CLIENT_COUNT] = { false };
 bool g_bEnding = false;
 void CheckEnding(int iCurIndex);
 
+// mvp
+int max = 0;
+int maxIndex = 0;
+
 
 void err_quit(const char* msg)
 {
@@ -387,18 +391,11 @@ bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex)
 	{
 		tPlayerInfo.start = true;
 	}
-	// 엔딩 변수 저장
-	ENDING::END_TYPE eEnding = ENDING::ING;
-	if (g_bEnding)
-	{
-		eEnding = g_tStoreData.tPlayersInfo[iCurIndex].eEnding;
-	}
+	
 
 	g_tStoreData.tPlayersInfo[iCurIndex] = tPlayerInfo;
 	g_tStoreData.iClientIndex = iCurIndex;
 
-	// 엔딩 변수 설정
-	g_tStoreData.tPlayersInfo[iCurIndex].eEnding = eEnding;
 
 	g_tStoreData.iHp[iCurIndex] = tPlayerInfo.iHp;
 	g_tStoreData.start = tPlayerInfo.start;
@@ -409,7 +406,9 @@ bool SendRecv_PlayerInfo(SOCKET client_sock, int iIndex)
 		g_isHit[iCurIndex] = false;
 
 	// 엔딩 판정
-	CheckEnding(iCurIndex);
+	if (!g_bEnding) {
+		CheckEnding(iCurIndex);
+	}
 
 	// 데이터 보내기
 	retval = send(client_sock, (char*)&g_tStoreData, sizeof(STORE_DATA), 0);
@@ -426,60 +425,47 @@ void CheckEnding(int iCurIndex)
 {
 	//DIE, LOSE, PASS, WIN, MVP
 
-	if (g_bEnding) {//WIN
-		// return 게임 끝 => 전부 클리어한 경우
-		if (g_tStoreData.tPlayersInfo[iCurIndex].eEnding != ENDING::LOSE)
+		// 죽었을 때 DIE
+	if (g_tStoreData.tPlayersInfo[iCurIndex].isDead)
+	{
+		g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::LOSE;
+
+		for (int i = 0; i < CLIENT_COUNT; i++)
 		{
-			int max = 0;
-			int maxIndex = 0;
-			for (int i = 0; i < CLIENT_COUNT; i++) {
-				if (g_tStoreData.tPlayersInfo[iCurIndex].coinNum >= max) {
-					max = g_tStoreData.tPlayersInfo[iCurIndex].coinNum;
-					maxIndex = iCurIndex;
-				}
-				g_tStoreData.tPlayersInfo[maxIndex].eEnding = ENDING::MVP;
+			if (!g_tStoreData.tPlayersInfo[i].isDead) {
+				return;
 			}
-			return;
 		}
+		//g_bEnding = true;
 		return;
 	}
-
-	else
-	{
-		// 죽었을 때 DIE
-		if (g_tStoreData.tPlayersInfo[iCurIndex].isDead)
+	if (g_tStoreData.tPlayersInfo[iCurIndex].eEnding == ENDING::PASS) { // PASS
+		std::cout << iCurIndex << ": PASS\n";
+		// Pass 후 나머지 대기
+		for (int i = 0; i < CLIENT_COUNT; i++)
 		{
-			g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::DIE;
+			if (g_tStoreData.tPlayersInfo[i].eEnding == ENDING::ING) {
 
-			for (int i = 0; i < CLIENT_COUNT; i++)
-			{
-				if (!g_tStoreData.tPlayersInfo[iCurIndex].isDead) {
-					return;
-				}
+				return;
 			}
-			// 내가 제일 마지막에 죽은 경우
-			g_bEnding = true;
-			for (int i = 0; i < CLIENT_COUNT; i++)
-			{
-				g_tStoreData.tPlayersInfo[i].eEnding = ENDING::LOSE;
-			}
-			return;
 		}
-		if (g_tStoreData.tPlayersInfo[iCurIndex].eEnding == ENDING::PASS) { // PASS
-			g_tStoreData.tPlayersInfo[iCurIndex].eEnding = ENDING::WIN;
-			// Pass 후 나머지 대기
-			for (int i = 0; i < CLIENT_COUNT; i++)
-			{
-				if (!g_tStoreData.tPlayersInfo[iCurIndex].isDead) {
 
-					return;
-				}
+		//g_bEnding = true;
+
+		for (int i = 0; i < CLIENT_COUNT; i++) {
+			if (g_tStoreData.tPlayersInfo[i].coinNum >= max) {
+				max = g_tStoreData.tPlayersInfo[i].coinNum;
+				maxIndex = i;
 			}
-			g_bEnding = true;
+			g_tStoreData.tPlayersInfo[maxIndex].eEnding = ENDING::MVP;
+			std::cout << "win!! mvp는 " << maxIndex << " coin: " << g_tStoreData.tPlayersInfo[maxIndex].coinNum << '\n';
 
+			g_bEnding = true;
 		}
+
 
 	}
+
 
 	g_bEnding = false;
 }
@@ -670,7 +656,7 @@ bool SendRecv_CoinInfo(SOCKET sock, int index)
 		g_tCoinInfo.tCoinDelete.cnt = 1;
 		g_tCoinInfo.tCoinDelete.index = tCoinRes.iIndex;
 
-		g_tStoreData.tPlayersInfo[index].coinNum++;
+		std::cout << index << "'s coin: " << g_tStoreData.tPlayersInfo[index].coinNum << std::endl;
 
 	}
 
