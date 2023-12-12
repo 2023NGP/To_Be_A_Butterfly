@@ -18,53 +18,6 @@ CCollisionMgr::~CCollisionMgr()
 {
 }
 
-/*void CCollisionMgr::Collision_Rect(list<CObj*>& _Dst, list<CObj*>& _Src)
-{
-	RECT rc = {};
-
-	for (auto& Dst : _Dst)
-	{
-		for (auto& Src : _Src)
-		{
-			if (IntersectRect(&rc, &Dst->Get_Rect(), &Src->Get_Rect()))
-			{
-				Dst->Set_Dead();
-				Src->Set_Dead();
-			}
-		}
-	}
-}
-
-void CCollisionMgr::Collision_RectEx(list<CObj*>& _Dst, list<CObj*>& _Src)
-{
-	float fX = 0.f, fY = 0.f;
-
-	for (auto& Dst : _Dst)
-	{
-		for (auto& Src : _Src)
-		{
-			if (Check_Rect(Dst, Src, &fX, &fY))
-			{
-				//cout << "Ãæµ¹" << endl;
-				if (fX > fY)
-				{
-					if (Dst->Get_Info().fY < Src->Get_Info().fY)
-						Src->Set_PosY(fY);
-					else
-						Src->Set_PosY(-fY);
-				}
-				else
-				{
-					if (Dst->Get_Info().fX < Src->Get_Info().fX)
-						Src->Set_PosX(fX);
-					else
-						Src->Set_PosX(-fX);
-				}
-			}
-		}
-	}
-}*/
-
 void CCollisionMgr::Collision_Shield(list<CObj*>& _Dst, list<CObj*>& _Src)
 {
 	for (auto& Dst : _Dst)

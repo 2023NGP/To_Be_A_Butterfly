@@ -89,7 +89,6 @@ void CCloud::Render(HDC _DC)
 			512, 512,
 			RGB(255, 255, 255));
 	}
-	std::cout << m_lIndex << '\t';
 
 	// Rectangle(_DC, m_tRect.left + 0.f, m_tRect.top + 0.f, m_tRect.right + 0.f, m_tRect.bottom + 0.f);
 }

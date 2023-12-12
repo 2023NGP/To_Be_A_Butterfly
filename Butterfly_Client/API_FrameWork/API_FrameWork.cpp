@@ -50,7 +50,7 @@ HANDLE hGameEvent;
 // 신호상태일때 갱신하기 위한 이벤트
 HANDLE hSocketEvent;
 
-char SERVERIP[512] =  /*"192.168.122.249"*/"127.0.0.1";
+char SERVERIP[512] =  /*"192.168.122.249"*/"192.168.143.139";
 
 
 // 하트 관련 변수, 함수
@@ -509,14 +509,6 @@ bool RecvPlayerInit(SOCKET sock)
 	}
 	else if (retval == 0)
 		return FALSE;
-
-	//buf[retval] = '\0';
-	//printf("(%f, %f)\n", g_tPlayerInit.tPos.fX, g_tPlayerInit.tPos.fY);
-	//std::cout<< CDataMgr::Get_Instance()->m_tStoreData.team[1] << std::endl;
-	//for (int i = 0; i < CLIENT_COUNT; ++i)
-	//{
-	//	std::cout << g_tPlayerInit.team[i] << std::endl;
-	//}
 
 	return TRUE;
 }
